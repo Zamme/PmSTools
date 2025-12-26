@@ -2,28 +2,54 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:Class="PmSTools.MainPage">
+             x:Class="PmSTools.MainPage"
+             Title="PmSTools">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="2,0"
-            Spacing="2">
-            <!--<Image
-                x:Name="MyImage"
-                Source="dotnet_bot.png"
-                HeightRequest="1"
-                Aspect="AspectFit" />
-
-            <toolkit:CameraView x:Name="MyCamera" MediaCaptured="MyCamera_MediaCaptured" />
-            <Button
-                x:Name="ReadocrBtn"
-                Text="Read OCR" 
-                SemanticProperties.Hint="Picks an image for OCR"
-                Clicked="OnReadocrClicked"
-                HorizontalOptions="Fill" />-->
-            <!--<Button Text="Flash" Clicked="Button_Clicked_1" />
-            <Button Text="Zoom" Clicked="Button_Clicked_2" />-->
-        </VerticalStackLayout>
-    </ScrollView>
+    <Grid
+        RowDefinitions="Auto,*,Auto">
+        <Label
+            Text="PmS Main Tools"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center">
+        </Label>
+        <ScrollView
+            Grid.Row="1">
+            <Grid
+                Padding="2,0"
+                Margin="20,35,20,20"
+                ColumnSpacing="10"
+                RowSpacing="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="200" />
+                    <RowDefinition />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button
+                    x:Name="Code2BarcodeButton"
+                    Grid.Column="0"
+                    Text="Code To Barcode"
+                    BackgroundColor="LightBlue"
+                    ImageSource="dotnet_bot.png"
+                    ContentLayout="Top"
+                    SemanticProperties.Hint="Crear codis de barres"
+                    Clicked="OnCode2BarcodeButtonClicked"
+                    HorizontalOptions="Fill" />
+                <Button
+                    x:Name="FindPlaceButton"
+                    Grid.Column="1"
+                    Text="Trobar lloc"
+                    BackgroundColor="Orange"
+                    ImageSource="dotnet_bot.png"
+                    ContentLayout="Top"
+                    SemanticProperties.Hint="Trobar lloc"
+                    Clicked="OnFindPlaceButtonClicked"
+                    HorizontalOptions="Fill" />
+            </Grid>
+        </ScrollView>
+    </Grid>
 
 </ContentPage>
