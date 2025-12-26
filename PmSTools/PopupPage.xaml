@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mauiPopup:BasePopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                         xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI"
+                         xmlns:mauiPopup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
+                         xmlns:controls="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+                         xmlns:models="clr-namespace:PmSTools.Models"
+                         x:Class="PmSTools.PopupPage"
+                         Title="Codi de Barres"
+                         BackgroundColor="White">
+    
+    <Grid
+        Padding="5"
+        BackgroundColor="White">
+
+        <!--<Label 
+            Text="Codis de barres:"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            BackgroundColor="White"
+            TextColor="Black" />-->
+        <ScrollView x:Name="scrollView"
+                    VerticalOptions="FillAndExpand">
+            <VerticalStackLayout x:Name="CodesStack"
+                                 Padding="5"
+                                 Spacing="10"
+                                 BackgroundColor="White">
+            </VerticalStackLayout>
+        </ScrollView>
+            <!--<CollectionView x:Name="BarcodesCollectionView"
+            ItemsSource="{Binding barcodeItems}"
+            ItemsLayout="VerticalList"
+            Header="Players collectionview header"
+            Footer="Players collectionview footer">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:BarcodeItem">
+                    <ContentView>
+                        <Border>
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Code}" />
+                                ~1~<controls:BarcodeGeneratorView />@1@
+                            </VerticalStackLayout>
+                        </Border>
+                    </ContentView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>-->
+    
+
+    <!--<VerticalStackLayout
+        Padding="5"
+        Spacing="10"
+        BackgroundColor="White">
+        
+        <Label 
+            Text="Codi de barres:"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            BackgroundColor="White"
+            TextColor="Black" />
+        
+        <controls:BarcodeGeneratorView 
+            x:Name="BarcodeImage"
+            Format="Code39" 
+            Value="012345678912" 
+            ForegroundColor="Black" 
+            WidthRequest="400" 
+            HeightRequest="100"
+            BackgroundColor="White" />
+        
+        <Label
+            x:Name="CodiString"
+            Text="Codi de barres:"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center"
+            TextColor="Black"
+            BackgroundColor="White" />
+        ~1~<Image
+            x:Name="MyImage"
+            Source="dotnet_bot.png"
+            HeightRequest="150"
+            Aspect="AspectFit" />@1@-->
+    </Grid>
+</mauiPopup:BasePopupPage>

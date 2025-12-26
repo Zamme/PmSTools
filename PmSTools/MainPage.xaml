@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="PmSTools.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="2,0"
+            Spacing="2">
+            <!--<Image
+                x:Name="MyImage"
+                Source="dotnet_bot.png"
+                HeightRequest="1"
+                Aspect="AspectFit" />
+
+            <toolkit:CameraView x:Name="MyCamera" MediaCaptured="MyCamera_MediaCaptured" />
+            <Button
+                x:Name="ReadocrBtn"
+                Text="Read OCR" 
+                SemanticProperties.Hint="Picks an image for OCR"
+                Clicked="OnReadocrClicked"
+                HorizontalOptions="Fill" />-->
+            <!--<Button Text="Flash" Clicked="Button_Clicked_1" />
+            <Button Text="Zoom" Clicked="Button_Clicked_2" />-->
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
