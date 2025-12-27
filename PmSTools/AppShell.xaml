@@ -8,7 +8,7 @@
     Title="PmSTools">
 
     <ShellContent
-        Title="Code 2 Barcode"
+        Title="PmS Tools"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
