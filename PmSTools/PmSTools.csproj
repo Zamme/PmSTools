@@ -24,7 +24,7 @@
 		<ApplicationTitle>PmSTools</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.jaumecastellscarles.pmstools</ApplicationId>
+		<ApplicationId>com.vilogamesstudio.pmstools</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -36,6 +36,28 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<AssemblyVersion>1.0</AssemblyVersion>
+		<FileVersion>1.0</FileVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	  <AndroidKeyStore>true</AndroidKeyStore>
+	  <AndroidSigningKeyStore>/home/zamme/GoogleDrive/Vilo_Studio/my-debug-key.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
+	  <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	  <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+	  <AndroidKeyStore>true</AndroidKeyStore>
+	  <AndroidSigningKeyStore>/home/zamme/GoogleDrive/Vilo_Studio/my-release-key.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
 	</PropertyGroup>
 
 	<ItemGroup>
