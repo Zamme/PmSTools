@@ -9,6 +9,7 @@
         RowDefinitions="Auto,*,Auto">
         <Label
             Text="PmS Main Tools"
+            FontSize="20"
             HorizontalOptions="Center"
             HorizontalTextAlignment="Center">
         </Label>
@@ -21,8 +22,8 @@
                 RowSpacing="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="200" />
-                    <RowDefinition />
-                    <RowDefinition Height="50" />
+                    <RowDefinition Height="200" />
+                    <RowDefinition Height="200" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -33,6 +34,8 @@
                     Grid.Column="0"
                     Text="Code To Barcode"
                     BackgroundColor="LightBlue"
+                    BorderColor="BlueViolet"
+                    BorderWidth="2"
                     ImageSource="code_to_barcode_01.png"
                     ContentLayout="Top"
                     SemanticProperties.Hint="Crear codis de barres"
@@ -43,6 +46,8 @@
                     Grid.Column="1"
                     Text="Find Place"
                     BackgroundColor="Orange"
+                    BorderColor="BlueViolet"
+                    BorderWidth="2"
                     ImageSource="find_place_01.png"
                     ContentLayout="Top"
                     SemanticProperties.Hint="Trobar lloc"

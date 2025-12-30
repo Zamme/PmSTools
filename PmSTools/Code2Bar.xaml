@@ -7,21 +7,22 @@
     <ContentPage.Content>
         <Grid Margin="5">
             <Grid.RowDefinitions>
+                <RowDefinition Height="100" />
+                <RowDefinition Height="*" />
                 <RowDefinition Height="200" />
-                <RowDefinition />
-                <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Text="Codis recents"
-                   FontSize="14"
+                   FontSize="18"
                    FontAttributes="Bold"
-                   HorizontalOptions="Center" />
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
             <ScrollView
                 Grid.Row="1"
-                VerticalOptions="FillAndExpand">
+                VerticalOptions="FillAndExpand"
+                BackgroundColor="WhiteSmoke">
                 <VerticalStackLayout
                     Padding="2,0"
                     Spacing="2">
@@ -30,13 +31,24 @@
             <HorizontalStackLayout
                 Grid.Row="2"
                 Spacing="10"
-                Padding="5">
+                Padding="5"
+                VerticalOptions="Center"
+                HorizontalOptions="Center">
                 <Button
                     x:Name="ScanNewCodeButton"
-                    Text="Scan" 
+                    Text="Scan New" 
+                    FontSize="18"
+                    BackgroundColor="Blue"
+                    BorderColor="BlueViolet"
+                    BorderWidth="2"
+                    TextColor="WhiteSmoke"
+                    FontAttributes="Bold"
                     SemanticProperties.Hint="Scan a new code"
                     Clicked="OnScanNewCodeButtonClicked"
-                    HorizontalOptions="Fill"/>
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    HeightRequest="100"
+                    WidthRequest="250"/>
                 <!--<Button
                     x:Name="BackHomeFromCode2BarButton"
                     Text="Back" 
