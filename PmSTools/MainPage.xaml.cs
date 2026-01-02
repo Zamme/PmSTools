@@ -30,5 +30,25 @@ namespace PmSTools
         {
             ShowNotAvailable();      
         }
+
+        private void ConfigMenuItem_OnClicked(object? sender, EventArgs e)
+        {
+            ShowNotAvailable();
+        }
+
+        private void SettingsMenuItem_OnClicked(object? sender, EventArgs e)
+        {
+            ShowNotAvailable();
+        }
+
+        private void HelpMenuItem_OnClicked(object? sender, EventArgs e)
+        {
+            ShowNotAvailable();
+        }
+
+        private void AboutMenuItem_OnClicked(object? sender, EventArgs e)
+        {
+            MauiPopup.PopupAction.DisplayPopup(new AboutPopupPage());
+        }
     }
 }
