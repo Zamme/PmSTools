@@ -15,7 +15,7 @@ public partial class PopupPage : BasePopupPage
     public void ConstructPage(string _text)
     {
         char[] charSeparators = new char[] { ' ', '\n' };
-        string[] notiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90"];
+        string[] notiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90", "CX", "PH"];
         string[] textParts = _text.Split(charSeparators, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         foreach (var textPart in textParts)
         {

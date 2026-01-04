@@ -4,6 +4,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PmSTools.Code2Bar"
              Title="Code to Barcode">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Prefixes" Order="Secondary" Priority="0" Clicked="PrefixesMenuItem_OnClicked" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Grid Margin="5">
             <Grid.RowDefinitions>

@@ -5,6 +5,8 @@ namespace PmSTools;
 
 public partial class Code2Bar : ContentPage
 {
+    string[] notiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90", "CX", "PH"];
+
     public Code2Bar()
     {
         InitializeComponent();
@@ -59,5 +61,10 @@ public partial class Code2Bar : ContentPage
     {
         InitOcrAsync();
         OnReadocrClicked();
+    }
+
+    private void PrefixesMenuItem_OnClicked(object? sender, EventArgs e)
+    {
+        MauiPopup.PopupAction.DisplayPopup(new PrefixesPopupPage());
     }
 }
