@@ -12,15 +12,15 @@ public partial class PopupPage : BasePopupPage
     ObservableCollection<BarcodeItem> barcodeItems = new ObservableCollection<BarcodeItem>();
     public ObservableCollection<BarcodeItem> BarcodeItems { get { return barcodeItems; } }
 
-    public void ConstructPage(string _text)
+    public void ConstructPage(string _text, string[] newPrefixes)
     {
         char[] charSeparators = new char[] { ' ', '\n' };
-        string[] notiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90", "CX", "PH"];
+        /*string[] notiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90", "CX", "PH"];*/
         string[] textParts = _text.Split(charSeparators, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         foreach (var textPart in textParts)
         {
             string modTextPart = new string(textPart.ToUpper());
-            foreach (var notiPrefix in notiPrefixes)
+            foreach (var notiPrefix in newPrefixes)
             {
                 modTextPart = modTextPart.Replace("O", "0");
                 if (modTextPart.Length > 8)
@@ -85,9 +85,9 @@ public partial class PopupPage : BasePopupPage
     {
         InitializeComponent();
     }
-    public PopupPage(string _text)
+    public PopupPage(string _text, string[] newPrefixes)
     {
         InitializeComponent();
-        ConstructPage(_text);
+        ConstructPage(_text, newPrefixes);
     }
 }
