@@ -12,7 +12,7 @@ public partial class PopupPage : BasePopupPage
     ObservableCollection<BarcodeItem> barcodeItems = new ObservableCollection<BarcodeItem>();
     public ObservableCollection<BarcodeItem> BarcodeItems { get { return barcodeItems; } }
 
-    public void ConstructPage(string _text, string[] newPrefixes)
+    public void ConstructPage(string _text, List<string> newPrefixes)
     {
         char[] charSeparators = new char[] { ' ', '\n' };
         /*string[] notiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90", "CX", "PH"];*/
@@ -85,7 +85,7 @@ public partial class PopupPage : BasePopupPage
     {
         InitializeComponent();
     }
-    public PopupPage(string _text, string[] newPrefixes)
+    public PopupPage(string _text, List<string> newPrefixes)
     {
         InitializeComponent();
         ConstructPage(_text, newPrefixes);

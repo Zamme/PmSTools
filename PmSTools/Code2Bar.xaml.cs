@@ -6,9 +6,9 @@ namespace PmSTools;
 public partial class Code2Bar : ContentPage
 {
     private string prefixesPrefsKeyPrefix = "c2bp_";
-    private int prefixesCount = -1;
+    private int prefixesCount = 0;
     string[] defaultNotiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90", "CX", "PH"];
-    string[] notiPrefixes = [];
+    List<string> notiPrefixes = new List<string>();
 
     public Code2Bar()
     {
@@ -18,28 +18,24 @@ public partial class Code2Bar : ContentPage
     protected async override void OnAppearing()
     {
         base.OnAppearing();
-        if (notiPrefixes.Length == 0)
+        /*Preferences.Default.Clear();
+        Preferences.Clear();*/
+        if (Preferences.ContainsKey("prefixes_count"))
         {
-            if (Preferences.ContainsKey("prefixes_count"))
-            {
-                UpdateFromPrefixesPrefs();
-            }
-            else
-            {
-                notiPrefixes = defaultNotiPrefixes;
-                UpdatePrefixesPrefs();
-            }
-            UpdatePrefixesInfoLabel();
+            UpdateFromPrefixesPrefs();
         }
         else
         {
-            
+            notiPrefixes = new List<string>(defaultNotiPrefixes);
+            UpdatePrefixesPrefs();
         }
+        UpdatePrefixesInfoLabel();
     }
 
     private void UpdateFromPrefixesPrefs()
     {
-        prefixesCount = Preferences.Get("prefixes_count", -1);
+        prefixesCount = Preferences.Get("prefixes_count", 0);
+        notiPrefixes.Clear();
         if (prefixesCount < 1)
         {
             DisplayAlertAsync("Error", "Prefixes count is empty", "OK");
@@ -48,7 +44,7 @@ public partial class Code2Bar : ContentPage
         {
             for (int prefixCounter = 0; prefixCounter < prefixesCount; prefixCounter++)
             {
-                string currentPrefixKey = prefixesPrefsKeyPrefix + prefixCounter;
+                string currentPrefixKey = prefixesPrefsKeyPrefix + prefixCounter.ToString();
                 string currentPrefix = Preferences.Get(currentPrefixKey, "null");
                 if (currentPrefix == "null")
                 {
@@ -56,14 +52,14 @@ public partial class Code2Bar : ContentPage
                 }
                 else
                 {
-                    notiPrefixes.Append(currentPrefix);
+                    notiPrefixes.Add(currentPrefix);
                 }
             }
         }
     }
     private void UpdatePrefixesPrefs()
     {
-        prefixesCount = notiPrefixes.Length;
+        prefixesCount = notiPrefixes.Count;
         Preferences.Set("prefixes_count", prefixesCount);
         int prefixCounter = -1;
         foreach (string prefix in notiPrefixes)
@@ -122,7 +118,7 @@ public partial class Code2Bar : ContentPage
 
     private void PrefixesMenuItem_OnClicked(object? sender, EventArgs e)
     {
-        MauiPopup.PopupAction.DisplayPopup(new PrefixesPopupPage());
+        MauiPopup.PopupAction.DisplayPopup(new PrefixesPopupPage(notiPrefixes));
     }
 
     private void UpdatePrefixesInfoLabel()
@@ -134,5 +130,6 @@ public partial class Code2Bar : ContentPage
             infoLabelText += ", ";
         }
         PrefixesInfoLabel.Text = infoLabelText;
+        /*PrefixesInfoLabel.Text = prefixesCount.ToString();*/
     }
 }
