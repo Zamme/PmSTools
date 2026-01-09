@@ -28,12 +28,13 @@
                 VerticalOptions="Center" />
             <Label
                 Grid.Row="1"
-               Text="Codis recents"
+               Text="Last codes"
                FontSize="18"
                FontAttributes="Bold"
                HorizontalOptions="Center"
                VerticalOptions="Center" />
             <ScrollView
+                x:Name="LastCodesScroll"
                 Grid.Row="2"
                 VerticalOptions="FillAndExpand"
                 BackgroundColor="WhiteSmoke">

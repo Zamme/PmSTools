@@ -11,7 +11,7 @@ public partial class PopupPage : BasePopupPage
 {
     ObservableCollection<BarcodeItem> barcodeItems = new ObservableCollection<BarcodeItem>();
     public ObservableCollection<BarcodeItem> BarcodeItems { get { return barcodeItems; } }
-
+    private string lastCodesToSave = "";
     public void ConstructPage(string _text, List<string> newPrefixes)
     {
         char[] charSeparators = new char[] { ' ', '\n' };
@@ -62,9 +62,11 @@ public partial class PopupPage : BasePopupPage
                             Content = newVSL
                         };
                         CodesStack.Add(newBorder);
+                        lastCodesToSave += modTextPart + ",";
                     }
                 }
             }
+            Preferences.Set(Code2Bar.LastCodesPrefKey, lastCodesToSave);
         }
 
         if (barcodeItems.Count < 1)
