@@ -82,9 +82,15 @@ public partial class Code2Bar : ContentPage
         if (Preferences.ContainsKey(LastCodesPrefKey))
         {
             string lastCodesString = Preferences.Get(LastCodesPrefKey, "");
-            if (lastCodesString != "")
+            if (lastCodesString == "")
             {
-                // TODO : last codes key with no last codes
+                Label noLastCodesLabel = new Label();
+                noLastCodesLabel.Text = "No last codes.";
+                noLastCodesLabel.VerticalOptions = LayoutOptions.Center;
+                noLastCodesLabel.HorizontalOptions = LayoutOptions.Center;
+                noLastCodesLabel.BackgroundColor = Colors.White;
+                noLastCodesLabel.TextColor = Colors.Black;
+                lastCodesStack.Add(noLastCodesLabel);
             }
             else
             {

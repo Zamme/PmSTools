@@ -4,6 +4,8 @@ namespace PmSTools;
  
 public partial class PrefixesPopupPage : BasePopupPage
 {
+    private List<string> currentPrefixesList = new List<string>();
+    
     public PrefixesPopupPage(List<string> prefixesList)
     {
         InitializeComponent();
@@ -12,15 +14,17 @@ public partial class PrefixesPopupPage : BasePopupPage
 
     private void FillPrefixes(List<string> prefixesList)
     {
+        int currentPrefixIndex = 0;
         foreach (var prefix in prefixesList)
         {
-            Frame newFrame = new Frame();
+            Border newBorder = new Border();
             HorizontalStackLayout newStack = new HorizontalStackLayout();
             newStack.Spacing = 20;
             newStack.VerticalOptions = LayoutOptions.Center;
-            newStack.HorizontalOptions = LayoutOptions.Center;
             CheckBox newCheckBox = new CheckBox();
             newCheckBox.IsChecked = true;
+            newCheckBox.Margin = new Thickness(5, 0, 5, 0);
+            newCheckBox.HorizontalOptions = LayoutOptions.Start;
             newStack.Children.Add(newCheckBox);
             Label newLabel = new Label();
             newLabel.Text = prefix;
@@ -34,9 +38,19 @@ public partial class PrefixesPopupPage : BasePopupPage
             newButton.FontSize = 20;
             newButton.FontAttributes = FontAttributes.Bold;
             newButton.TextColor = Colors.Red;
+            newButton.Margin = new Thickness(5, 0, 5, 0);
+            newButton.VerticalOptions = LayoutOptions.Center;
+            newButton.HorizontalOptions = LayoutOptions.End;
+            /*newButton.Clicked += async (sender, args) => await OnPrefixDeleteButtonClick(sender, args);*/
             newStack.Children.Add(newButton);
-            newFrame.Content = newStack;
-            PrefixesStack.Add(newFrame);
+            newBorder.Content = newStack;
+            PrefixesStack.Add(newBorder);
+            currentPrefixIndex++;
         }
+    }
+
+    private async void OnPrefixDeleteButtonClick(object? sender, EventArgs args)
+    {
+        throw new NotImplementedException();
     }
 }
