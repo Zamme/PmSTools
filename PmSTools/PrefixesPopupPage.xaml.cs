@@ -9,11 +9,13 @@ public partial class PrefixesPopupPage : BasePopupPage
     public PrefixesPopupPage(List<string> prefixesList)
     {
         InitializeComponent();
-        FillPrefixes(prefixesList);
+        currentPrefixesList = new List<string>(prefixesList);
+        FillPrefixes(currentPrefixesList);
     }
 
     private void FillPrefixes(List<string> prefixesList)
     {
+        PrefixesStack.Clear();
         int currentPrefixIndex = 0;
         foreach (var prefix in prefixesList)
         {
@@ -21,6 +23,7 @@ public partial class PrefixesPopupPage : BasePopupPage
             HorizontalStackLayout newStack = new HorizontalStackLayout();
             newStack.Spacing = 20;
             newStack.VerticalOptions = LayoutOptions.Center;
+            newStack.HorizontalOptions = LayoutOptions.Center;
             CheckBox newCheckBox = new CheckBox();
             newCheckBox.IsChecked = true;
             newCheckBox.Margin = new Thickness(5, 0, 5, 0);
@@ -41,7 +44,7 @@ public partial class PrefixesPopupPage : BasePopupPage
             newButton.Margin = new Thickness(5, 0, 5, 0);
             newButton.VerticalOptions = LayoutOptions.Center;
             newButton.HorizontalOptions = LayoutOptions.End;
-            /*newButton.Clicked += async (sender, args) => await OnPrefixDeleteButtonClick(sender, args);*/
+            newButton.Clicked += async (sender, args) => OnPrefixDeleteButtonClick(sender, args, prefix);
             newStack.Children.Add(newButton);
             newBorder.Content = newStack;
             PrefixesStack.Add(newBorder);
@@ -49,8 +52,21 @@ public partial class PrefixesPopupPage : BasePopupPage
         }
     }
 
-    private async void OnPrefixDeleteButtonClick(object? sender, EventArgs args)
+    private void OnPrefixDeleteButtonClick(object? sender, EventArgs args, string _prefix)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Borrat " + _prefix);
+        currentPrefixesList.Remove(_prefix);
+        FillPrefixes(currentPrefixesList);
+    }
+
+    private void OnAddPrefixClicked(object? sender, EventArgs e)
+    {
+        /*throw new NotImplementedException();*/
+    }
+
+    private void OnSavePrefixesClicked(object? sender, EventArgs e)
+    {
+        // TODO : Save currentPrefixesList
+        MauiPopup.PopupAction.ClosePopup();
     }
 }

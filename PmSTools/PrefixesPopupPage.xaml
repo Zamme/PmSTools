@@ -13,7 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="100" />
+            <RowDefinition Height="150" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -31,13 +31,34 @@
             <VerticalStackLayout x:Name="PrefixesStack"
                                  Padding="5"
                                  Spacing="10"
+                                 HorizontalOptions="Fill"
                                  >
             </VerticalStackLayout>
         </ScrollView>
-        <Button Grid.Row="2"
-                Text="Add"
-                FontSize="22">
-            
-        </Button>
+        <Border Grid.Row="2">
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   Spacing="20"
+                                   >
+                <VerticalStackLayout>
+                    <Editor HeightRequest="75"
+                            FontSize="20"
+                            Placeholder="Prefix...">
+                    </Editor>
+                    <Button Text="Add"
+                            WidthRequest="200"
+                            HeightRequest="75"
+                            FontSize="22"
+                            HorizontalOptions="Fill"
+                            Clicked="OnAddPrefixClicked">
+                    </Button>
+                </VerticalStackLayout>
+                <Button Text="Save"
+                        WidthRequest="200"
+                        HorizontalOptions="Fill"
+                        FontSize="22"
+                        Clicked="OnSavePrefixesClicked">
+                </Button>
+            </HorizontalStackLayout>
+        </Border>
     </Grid>
 </mauiPopup:BasePopupPage>
