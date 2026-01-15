@@ -1,24 +1,27 @@
 using MauiPopup.Views;
+using PmSTools.Models;
 
 namespace PmSTools;
  
 public partial class PrefixesPopupPage : BasePopupPage
 {
     private List<string> currentPrefixesList = new List<string>();
-    
-    public PrefixesPopupPage(List<string> prefixesList)
+    private List<bool> currentActivePrefixesList = new List<bool>();
+
+    public PrefixesPopupPage(List<string> prefixesList, List<bool> activePrefixesList)
     {
         InitializeComponent();
         currentPrefixesList = new List<string>(prefixesList);
-        FillPrefixes(currentPrefixesList);
+        currentActivePrefixesList = new List<bool>(activePrefixesList);
+        FillPrefixes(currentPrefixesList, currentActivePrefixesList);
     }
 
-    private void FillPrefixes(List<string> prefixesList)
+    private void FillPrefixes(List<string> prefixesList, List<bool> activePrefixesList)
     {
         PrefixesStack.Clear();
-        int currentPrefixIndex = 0;
-        foreach (var prefix in prefixesList)
+        for (int currentPrefixIndex = 0; currentPrefixIndex < prefixesList.Count; currentPrefixIndex++)
         {
+            int cPI = currentPrefixIndex;
             Border newBorder = new Border();
             HorizontalStackLayout newStack = new HorizontalStackLayout();
             newStack.Spacing = 20;
@@ -30,7 +33,7 @@ public partial class PrefixesPopupPage : BasePopupPage
             newCheckBox.HorizontalOptions = LayoutOptions.Start;
             newStack.Children.Add(newCheckBox);
             Label newLabel = new Label();
-            newLabel.Text = prefix;
+            newLabel.Text = currentPrefixesList[currentPrefixIndex];
             newLabel.FontSize = 25;
             newLabel.FontAttributes = FontAttributes.Bold;
             newLabel.HorizontalOptions = LayoutOptions.Center;
@@ -44,19 +47,32 @@ public partial class PrefixesPopupPage : BasePopupPage
             newButton.Margin = new Thickness(5, 0, 5, 0);
             newButton.VerticalOptions = LayoutOptions.Center;
             newButton.HorizontalOptions = LayoutOptions.End;
-            newButton.Clicked += async (sender, args) => OnPrefixDeleteButtonClick(sender, args, prefix);
+            newButton.Clicked += async (sender, args) => OnPrefixDeleteButtonClick(sender, args, cPI);
             newStack.Children.Add(newButton);
             newBorder.Content = newStack;
             PrefixesStack.Add(newBorder);
-            currentPrefixIndex++;
         }
     }
 
-    private void OnPrefixDeleteButtonClick(object? sender, EventArgs args, string _prefix)
+    private void OnPrefixDeleteButtonClick(object? sender, EventArgs args, int _prefixIndex)
     {
-        Console.WriteLine("Borrat " + _prefix);
-        currentPrefixesList.Remove(_prefix);
-        FillPrefixes(currentPrefixesList);
+        /*Console.WriteLine("Borrat " + _prefix);*/
+        string prefixKey = SaveLoadData.PrefixesPrefsKeyPrefix + _prefixIndex.ToString();
+        string activePrefixKey = SaveLoadData.ActivePrefixesPrefsKeyPrefix + _prefixIndex.ToString();
+        Console.WriteLine("Esborrant " + _prefixIndex.ToString());
+        if (_prefixIndex < currentPrefixesList.Count)
+        {
+            currentPrefixesList.RemoveAt(_prefixIndex);
+            Console.WriteLine("Esborrat " + _prefixIndex.ToString());
+        }
+
+        if (_prefixIndex < currentActivePrefixesList.Count)
+        {
+            currentActivePrefixesList.RemoveAt(_prefixIndex);
+            Console.WriteLine("Esborrat active " + _prefixIndex.ToString());
+        }
+
+        FillPrefixes(currentPrefixesList, currentActivePrefixesList);
     }
 
     private void OnAddPrefixClicked(object? sender, EventArgs e)
@@ -66,7 +82,10 @@ public partial class PrefixesPopupPage : BasePopupPage
 
     private void OnSavePrefixesClicked(object? sender, EventArgs e)
     {
-        // TODO : Save currentPrefixesList
+        SaveLoadData.CleanPrefixesPrefs();
+        SaveLoadData.SavePrefixesPrefs(currentPrefixesList);
+        SaveLoadData.CleanActivePrefixesPrefs();
+        SaveLoadData.SaveActivePrefixesPrefs(currentActivePrefixesList);
         MauiPopup.PopupAction.ClosePopup();
     }
 }

@@ -11,14 +11,11 @@ namespace PmSTools;
 
 public partial class Code2Bar : ContentPage
 {
-    private const string PrefixesCountPrefName = "prefixes_count";
-    private const string PrefixesPrefsKeyPrefix = "c2bp_";
-    
-    public static string LastCodesPrefKey = "last_codes";
-
     private int prefixesCount = 0;
-    private string[] defaultNotiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90", "CX", "PH"];
     List<string> notiPrefixes = new List<string>();
+    List<bool> notiActivePrefixes = new List<bool>();
+    private string[] defaultNotiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90", "CX", "PH"];
+    private bool[] defaultNotiActivePrefixes = [true, true, true, true, true, true, true, true, true, true, true, true];
 
     ObservableCollection<BarcodeItem> barcodeItems = new ObservableCollection<BarcodeItem>();
     public ObservableCollection<BarcodeItem> BarcodeItems { get { return barcodeItems; } }
@@ -33,23 +30,24 @@ public partial class Code2Bar : ContentPage
         base.OnAppearing();
         /*Preferences.Default.Clear();
         Preferences.Clear();*/
-        if (Preferences.ContainsKey(PrefixesCountPrefName))
+        if (Preferences.ContainsKey(SaveLoadData.PrefixesCountPrefName))
         {
             UpdateFromPrefixesPrefs();
         }
         else
         {
             notiPrefixes = new List<string>(defaultNotiPrefixes);
+            notiActivePrefixes = new List<bool>(defaultNotiActivePrefixes);
             UpdatePrefixesPrefs();
         }
         UpdatePrefixesInfoLabel();
         
         UpdateLastCodesScroll();
     }
-
+    
     private void UpdateFromPrefixesPrefs()
     {
-        prefixesCount = Preferences.Get(PrefixesCountPrefName, 0);
+        prefixesCount = Preferences.Get(SaveLoadData.PrefixesCountPrefName, 0);
         notiPrefixes.Clear();
         if (prefixesCount < 1)
         {
@@ -59,8 +57,10 @@ public partial class Code2Bar : ContentPage
         {
             for (int prefixCounter = 0; prefixCounter < prefixesCount; prefixCounter++)
             {
-                string currentPrefixKey = PrefixesPrefsKeyPrefix + prefixCounter.ToString();
+                string currentPrefixKey = SaveLoadData.PrefixesPrefsKeyPrefix + prefixCounter.ToString();
                 string currentPrefix = Preferences.Get(currentPrefixKey, "null");
+                string currentActivePrefixKey = SaveLoadData.ActivePrefixesPrefsKeyPrefix + prefixCounter.ToString();
+                bool currentActivePrefix = Preferences.Get(currentActivePrefixKey, true);
                 if (currentPrefix == "null")
                 {
                     // TODO: What to do if it doesn't find prefix pref key
@@ -68,6 +68,7 @@ public partial class Code2Bar : ContentPage
                 else
                 {
                     notiPrefixes.Add(currentPrefix);
+                    notiActivePrefixes.Add(currentActivePrefix);
                 }
             }
         }
@@ -79,9 +80,9 @@ public partial class Code2Bar : ContentPage
         lastCodesStack.Spacing = 20;
         lastCodesStack.VerticalOptions = LayoutOptions.Center;
         lastCodesStack.HorizontalOptions = LayoutOptions.Center;
-        if (Preferences.ContainsKey(LastCodesPrefKey))
+        if (Preferences.ContainsKey(SaveLoadData.LastCodesPrefKey))
         {
-            string lastCodesString = Preferences.Get(LastCodesPrefKey, "");
+            string lastCodesString = Preferences.Get(SaveLoadData.LastCodesPrefKey, "");
             if (lastCodesString == "")
             {
                 Label noLastCodesLabel = new Label();
@@ -172,16 +173,10 @@ public partial class Code2Bar : ContentPage
     }
     private void UpdatePrefixesPrefs()
     {
-        prefixesCount = notiPrefixes.Count;
-        Preferences.Set(PrefixesCountPrefName, prefixesCount);
-        int prefixCounter = -1;
-        foreach (string prefix in notiPrefixes)
-        {
-            prefixCounter++;
-            string prefixKey = PrefixesPrefsKeyPrefix + prefixCounter.ToString();
-            Preferences.Set(prefixKey, prefix);
-        }
-        // TODO: Clean onwards prefixes!
+        SaveLoadData.CleanPrefixesPrefs();
+        SaveLoadData.CleanActivePrefixesPrefs();
+        SaveLoadData.SavePrefixesPrefs(notiPrefixes);
+        SaveLoadData.SaveActivePrefixesPrefs(notiActivePrefixes);
     }
         
     private async void OnReadocrClicked()
@@ -231,7 +226,7 @@ public partial class Code2Bar : ContentPage
 
     private void PrefixesMenuItem_OnClicked(object? sender, EventArgs e)
     {
-        MauiPopup.PopupAction.DisplayPopup(new PrefixesPopupPage(notiPrefixes));
+        MauiPopup.PopupAction.DisplayPopup(new PrefixesPopupPage(notiPrefixes, notiActivePrefixes));
     }
 
     private void UpdatePrefixesInfoLabel()

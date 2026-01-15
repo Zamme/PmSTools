@@ -66,7 +66,7 @@ public partial class PopupPage : BasePopupPage
                     }
                 }
             }
-            Preferences.Set(Code2Bar.LastCodesPrefKey, lastCodesToSave);
+            Preferences.Set(SaveLoadData.LastCodesPrefKey, lastCodesToSave);
         }
 
         if (barcodeItems.Count < 1)
