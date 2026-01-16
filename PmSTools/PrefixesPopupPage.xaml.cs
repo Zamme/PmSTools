@@ -28,9 +28,10 @@ public partial class PrefixesPopupPage : BasePopupPage
             newStack.VerticalOptions = LayoutOptions.Center;
             newStack.HorizontalOptions = LayoutOptions.Center;
             CheckBox newCheckBox = new CheckBox();
-            newCheckBox.IsChecked = true;
+            newCheckBox.IsChecked = activePrefixesList[cPI];
             newCheckBox.Margin = new Thickness(5, 0, 5, 0);
             newCheckBox.HorizontalOptions = LayoutOptions.Start;
+            newCheckBox.CheckedChanged += (s, e) => OnPrefixCheckBoxChanged(s, e, cPI);
             newStack.Children.Add(newCheckBox);
             Label newLabel = new Label();
             newLabel.Text = currentPrefixesList[currentPrefixIndex];
@@ -54,11 +55,17 @@ public partial class PrefixesPopupPage : BasePopupPage
         }
     }
 
+    private void OnPrefixCheckBoxChanged(object? sender, CheckedChangedEventArgs checkedChangedEventArgs, int index)
+    {
+        currentActivePrefixesList[index] = checkedChangedEventArgs.Value;
+        FillPrefixes(currentPrefixesList, currentActivePrefixesList);
+    }
+
     private void OnPrefixDeleteButtonClick(object? sender, EventArgs args, int _prefixIndex)
     {
         /*Console.WriteLine("Borrat " + _prefix);*/
-        string prefixKey = SaveLoadData.PrefixesPrefsKeyPrefix + _prefixIndex.ToString();
-        string activePrefixKey = SaveLoadData.ActivePrefixesPrefsKeyPrefix + _prefixIndex.ToString();
+        /*string prefixKey = SaveLoadData.PrefixesPrefsKeyPrefix + _prefixIndex.ToString();
+        string activePrefixKey = SaveLoadData.ActivePrefixesPrefsKeyPrefix + _prefixIndex.ToString();*/
         Console.WriteLine("Esborrant " + _prefixIndex.ToString());
         if (_prefixIndex < currentPrefixesList.Count)
         {
@@ -77,7 +84,10 @@ public partial class PrefixesPopupPage : BasePopupPage
 
     private void OnAddPrefixClicked(object? sender, EventArgs e)
     {
-        /*throw new NotImplementedException();*/
+        string newPrefixAdded = PrefixEditor.Text.ToString();
+        currentPrefixesList.Add(newPrefixAdded);
+        currentActivePrefixesList.Add(true);
+        FillPrefixes(currentPrefixesList, currentActivePrefixesList);
     }
 
     private void OnSavePrefixesClicked(object? sender, EventArgs e)
@@ -87,5 +97,9 @@ public partial class PrefixesPopupPage : BasePopupPage
         SaveLoadData.CleanActivePrefixesPrefs();
         SaveLoadData.SaveActivePrefixesPrefs(currentActivePrefixesList);
         MauiPopup.PopupAction.ClosePopup();
+    }
+
+    private void UpdatePrefixes()
+    {
     }
 }

@@ -67,8 +67,11 @@ public partial class Code2Bar : ContentPage
                 }
                 else
                 {
-                    notiPrefixes.Add(currentPrefix);
-                    notiActivePrefixes.Add(currentActivePrefix);
+                    if (currentActivePrefix)
+                    {
+                        notiPrefixes.Add(currentPrefix);
+                        notiActivePrefixes.Add(currentActivePrefix);
+                    }
                 }
             }
         }

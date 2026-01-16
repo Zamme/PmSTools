@@ -40,7 +40,8 @@
                                    Spacing="20"
                                    >
                 <VerticalStackLayout>
-                    <Editor HeightRequest="75"
+                    <Editor x:Name="PrefixEditor" 
+                        HeightRequest="75"
                             FontSize="20"
                             Placeholder="Prefix...">
                     </Editor>
