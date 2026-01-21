@@ -36,30 +36,33 @@
             </VerticalStackLayout>
         </ScrollView>
         <Border Grid.Row="2">
-            <HorizontalStackLayout HorizontalOptions="Center"
-                                   Spacing="20"
-                                   >
-                <VerticalStackLayout>
-                    <Editor x:Name="PrefixEditor" 
-                        HeightRequest="75"
-                            FontSize="20"
-                            Placeholder="Prefix...">
-                    </Editor>
-                    <Button Text="Add"
-                            WidthRequest="200"
-                            HeightRequest="75"
-                            FontSize="22"
+                <VerticalStackLayout VerticalOptions="Fill"
+                                     Spacing="10">
+                    <HorizontalStackLayout HorizontalOptions="Fill"
+                                           Spacing="20">
+                        <Editor x:Name="PrefixEditor" 
+                                    HeightRequest="75"
+                                    TextTransform="Uppercase"
+                                    FontSize="20"
+                                    WidthRequest="200"
+                                    IsSpellCheckEnabled="False"
+                                    IsTextPredictionEnabled="False"
+                                    Placeholder="Prefix...">
+                        </Editor>
+                        <Button Text="Add"
+                                HeightRequest="75"
+                                WidthRequest="100"
+                                FontSize="22"
+                                HorizontalOptions="End"
+                                Clicked="OnAddPrefixClicked">
+                        </Button>
+                    </HorizontalStackLayout>
+                    <Button Text="Save"
                             HorizontalOptions="Fill"
-                            Clicked="OnAddPrefixClicked">
+                            FontSize="22"
+                            Clicked="OnSavePrefixesClicked">
                     </Button>
                 </VerticalStackLayout>
-                <Button Text="Save"
-                        WidthRequest="200"
-                        HorizontalOptions="Fill"
-                        FontSize="22"
-                        Clicked="OnSavePrefixesClicked">
-                </Button>
-            </HorizontalStackLayout>
         </Border>
     </Grid>
 </mauiPopup:BasePopupPage>

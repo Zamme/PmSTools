@@ -25,11 +25,11 @@ public static class SaveLoadData
     public static void SaveActivePrefixesPrefs(List<bool> activePrefixes)
     {
         int prefixCounter = -1;
-        foreach (bool prefix in activePrefixes)
+        foreach (bool activePrefix in activePrefixes)
         {
             prefixCounter++;
-            string prefixKey = ActivePrefixesPrefsKeyPrefix + prefixCounter.ToString();
-            Preferences.Set(prefixKey, prefix);
+            string activePrefixKey = ActivePrefixesPrefsKeyPrefix + prefixCounter.ToString();
+            Preferences.Set(activePrefixKey, activePrefix);
         }
     }
 

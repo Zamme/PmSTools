@@ -49,6 +49,7 @@ public partial class Code2Bar : ContentPage
     {
         prefixesCount = Preferences.Get(SaveLoadData.PrefixesCountPrefName, 0);
         notiPrefixes.Clear();
+        notiActivePrefixes.Clear();
         if (prefixesCount < 1)
         {
             DisplayAlertAsync("Error", "Prefixes count is empty", "OK");
@@ -229,16 +230,21 @@ public partial class Code2Bar : ContentPage
 
     private void PrefixesMenuItem_OnClicked(object? sender, EventArgs e)
     {
-        MauiPopup.PopupAction.DisplayPopup(new PrefixesPopupPage(notiPrefixes, notiActivePrefixes));
+        MauiPopup.PopupAction.DisplayPopup(new PrefixesPopupPage());
     }
 
     private void UpdatePrefixesInfoLabel()
     {
         string infoLabelText = "Prefixes: ";
+        int pendingPrefixes = notiPrefixes.Count;
         foreach (var notiPrefix in notiPrefixes)
         {
             infoLabelText += notiPrefix;
-            infoLabelText += ", ";
+            if (pendingPrefixes > 1)
+            {
+                infoLabelText += ", ";
+                pendingPrefixes--;
+            }
         }
         PrefixesInfoLabel.Text = infoLabelText;
         /*PrefixesInfoLabel.Text = prefixesCount.ToString();*/

@@ -1,5 +1,7 @@
+using Java.Lang;
 using MauiPopup.Views;
 using PmSTools.Models;
+using Exception = System.Exception;
 
 namespace PmSTools;
  
@@ -7,12 +9,12 @@ public partial class PrefixesPopupPage : BasePopupPage
 {
     private List<string> currentPrefixesList = new List<string>();
     private List<bool> currentActivePrefixesList = new List<bool>();
+    private int prefixesCount = 0;
 
-    public PrefixesPopupPage(List<string> prefixesList, List<bool> activePrefixesList)
+    public PrefixesPopupPage()
     {
         InitializeComponent();
-        currentPrefixesList = new List<string>(prefixesList);
-        currentActivePrefixesList = new List<bool>(activePrefixesList);
+        UpdateFromPrefixesPrefs();
         FillPrefixes(currentPrefixesList, currentActivePrefixesList);
     }
 
@@ -34,7 +36,7 @@ public partial class PrefixesPopupPage : BasePopupPage
             newCheckBox.CheckedChanged += (s, e) => OnPrefixCheckBoxChanged(s, e, cPI);
             newStack.Children.Add(newCheckBox);
             Label newLabel = new Label();
-            newLabel.Text = currentPrefixesList[currentPrefixIndex];
+            newLabel.Text = currentPrefixesList[cPI];
             newLabel.FontSize = 25;
             newLabel.FontAttributes = FontAttributes.Bold;
             newLabel.HorizontalOptions = LayoutOptions.Center;
@@ -84,21 +86,59 @@ public partial class PrefixesPopupPage : BasePopupPage
 
     private void OnAddPrefixClicked(object? sender, EventArgs e)
     {
-        string newPrefixAdded = PrefixEditor.Text.ToString();
-        currentPrefixesList.Add(newPrefixAdded);
-        currentActivePrefixesList.Add(true);
-        FillPrefixes(currentPrefixesList, currentActivePrefixesList);
+        string newPrefixAdded = "";
+        try
+        {
+            newPrefixAdded = PrefixEditor.Text.ToString();
+            currentPrefixesList.Add(newPrefixAdded);
+            currentActivePrefixesList.Add(true);
+            FillPrefixes(currentPrefixesList, currentActivePrefixesList);
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine("No prefix written");
+        }
     }
 
     private void OnSavePrefixesClicked(object? sender, EventArgs e)
     {
         SaveLoadData.CleanPrefixesPrefs();
-        SaveLoadData.SavePrefixesPrefs(currentPrefixesList);
         SaveLoadData.CleanActivePrefixesPrefs();
+        SaveLoadData.SavePrefixesPrefs(currentPrefixesList);
         SaveLoadData.SaveActivePrefixesPrefs(currentActivePrefixesList);
         MauiPopup.PopupAction.ClosePopup();
     }
 
+    private void UpdateFromPrefixesPrefs()
+    {
+        prefixesCount = Preferences.Get(SaveLoadData.PrefixesCountPrefName, 0);
+        currentPrefixesList.Clear();
+        currentActivePrefixesList.Clear();
+        if (prefixesCount < 1)
+        {
+            DisplayAlertAsync("Error", "Prefixes count is empty", "OK");
+        }
+        else
+        {
+            for (int prefixCounter = 0; prefixCounter < prefixesCount; prefixCounter++)
+            {
+                string currentPrefixKey = SaveLoadData.PrefixesPrefsKeyPrefix + prefixCounter.ToString();
+                string currentPrefix = Preferences.Get(currentPrefixKey, "null");
+                string currentActivePrefixKey = SaveLoadData.ActivePrefixesPrefsKeyPrefix + prefixCounter.ToString();
+                bool currentActivePrefix = Preferences.Get(currentActivePrefixKey, true);
+                if (currentPrefix == "null")
+                {
+                    // TODO: What to do if it doesn't find prefix pref key
+                }
+                else
+                {
+                    currentPrefixesList.Add(currentPrefix);
+                    currentActivePrefixesList.Add(currentActivePrefix);
+                }
+            }
+        }
+    }
+    
     private void UpdatePrefixes()
     {
     }

@@ -9,13 +9,13 @@ namespace PmSTools;
  
 public partial class PopupPage : BasePopupPage
 {
+    const string NoPrefixFound = "No prefix found";
     ObservableCollection<BarcodeItem> barcodeItems = new ObservableCollection<BarcodeItem>();
     public ObservableCollection<BarcodeItem> BarcodeItems { get { return barcodeItems; } }
     private string lastCodesToSave = "";
     public void ConstructPage(string _text, List<string> newPrefixes)
     {
         char[] charSeparators = new char[] { ' ', '\n' };
-        /*string[] notiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90", "CX", "PH"];*/
         string[] textParts = _text.Split(charSeparators, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         foreach (var textPart in textParts)
         {
@@ -71,7 +71,7 @@ public partial class PopupPage : BasePopupPage
 
         if (barcodeItems.Count < 1)
         {
-            Label newLabel = new Label { Text = "ERROR",
+            Label newLabel = new Label { Text = NoPrefixFound,
                 VerticalOptions=LayoutOptions.Center, 
                 HorizontalOptions=LayoutOptions.Center,
                 BackgroundColor=Colors.White,
