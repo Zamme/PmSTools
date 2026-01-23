@@ -6,14 +6,15 @@
              Title="Code to Barcode">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Prefixes" Order="Secondary" Priority="0" Clicked="PrefixesMenuItem_OnClicked" />
+        <ToolbarItem Text="Saved" Order="Secondary" Priority="1" Clicked="SavedMenuItem_OnClicked" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="60" />
-                <RowDefinition Height="100" />
+                <RowDefinition Height="80" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="200" />
+                <RowDefinition Height="100" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -38,10 +39,6 @@
                 Grid.Row="2"
                 VerticalOptions="FillAndExpand"
                 BackgroundColor="WhiteSmoke">
-                <VerticalStackLayout
-                    Padding="2,0"
-                    Spacing="2">
-                </VerticalStackLayout>
             </ScrollView>
             <HorizontalStackLayout
                 Grid.Row="3"

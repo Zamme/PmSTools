@@ -11,6 +11,7 @@ namespace PmSTools;
 
 public partial class Code2Bar : ContentPage
 {
+    private const string NoLastCodes = "No last codes";
     private int prefixesCount = 0;
     List<string> notiPrefixes = new List<string>();
     List<bool> notiActivePrefixes = new List<bool>();
@@ -90,7 +91,7 @@ public partial class Code2Bar : ContentPage
             if (lastCodesString == "")
             {
                 Label noLastCodesLabel = new Label();
-                noLastCodesLabel.Text = "No last codes.";
+                noLastCodesLabel.Text = NoLastCodes;
                 noLastCodesLabel.VerticalOptions = LayoutOptions.Center;
                 noLastCodesLabel.HorizontalOptions = LayoutOptions.Center;
                 noLastCodesLabel.BackgroundColor = Colors.White;
@@ -132,6 +133,12 @@ public partial class Code2Bar : ContentPage
                                     HorizontalOptions=LayoutOptions.Center,
                                     BackgroundColor=Colors.White,
                                     TextColor=Colors.Black };
+                                HorizontalStackLayout newHSL = new HorizontalStackLayout
+                                {
+                                    Spacing = 5,
+                                    BackgroundColor = Colors.White,
+                                    Padding = 5
+                                };
                                 VerticalStackLayout newVSL = new VerticalStackLayout
                                 {
                                     Spacing = 5,
@@ -140,11 +147,21 @@ public partial class Code2Bar : ContentPage
                                 };
                                 newVSL.Add(newBarcodeItem.BarcodeView);
                                 newVSL.Add(newLabel);
+                                newHSL.Add(newVSL);
+                                
+                                Button newSaveCodeButton = new Button
+                                {
+                                    Text = "S",
+                                    
+                                };
+                                newSaveCodeButton.Clicked += async (sender, args) => OnSaveCodeButtonClick(sender, args, modTextPart);
+                                newHSL.Add(newSaveCodeButton);
+
                                 Border newBorder = new Border
                                 {
                                     Padding = 2,
                                     BackgroundColor = Colors.White,
-                                    Content = newVSL
+                                    Content = newHSL
                                 };
                                 lastCodesStack.Add(newBorder);
                             }
@@ -154,7 +171,7 @@ public partial class Code2Bar : ContentPage
 
                 if (barcodeItems.Count < 1)
                 {
-                    Label newLabel = new Label { Text = "ERROR",
+                    Label newLabel = new Label { Text = NoLastCodes,
                         VerticalOptions=LayoutOptions.Center, 
                         HorizontalOptions=LayoutOptions.Center,
                         BackgroundColor=Colors.White,
@@ -166,7 +183,7 @@ public partial class Code2Bar : ContentPage
         else
         {
             Label noLastCodesLabel = new Label();
-            noLastCodesLabel.Text = "No last codes.";
+            noLastCodesLabel.Text = NoLastCodes;
             noLastCodesLabel.VerticalOptions = LayoutOptions.Center;
             noLastCodesLabel.HorizontalOptions = LayoutOptions.Center;
             noLastCodesLabel.BackgroundColor = Colors.White;
@@ -175,6 +192,12 @@ public partial class Code2Bar : ContentPage
         }
         LastCodesScroll.Content = lastCodesStack;
     }
+
+    private void OnSaveCodeButtonClick(object? sender, EventArgs args, string _text)
+    {
+        SaveLoadData.SaveCode(_text.ToString());
+    }
+
     private void UpdatePrefixesPrefs()
     {
         SaveLoadData.CleanPrefixesPrefs();
@@ -204,7 +227,7 @@ public partial class Code2Bar : ContentPage
                 }
 
                 /*await DisplayAlert("OCR Result", ocrResult.AllText, "OK");*/
-                MauiPopup.PopupAction.DisplayPopup(new PopupPage(ocrResult.AllText, notiPrefixes));
+                MauiPopup.PopupAction.DisplayPopup(new Code2BarcodePopupPage(ocrResult.AllText, notiPrefixes));
             }
         }
         catch (Exception ex)
@@ -248,5 +271,10 @@ public partial class Code2Bar : ContentPage
         }
         PrefixesInfoLabel.Text = infoLabelText;
         /*PrefixesInfoLabel.Text = prefixesCount.ToString();*/
+    }
+
+    private void SavedMenuItem_OnClicked(object? sender, EventArgs e)
+    {
+        MauiPopup.PopupAction.DisplayPopup(new SavedBarcodesPopupPage());
     }
 }

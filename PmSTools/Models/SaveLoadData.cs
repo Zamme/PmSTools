@@ -8,6 +8,11 @@ public static class SaveLoadData
 
     public const string LastCodesPrefKey = "last_codes";
     
+    /*
+    public const string SavedCodesCountPrefName = "saved_codes_count";
+    */
+    public const string SavedCodesPrefsKey = "saved_codes";
+    
 
     public static void SavePrefixesPrefs(List<string> prefixes)
     {
@@ -32,6 +37,47 @@ public static class SaveLoadData
             Preferences.Set(activePrefixKey, activePrefix);
         }
     }
+
+    public static void DeleteCode(string code)
+    {
+        string codePlusSeparator = code + ",";
+        string savedCodesString = Preferences.Get(SavedCodesPrefsKey, "");
+        savedCodesString = savedCodesString.Replace(codePlusSeparator, "");
+        Preferences.Set(SavedCodesPrefsKey, savedCodesString);
+    }
+    
+    public static void SaveCode(string code)
+    {
+        if (!Preferences.ContainsKey(SavedCodesPrefsKey))
+        {
+            Preferences.Set(SavedCodesPrefsKey, "");
+        }
+
+        string savedCodesString = Preferences.Get(SavedCodesPrefsKey, "");
+        string newCode = code + ",";
+        if (!savedCodesString.Contains(newCode))
+        {
+            savedCodesString += newCode;
+            Preferences.Set(SavedCodesPrefsKey, savedCodesString);
+        }
+    }
+    
+    /*public static void SaveBarcodesPrefs(List<string> barcodes)
+    {
+        if (!Preferences.ContainsKey(SavedCodesCountPrefName))
+        {
+            Preferences.Set(SavedCodesCountPrefName, 0);
+        }
+        
+        int savedCodesCount = Preferences.Get(SavedCodesCountPrefName, 0);
+        int barcodeCounter = savedCodesCount;
+        foreach (var barcode in barcodes)
+        {
+            barcodeCounter++;
+            string barcodeKey = SavedCodesPrefsKeyPrefix + barcodeCounter.ToString();
+            Preferences.Set(barcodeKey, barcode);
+        }
+    }*/
 
     public static void CleanActivePrefixesPrefs()
     {

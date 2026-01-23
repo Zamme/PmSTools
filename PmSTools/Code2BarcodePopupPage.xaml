@@ -5,7 +5,7 @@
                          xmlns:mauiPopup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
                          xmlns:controls="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
                          xmlns:models="clr-namespace:PmSTools.Models"
-                         x:Class="PmSTools.PopupPage"
+                         x:Class="PmSTools.Code2BarcodePopupPage"
                          Title="Codi de Barres"
                          BackgroundColor="White">
     

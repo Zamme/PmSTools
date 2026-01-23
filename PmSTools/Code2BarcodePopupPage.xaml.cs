@@ -7,7 +7,7 @@ using Xamarin.Google.MLKit.Vision.Text;
 
 namespace PmSTools;
  
-public partial class PopupPage : BasePopupPage
+public partial class Code2BarcodePopupPage : BasePopupPage
 {
     const string NoPrefixFound = "No prefix found";
     ObservableCollection<BarcodeItem> barcodeItems = new ObservableCollection<BarcodeItem>();
@@ -83,11 +83,11 @@ public partial class PopupPage : BasePopupPage
         BarcodeImage.Value = codeFound;
         CodiString.Text = codeFound;*/
     }
-    public PopupPage()
+    public Code2BarcodePopupPage()
     {
         InitializeComponent();
     }
-    public PopupPage(string _text, List<string> newPrefixes)
+    public Code2BarcodePopupPage(string _text, List<string> newPrefixes)
     {
         InitializeComponent();
         ConstructPage(_text, newPrefixes);

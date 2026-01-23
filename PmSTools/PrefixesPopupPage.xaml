@@ -25,39 +25,58 @@
             FontSize="20"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-        <ScrollView x:Name="PrefixesScrollView"
-                    Grid.Row="1"
-                    VerticalOptions="FillAndExpand">
-            <VerticalStackLayout x:Name="PrefixesStack"
-                                 Padding="5"
-                                 Spacing="10"
-                                 HorizontalOptions="Fill"
-                                 >
-            </VerticalStackLayout>
-        </ScrollView>
-        <Border Grid.Row="2">
+        <Border Grid.Row="1"
+                StrokeThickness="1">
+            <ScrollView x:Name="PrefixesScrollView"
+                        VerticalOptions="FillAndExpand">
+                <VerticalStackLayout x:Name="PrefixesStack"
+                                     Padding="5"
+                                     Spacing="10"
+                                     HorizontalOptions="Fill"
+                                     >
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+        <Border Grid.Row="2"
+                StrokeThickness="2">
                 <VerticalStackLayout VerticalOptions="Fill"
+                                     HorizontalOptions="Fill"
                                      Spacing="10">
                     <HorizontalStackLayout HorizontalOptions="Fill"
-                                           Spacing="20">
+                                           Spacing="10">
                         <Editor x:Name="PrefixEditor" 
-                                    HeightRequest="75"
-                                    TextTransform="Uppercase"
-                                    FontSize="20"
-                                    WidthRequest="200"
-                                    IsSpellCheckEnabled="False"
-                                    IsTextPredictionEnabled="False"
-                                    Placeholder="Prefix...">
+                                VerticalTextAlignment="Center"
+                                BackgroundColor="White"
+                                TextColor="Black"
+                                HeightRequest="75"
+                                TextTransform="Uppercase"
+                                FontSize="20"
+                                HorizontalOptions="Start"
+                                VerticalOptions="Fill"
+                                WidthRequest="200"
+                                IsSpellCheckEnabled="False"
+                                IsTextPredictionEnabled="False"
+                                Placeholder="Prefix...">
                         </Editor>
                         <Button Text="Add"
-                                HeightRequest="75"
-                                WidthRequest="100"
-                                FontSize="22"
+                                Padding="2"
+                                BackgroundColor="Blue"
+                                BorderColor="BlueViolet"
+                                BorderWidth="2"
+                                VerticalOptions="Fill"
                                 HorizontalOptions="End"
+                                WidthRequest="100"
+                                TextColor="WhiteSmoke"
+                                HeightRequest="75"
+                                FontSize="22"
                                 Clicked="OnAddPrefixClicked">
                         </Button>
                     </HorizontalStackLayout>
                     <Button Text="Save"
+                            BackgroundColor="Blue"
+                            BorderColor="BlueViolet"
+                            BorderWidth="2"
+                            TextColor="WhiteSmoke"
                             HorizontalOptions="Fill"
                             FontSize="22"
                             Clicked="OnSavePrefixesClicked">
