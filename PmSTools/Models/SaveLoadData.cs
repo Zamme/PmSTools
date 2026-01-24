@@ -5,7 +5,7 @@ public static class SaveLoadData
     public const string PrefixesCountPrefName = "prefixes_count";
     public const string PrefixesPrefsKeyPrefix = "c2bp_";
     public const string ActivePrefixesPrefsKeyPrefix = "c2bap_";
-
+    public const string SeparatorChar = ",";
     public const string LastCodesPrefKey = "last_codes";
     
     /*
@@ -38,12 +38,41 @@ public static class SaveLoadData
         }
     }
 
+    public static void ClearAllSavedCodes()
+    {
+        Preferences.Remove(SavedCodesPrefsKey);
+    }
+    
     public static void DeleteCode(string code)
     {
-        string codePlusSeparator = code + ",";
+        string codePlusSeparator = code + SeparatorChar;
         string savedCodesString = Preferences.Get(SavedCodesPrefsKey, "");
         savedCodesString = savedCodesString.Replace(codePlusSeparator, "");
         Preferences.Set(SavedCodesPrefsKey, savedCodesString);
+    }
+
+    public static List<string> GetSavedCodes()
+    {
+        List<string> savedCodes = new List<string>();
+        if (Preferences.ContainsKey(SavedCodesPrefsKey))
+        {
+            string savedCodesString = Preferences.Get(SavedCodesPrefsKey, "");
+            savedCodes = savedCodesString.Split(SeparatorChar).ToList();
+        }
+
+        return savedCodes;
+    }
+
+    public static bool IsCodeSaved(string code)
+    {
+        string codePlusSeparators = code + SeparatorChar;
+        bool isCodeSaved = false;
+        if (Preferences.ContainsKey(SavedCodesPrefsKey))
+        {
+            string savedCodesString = Preferences.Get(SavedCodesPrefsKey, "");
+            isCodeSaved = savedCodesString.Contains(codePlusSeparators);
+        }
+        return isCodeSaved;
     }
     
     public static void SaveCode(string code)
@@ -54,7 +83,7 @@ public static class SaveLoadData
         }
 
         string savedCodesString = Preferences.Get(SavedCodesPrefsKey, "");
-        string newCode = code + ",";
+        string newCode = code + SeparatorChar;
         if (!savedCodesString.Contains(newCode))
         {
             savedCodesString += newCode;

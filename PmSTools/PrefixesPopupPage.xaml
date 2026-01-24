@@ -12,36 +12,59 @@
         Padding="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
             <RowDefinition Height="*" />
             <RowDefinition Height="150" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Label
-            Grid.Row="0"
-            Text="Prefixes:"
-            FontSize="20"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-        <Border Grid.Row="1"
+        <Label Grid.Row="0" Grid.Column="0"
+               Grid.ColumnSpan="3"
+               Text="Prefixes"
+               FontSize="20"
+               VerticalOptions="Center" 
+               HorizontalOptions="Center" />
+        <Label Grid.Row="1" Grid.Column="0"
+               Text="Enabled"
+               FontSize="20"
+               VerticalOptions="Center" 
+               HorizontalOptions="Center" />
+        <Label Grid.Row="1" Grid.Column="1"
+               Text="Prefix"
+               FontSize="20"
+               VerticalOptions="Center" 
+               HorizontalOptions="Center" />
+        <Label Grid.Row="1" Grid.Column="2"
+               Text="Delete"
+               FontSize="20"
+               VerticalOptions="Center" 
+               HorizontalOptions="Center" />
+        <Border Grid.Row="2"
+                Grid.ColumnSpan="3"
                 StrokeThickness="1">
             <ScrollView x:Name="PrefixesScrollView"
-                        VerticalOptions="FillAndExpand">
-                <VerticalStackLayout x:Name="PrefixesStack"
-                                     Padding="5"
-                                     Spacing="10"
-                                     HorizontalOptions="Fill"
-                                     >
+                VerticalOptions="FillAndExpand"
+                >
+                <VerticalStackLayout
+                    x:Name="PrefixesVSL"
+                    VerticalOptions="Fill"
+                    HorizontalOptions="Fill">
+                    
                 </VerticalStackLayout>
             </ScrollView>
         </Border>
-        <Border Grid.Row="2"
+        <Border Grid.Row="3"
+                Grid.ColumnSpan="3"
                 StrokeThickness="2">
                 <Grid VerticalOptions="Fill"
-                                     HorizontalOptions="Fill"
-                                     >
+                     HorizontalOptions="Fill"
+                     RowSpacing="5"
+                     ColumnSpacing="5"
+                     >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60" />
                         <RowDefinition Height="80" />
@@ -50,42 +73,37 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="100"/>
                     </Grid.ColumnDefinitions>
-                    <HorizontalStackLayout HorizontalOptions="Fill"
-                                           Spacing="10">
-                        <Editor x:Name="PrefixEditor" 
-                                VerticalTextAlignment="Center"
-                                BackgroundColor="White"
-                                TextColor="Black"
-                                HeightRequest="75"
-                                TextTransform="Uppercase"
-                                FontSize="20"
-                                HorizontalOptions="Start"
-                                VerticalOptions="Fill"
-                                WidthRequest="200"
-                                IsSpellCheckEnabled="False"
-                                IsTextPredictionEnabled="False"
-                                Placeholder="Prefix...">
-                        </Editor>
-                        <Button Text="Add"
-                                Padding="2"
-                                BackgroundColor="Blue"
-                                BorderColor="BlueViolet"
-                                BorderWidth="2"
-                                VerticalOptions="Fill"
-                                HorizontalOptions="End"
-                                WidthRequest="100"
-                                TextColor="WhiteSmoke"
-                                HeightRequest="75"
-                                FontSize="22"
-                                Clicked="OnAddPrefixClicked">
-                        </Button>
-                    </HorizontalStackLayout>
-                    <Button Grid.Row="1" Text="Save"
+                    <Editor Grid.Row="0" Grid.Column="0" x:Name="PrefixEditor" 
+                        VerticalTextAlignment="Center"
+                        BackgroundColor="White"
+                        TextColor="Black"
+                        TextTransform="Uppercase"
+                        FontSize="20"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"
+                        IsSpellCheckEnabled="False"
+                        IsTextPredictionEnabled="False"
+                        Placeholder="Prefix...">
+                    </Editor>
+                    <Button Grid.Row="0" Grid.Column="1" Text="Add"
+                        Padding="2"
+                        BackgroundColor="Blue"
+                        BorderColor="BlueViolet"
+                        BorderWidth="2"
+                        VerticalOptions="Fill"
+                        HorizontalOptions="End"
+                        WidthRequest="100"
+                        TextColor="WhiteSmoke"
+                        FontSize="22"
+                        Clicked="OnAddPrefixClicked">
+                    </Button>
+                    <Button Grid.Row="1" Grid.Column="0" Text="Save"
                             BackgroundColor="Blue"
                             BorderColor="BlueViolet"
                             BorderWidth="2"
                             TextColor="WhiteSmoke"
                             HorizontalOptions="Fill"
+                            Grid.ColumnSpan="2"
                             FontSize="22"
                             Clicked="OnSavePrefixesClicked">
                     </Button>

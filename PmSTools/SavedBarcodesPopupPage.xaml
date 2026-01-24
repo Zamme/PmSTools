@@ -10,7 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="150" />
+            <RowDefinition Height="60" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -25,14 +25,23 @@
         <Border Grid.Row="1"
                 StrokeThickness="1">
             <ScrollView x:Name="SavedBarcodesScrollView"
-                        VerticalOptions="FillAndExpand">
+                        VerticalOptions="FillAndExpand"
+                        BackgroundColor="White">
                 <VerticalStackLayout x:Name="SavedBarcodesStack"
                                      Padding="5"
                                      Spacing="10"
                                      HorizontalOptions="Fill"
+                                     BackgroundColor="White"
                                      >
                 </VerticalStackLayout>
             </ScrollView>
         </Border>
+        <Grid Grid.Row="2"
+            HorizontalOptions="Fill">
+            <Button Text="Clear All"
+                    HorizontalOptions="Fill"
+                    Clicked="OnClearAllSavedCodesClicked">
+            </Button>
+        </Grid>
     </Grid>
 </mauiPopup:BasePopupPage>

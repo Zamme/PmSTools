@@ -20,28 +20,54 @@ public partial class PrefixesPopupPage : BasePopupPage
 
     private void FillPrefixes(List<string> prefixesList, List<bool> activePrefixesList)
     {
-        PrefixesStack.Clear();
+        PrefixesVSL.Clear();
         for (int currentPrefixIndex = 0; currentPrefixIndex < prefixesList.Count; currentPrefixIndex++)
         {
             int cPI = currentPrefixIndex;
             Border newBorder = new Border();
-            HorizontalStackLayout newStack = new HorizontalStackLayout();
-            newStack.Spacing = 20;
-            newStack.VerticalOptions = LayoutOptions.Center;
-            newStack.HorizontalOptions = LayoutOptions.Center;
+            newBorder.HorizontalOptions = LayoutOptions.Fill;
+            newBorder.VerticalOptions = LayoutOptions.Fill;
+            Grid newGrid = new Grid
+            {
+                Padding = 2,
+                RowDefinitions =
+                {
+                    new RowDefinition(),
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition                    
+                    {
+                        Width = GridLength.Auto
+                    },
+                    new ColumnDefinition                    
+                    {
+                        Width = GridLength.Star
+                    },
+                    new ColumnDefinition
+                    {
+                        Width = GridLength.Auto
+                    }
+                }
+            };
+            /*
+            HorizontalStackLayout newGrid = new HorizontalStackLayout();
+            */
+            newGrid.VerticalOptions = LayoutOptions.Center;
+            newGrid.HorizontalOptions = LayoutOptions.Fill;
             CheckBox newCheckBox = new CheckBox();
             newCheckBox.IsChecked = activePrefixesList[cPI];
             newCheckBox.Margin = new Thickness(5, 0, 5, 0);
             newCheckBox.HorizontalOptions = LayoutOptions.Start;
             newCheckBox.CheckedChanged += (s, e) => OnPrefixCheckBoxChanged(s, e, cPI);
-            newStack.Children.Add(newCheckBox);
+            newGrid.Add(newCheckBox, 0, 0);
             Label newLabel = new Label();
             newLabel.Text = currentPrefixesList[cPI];
             newLabel.FontSize = 25;
             newLabel.FontAttributes = FontAttributes.Bold;
             newLabel.HorizontalOptions = LayoutOptions.Center;
             newLabel.VerticalOptions = LayoutOptions.Center;
-            newStack.Children.Add(newLabel);
+            newGrid.Add(newLabel, 1, 0);
             Button newButton = new Button();
             newButton.Text = "X";
             newButton.FontSize = 20;
@@ -51,9 +77,9 @@ public partial class PrefixesPopupPage : BasePopupPage
             newButton.VerticalOptions = LayoutOptions.Center;
             newButton.HorizontalOptions = LayoutOptions.End;
             newButton.Clicked += async (sender, args) => OnPrefixDeleteButtonClick(sender, args, cPI);
-            newStack.Children.Add(newButton);
-            newBorder.Content = newStack;
-            PrefixesStack.Add(newBorder);
+            newGrid.Add(newButton, 2, 0);
+            newBorder.Content = newGrid;
+            PrefixesVSL.Add(newBorder);
         }
     }
 

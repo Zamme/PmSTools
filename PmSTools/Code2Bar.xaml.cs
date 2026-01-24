@@ -158,16 +158,20 @@ public partial class Code2Bar : ContentPage
                                 };
                                 newVSL.Add(newBarcodeItem.BarcodeView);
                                 newVSL.Add(newLabel);
-                                
-                                Button newSaveCodeButton = new Button
+                                if (!SaveLoadData.IsCodeSaved(newBarcodeItem.Code))
                                 {
-                                    Text = "S",
-                                    HorizontalOptions = LayoutOptions.Fill
-                                };
-                                newSaveCodeButton.Clicked += async (sender, args) => OnSaveCodeButtonClick(sender, args, modTextPart);
-                                newHSL.Add(newVSL, 0, 0);
-                                newHSL.Add(newSaveCodeButton, 1, 0);
+                                    Button newSaveCodeButton = new Button
+                                    {
+                                        Text = "Save",
+                                        HorizontalOptions = LayoutOptions.Fill
+                                    };
+                                    newSaveCodeButton.Clicked += async (sender, args) =>
+                                        OnSaveCodeButtonClick(sender, args, modTextPart);
+                                    newVSL.Add(newSaveCodeButton);
+                                }
 
+                                newHSL.Add(newVSL, 0, 0);
+                                
                                 Border newBorder = new Border
                                 {
                                     Padding = 2,
@@ -208,6 +212,7 @@ public partial class Code2Bar : ContentPage
     private void OnSaveCodeButtonClick(object? sender, EventArgs args, string _text)
     {
         SaveLoadData.SaveCode(_text.ToString());
+        UpdateLastCodesScroll();
     }
 
     private void UpdatePrefixesPrefs()
