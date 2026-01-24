@@ -82,9 +82,9 @@ public partial class Code2Bar : ContentPage
     private void UpdateLastCodesScroll()
     {
         VerticalStackLayout lastCodesStack = new VerticalStackLayout();
-        lastCodesStack.Spacing = 20;
+        lastCodesStack.Spacing = 10;
         lastCodesStack.VerticalOptions = LayoutOptions.Center;
-        lastCodesStack.HorizontalOptions = LayoutOptions.Center;
+        lastCodesStack.HorizontalOptions = LayoutOptions.Fill;
         if (Preferences.ContainsKey(SaveLoadData.LastCodesPrefKey))
         {
             string lastCodesString = Preferences.Get(SaveLoadData.LastCodesPrefKey, "");
@@ -121,8 +121,8 @@ public partial class Code2Bar : ContentPage
                                         Format = BarcodeFormat.Code39,
                                         ForegroundColor = Colors.Black,
                                         BackgroundColor = Colors.White,
-                                        WidthRequest = 400,
-                                        HeightRequest = 100,
+                                        HorizontalOptions = LayoutOptions.Fill,
+                                        HeightRequest = 60,
                                         Value = modTextPart
                                     }
                                 };
@@ -133,34 +133,46 @@ public partial class Code2Bar : ContentPage
                                     HorizontalOptions=LayoutOptions.Center,
                                     BackgroundColor=Colors.White,
                                     TextColor=Colors.Black };
-                                HorizontalStackLayout newHSL = new HorizontalStackLayout
+                                Grid newHSL = new Grid()
                                 {
-                                    Spacing = 5,
+                                    RowDefinitions =
+                                    {
+                                        new RowDefinition(),
+                                        new RowDefinition(GridLength.Auto)
+                                    },
+                                    ColumnDefinitions =
+                                    {
+                                        new ColumnDefinition(GridLength.Star),
+                                        new ColumnDefinition(GridLength.Auto)
+                                    },
                                     BackgroundColor = Colors.White,
+                                    HorizontalOptions = LayoutOptions.Fill,
                                     Padding = 5
                                 };
                                 VerticalStackLayout newVSL = new VerticalStackLayout
                                 {
                                     Spacing = 5,
                                     BackgroundColor = Colors.White,
+                                    HorizontalOptions = LayoutOptions.Fill,
                                     Padding = 5
                                 };
                                 newVSL.Add(newBarcodeItem.BarcodeView);
                                 newVSL.Add(newLabel);
-                                newHSL.Add(newVSL);
                                 
                                 Button newSaveCodeButton = new Button
                                 {
                                     Text = "S",
-                                    
+                                    HorizontalOptions = LayoutOptions.Fill
                                 };
                                 newSaveCodeButton.Clicked += async (sender, args) => OnSaveCodeButtonClick(sender, args, modTextPart);
-                                newHSL.Add(newSaveCodeButton);
+                                newHSL.Add(newVSL, 0, 0);
+                                newHSL.Add(newSaveCodeButton, 1, 0);
 
                                 Border newBorder = new Border
                                 {
                                     Padding = 2,
                                     BackgroundColor = Colors.White,
+                                    HorizontalOptions = LayoutOptions.Fill,
                                     Content = newHSL
                                 };
                                 lastCodesStack.Add(newBorder);

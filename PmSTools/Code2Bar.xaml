@@ -38,36 +38,38 @@
                 x:Name="LastCodesScroll"
                 Grid.Row="2"
                 VerticalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 BackgroundColor="WhiteSmoke">
             </ScrollView>
-            <HorizontalStackLayout
-                Grid.Row="3"
-                Spacing="10"
-                Padding="5"
-                VerticalOptions="Center"
-                HorizontalOptions="Center">
-                <Button
-                    x:Name="ScanNewCodeButton"
-                    Text="Scan New" 
-                    FontSize="18"
-                    BackgroundColor="Blue"
-                    BorderColor="BlueViolet"
-                    BorderWidth="2"
-                    TextColor="WhiteSmoke"
-                    FontAttributes="Bold"
-                    SemanticProperties.Hint="Scan a new code"
-                    Clicked="OnScanNewCodeButtonClicked"
-                    HorizontalOptions="Center"
+            <Border Grid.Row="3"
+                    StrokeThickness="1"
+                    HorizontalOptions="Fill">
+                <Grid
+                    Padding="5"
                     VerticalOptions="Center"
-                    HeightRequest="100"
-                    WidthRequest="250"/>
-                <!--<Button
-                    x:Name="BackHomeFromCode2BarButton"
-                    Text="Back" 
-                    SemanticProperties.Hint="Back"
-                    Clicked="OnBackHomeFromCode2BarClicked"
-                    HorizontalOptions="Fill"/>-->
-            </HorizontalStackLayout>
+                    HorizontalOptions="Fill">
+                    <Button
+                        x:Name="ScanNewCodeButton"
+                        Text="Scan New" 
+                        FontSize="18"
+                        BackgroundColor="Blue"
+                        BorderColor="BlueViolet"
+                        BorderWidth="2"
+                        TextColor="WhiteSmoke"
+                        FontAttributes="Bold"
+                        SemanticProperties.Hint="Scan a new code"
+                        Clicked="OnScanNewCodeButtonClicked"
+                        HorizontalOptions="Fill"
+                        HeightRequest="80"
+                        />
+                    <!--<Button
+                        x:Name="BackHomeFromCode2BarButton"
+                        Text="Back" 
+                        SemanticProperties.Hint="Back"
+                        Clicked="OnBackHomeFromCode2BarClicked"
+                        HorizontalOptions="Fill"/>-->
+                </Grid>
+            </Border>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
