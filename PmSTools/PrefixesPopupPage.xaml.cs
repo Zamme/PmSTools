@@ -29,16 +29,19 @@ public partial class PrefixesPopupPage : BasePopupPage
             newBorder.VerticalOptions = LayoutOptions.Fill;
             Grid newGrid = new Grid
             {
-                Padding = 2,
+                Padding = 5,
                 RowDefinitions =
                 {
-                    new RowDefinition(),
+                    new RowDefinition
+                    {
+                        Height = GridLength.Star
+                    },
                 },
                 ColumnDefinitions =
                 {
                     new ColumnDefinition                    
                     {
-                        Width = GridLength.Auto
+                        Width = GridLength.Star
                     },
                     new ColumnDefinition                    
                     {
@@ -46,7 +49,7 @@ public partial class PrefixesPopupPage : BasePopupPage
                     },
                     new ColumnDefinition
                     {
-                        Width = GridLength.Auto
+                        Width = GridLength.Star
                     }
                 }
             };
@@ -59,13 +62,14 @@ public partial class PrefixesPopupPage : BasePopupPage
             newCheckBox.IsChecked = activePrefixesList[cPI];
             newCheckBox.Margin = new Thickness(5, 0, 5, 0);
             newCheckBox.HorizontalOptions = LayoutOptions.Start;
+            newCheckBox.VerticalOptions = LayoutOptions.Center;
             newCheckBox.CheckedChanged += (s, e) => OnPrefixCheckBoxChanged(s, e, cPI);
             newGrid.Add(newCheckBox, 0, 0);
             Label newLabel = new Label();
             newLabel.Text = currentPrefixesList[cPI];
             newLabel.FontSize = 25;
             newLabel.FontAttributes = FontAttributes.Bold;
-            newLabel.HorizontalOptions = LayoutOptions.Center;
+            newLabel.HorizontalOptions = LayoutOptions.Fill;
             newLabel.VerticalOptions = LayoutOptions.Center;
             newGrid.Add(newLabel, 1, 0);
             Button newButton = new Button();

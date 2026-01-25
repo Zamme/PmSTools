@@ -169,6 +169,19 @@ public partial class Code2Bar : ContentPage
                                         OnSaveCodeButtonClick(sender, args, modTextPart);
                                     newVSL.Add(newSaveCodeButton);
                                 }
+                                else
+                                {
+                                    Label newCodeSavedLabel = new Label
+                                    {
+                                        Text = "SAVED",
+                                        HorizontalOptions = LayoutOptions.Center,
+                                        BackgroundColor = Colors.White,
+                                        TextColor = Colors.Green,
+                                        FontAttributes = FontAttributes.Bold,
+                                        FontSize = 18
+                                    };
+                                    newVSL.Add(newCodeSavedLabel);
+                                }
 
                                 newHSL.Add(newVSL, 0, 0);
                                 
