@@ -4,14 +4,20 @@
                          xmlns:mauiPopup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
                          x:Class="PmSTools.AboutPopupPage"
                          Title="About"
-                         HeightRequest="350"
                          HorizontalOptions="Center"
                          VerticalOptions="Center">
     
-    <StackLayout HeightRequest="300" BackgroundColor="White" VerticalOptions="Center" HorizontalOptions="Center">
+    <VerticalStackLayout BackgroundColor="White" VerticalOptions="Fill" HorizontalOptions="Fill">
         <!--TODO Make up this page, please-->
-        <Label Text="Made by Jaume Castells Carles" TextColor="Black" FontSize="20" VerticalOptions="Center" HorizontalOptions="Center"></Label>
-        <Label Text="For Vilo Games Studio" TextColor="Black" FontSize="20" VerticalOptions="Center" HorizontalOptions="Center"></Label>
-        <Label Text="2026" TextColor="Black" FontSize="20" VerticalOptions="Center" HorizontalOptions="Center"></Label>
-    </StackLayout>
+        <Label Text="Made by Jaume Castells Carles" TextColor="Black" FontSize="20" VerticalOptions="Fill" HorizontalOptions="Center"></Label>
+        <Label Text="For Vilo Games Studio" TextColor="Black" FontSize="20" VerticalOptions="Fill" HorizontalOptions="Center"></Label>
+        <Label Text="@ 2026" TextColor="Black" FontSize="20" VerticalOptions="Fill" HorizontalOptions="Center"></Label>
+        <Button Text="OK"
+                TextColor="GreenYellow"
+                Clicked="OnOkButtonClicked"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"
+                >
+        </Button>
+    </VerticalStackLayout>
 </mauiPopup:BasePopupPage>

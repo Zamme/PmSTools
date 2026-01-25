@@ -9,4 +9,8 @@ public partial class AboutPopupPage : BasePopupPage
         InitializeComponent();
     }
 
+    private void OnOkButtonClicked(object? sender, EventArgs e)
+    {
+        MauiPopup.PopupAction.ClosePopup();
+    }
 }

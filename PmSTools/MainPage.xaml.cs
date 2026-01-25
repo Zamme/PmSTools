@@ -28,7 +28,7 @@ namespace PmSTools
 
         private void OnFindPlaceButtonClicked(object? sender, EventArgs e)
         {
-            ShowNotAvailable();      
+            Navigation.PushAsync(new FindPlacePage());      
         }
 
         private void ConfigMenuItem_OnClicked(object? sender, EventArgs e)
