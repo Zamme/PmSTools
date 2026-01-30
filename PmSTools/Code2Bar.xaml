@@ -48,26 +48,42 @@
                     Padding="5"
                     VerticalOptions="Center"
                     HorizontalOptions="Fill">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
                     <Button
-                        x:Name="ScanNewCodeButton"
-                        Text="Scan New" 
+                        Grid.Column="0"
+                        x:Name="TakeCodeFromCameraButton"
+                        Text="Take" 
+                        ImageSource="camera_icon_01.png"
                         FontSize="18"
                         BackgroundColor="Blue"
                         BorderColor="BlueViolet"
                         BorderWidth="2"
                         TextColor="WhiteSmoke"
                         FontAttributes="Bold"
-                        SemanticProperties.Hint="Scan a new code"
-                        Clicked="OnScanNewCodeButtonClicked"
+                        SemanticProperties.Hint="Take Code From Camera"
+                        Clicked="OnTakeCodeFromCameraButtonClicked"
                         HorizontalOptions="Fill"
                         HeightRequest="80"
-                        />
-                    <!--<Button
-                        x:Name="BackHomeFromCode2BarButton"
-                        Text="Back" 
-                        SemanticProperties.Hint="Back"
-                        Clicked="OnBackHomeFromCode2BarClicked"
-                        HorizontalOptions="Fill"/>-->
+                    />
+                    <Button
+                        Grid.Column="1"
+                        x:Name="TakeCodeFromFileButton"
+                        ImageSource="folder_icon_01.png"
+                        Text="Select" 
+                        FontSize="18"
+                        BackgroundColor="Blue"
+                        BorderColor="BlueViolet"
+                        BorderWidth="2"
+                        TextColor="WhiteSmoke"
+                        FontAttributes="Bold"
+                        SemanticProperties.Hint="Take Code From File"
+                        Clicked="OnTakeCodeFromFileButtonClicked"
+                        HorizontalOptions="Fill"
+                        HeightRequest="80"
+                    />
                 </Grid>
             </Border>
         </Grid>

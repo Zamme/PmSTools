@@ -236,7 +236,7 @@ public partial class Code2Bar : ContentPage
         SaveLoadData.SaveActivePrefixesPrefs(notiActivePrefixes);
     }
         
-    private async void OnReadocrClicked()
+    private async void OnReadCameraOcrClicked()
     {
         try
         {
@@ -275,10 +275,10 @@ public partial class Code2Bar : ContentPage
     {
         await OcrPlugin.Default.InitAsync();
     }
-    private void OnScanNewCodeButtonClicked(object? sender, EventArgs e)
+    private void OnTakeCodeFromCameraButtonClicked(object? sender, EventArgs e)
     {
         InitOcrAsync();
-        OnReadocrClicked();
+        OnReadCameraOcrClicked();
     }
 
     private void PrefixesMenuItem_OnClicked(object? sender, EventArgs e)
@@ -306,5 +306,30 @@ public partial class Code2Bar : ContentPage
     private void SavedMenuItem_OnClicked(object? sender, EventArgs e)
     {
         MauiPopup.PopupAction.DisplayPopup(new SavedBarcodesPopupPage());
+    }
+    
+    private async void OnTakeCodeFromFileButtonClicked(object? sender, EventArgs e)
+    {
+        var result = await FilePicker.Default.PickAsync(PickOptions.Images);
+        if (result != null)
+        {
+            await OcrPlugin.Default.InitAsync();
+            using var stream = await result.OpenReadAsync();
+            var imageAsBytes = new byte[stream.Length];
+            await stream.ReadAsync(imageAsBytes);
+            var ocrResult = await OcrPlugin.Default.RecognizeTextAsync(imageAsBytes);
+
+            if (!ocrResult.Success)
+            {
+                await DisplayAlertAsync("No success", "No OCR possible", "OK");
+                return;
+            }
+
+            await MauiPopup.PopupAction.DisplayPopup(new Code2BarcodePopupPage(ocrResult.AllText, notiPrefixes));
+        }
+        else
+        {
+            await DisplayAlertAsync("Result error", "Result is null", "OK");
+        }
     }
 }

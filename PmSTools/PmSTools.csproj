@@ -38,6 +38,8 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<AssemblyVersion>1.0</AssemblyVersion>
 		<FileVersion>1.0</FileVersion>
+		<NeutralLanguage>en-GB</NeutralLanguage>
+		<Title>Postman Side Tools</Title>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -75,6 +77,8 @@
         <MauiImage Update="Resources\Images\code_to_barcode_01.png" Resize="True" BaseSize="360,360" />
         <MauiImage Update="Resources\Images\find_place_01.png" Resize="True" BaseSize="360,360" />
         <MauiImage Update="Resources\Images\postman_01.png" Resize="True" BaseSize="360,360" />
+        <MauiImage Update="Resources\Images\camera_icon_01.png" Resize="True" BaseSize="256,256" />
+        <MauiImage Update="Resources\Images\folder_icon_01.png" Resize="True" BaseSize="256,256" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -92,6 +96,21 @@
 		<PackageReference Include="Plugin.Maui.Popup" Version="1.0.6" />
 		<PackageReference Include="ZXing.Net.Maui" Version="0.7.2" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.7.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Languages\AppResources.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Languages/AppResources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Resources\Languages\AppResources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Languages/AppResources.resx</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

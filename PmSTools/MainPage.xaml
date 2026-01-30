@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:languages="clr-namespace:PmSTools.Resources.Languages"
+             xmlns:pmSTools="clr-namespace:PmSTools"
              x:Class="PmSTools.MainPage"
              Title="PmSTools">
+    <!--
+    -->
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Settings" Order="Secondary" Priority="0" Clicked="SettingsMenuItem_OnClicked" />
         <ToolbarItem Text="Help" Order="Secondary" Priority="1" Clicked="HelpMenuItem_OnClicked"/>
@@ -12,7 +15,7 @@
 
     <Grid
         RowDefinitions="Auto,*,Auto">
-        <Label
+        <Label x:Name="AppMainTitle"
             Text="PmS Main Tools"
             FontSize="20"
             HorizontalOptions="Center"
@@ -37,7 +40,7 @@
                 <Button
                     x:Name="Code2BarcodeButton"
                     Grid.Column="0"
-                    Text="Code To Barcode"
+                    Text="Code to Barcode"
                     BackgroundColor="LightBlue"
                     BorderColor="BlueViolet"
                     BorderWidth="2"
@@ -46,7 +49,7 @@
                     SemanticProperties.Hint="Crear codis de barres"
                     Clicked="OnCode2BarcodeButtonClicked"
                     HorizontalOptions="Fill" />
-                <Button
+                <Button Grid.Row="0"
                     x:Name="FindPlaceButton"
                     Grid.Column="1"
                     Text="Find Place"
