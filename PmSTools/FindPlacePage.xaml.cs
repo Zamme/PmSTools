@@ -49,10 +49,34 @@ public partial class FindPlacePage : ContentPage
         await OcrPlugin.Default.InitAsync();
     }
 
-    private void OnSearchNewButtonClicked(object? sender, EventArgs e)
+    private async void OnOpenAdressPictureButtonClicked(object? sender, EventArgs e)
+    {
+        var result = await FilePicker.Default.PickAsync(PickOptions.Images);
+        if (result != null)
+        {
+            await OcrPlugin.Default.InitAsync();
+            using var stream = await result.OpenReadAsync();
+            var imageAsBytes = new byte[stream.Length];
+            await stream.ReadAsync(imageAsBytes);
+            var ocrResult = await OcrPlugin.Default.RecognizeTextAsync(imageAsBytes);
+
+            if (!ocrResult.Success)
+            {
+                await DisplayAlertAsync("No success", "No OCR possible", "OK");
+                return;
+            }
+
+            await MauiPopup.PopupAction.DisplayPopup(new PlaceScanResultPopupPage());
+        }
+        else
+        {
+            await DisplayAlertAsync("Result error", "Result is null", "OK");
+        }
+    }
+    
+    private void OnTakeAdressPhotoButtonClicked(object? sender, EventArgs e)
     {
         InitOcrAsync();
         OnReadocrClicked();
-
     }
 }

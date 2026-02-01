@@ -14,10 +14,51 @@
             <ScrollView Grid.Column="0" Grid.Row="1"
                         x:Name="LastSearchPlacesScroll">
             </ScrollView>
-            <Button Grid.Column="0" Grid.Row="2"
-                    Text="Search New"
-                    Clicked="OnSearchNewButtonClicked">
-            </Button>
+            <Border Grid.Row="2"
+                    StrokeThickness="1"
+                    HorizontalOptions="Fill">
+                <Grid
+                    Padding="5"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Fill">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        Grid.Column="0"
+                        x:Name="TakeCodeFromCameraButton"
+                        Text="Take" 
+                        ImageSource="camera_icon_01.png"
+                        FontSize="18"
+                        BackgroundColor="Blue"
+                        BorderColor="BlueViolet"
+                        BorderWidth="2"
+                        TextColor="WhiteSmoke"
+                        FontAttributes="Bold"
+                        SemanticProperties.Hint="Take Code From Camera"
+                        Clicked="OnTakeAdressPhotoButtonClicked"
+                        HorizontalOptions="Fill"
+                        HeightRequest="80"
+                    />
+                    <Button
+                        Grid.Column="1"
+                        x:Name="TakeCodeFromFileButton"
+                        ImageSource="folder_icon_01.png"
+                        Text="Select" 
+                        FontSize="18"
+                        BackgroundColor="Blue"
+                        BorderColor="BlueViolet"
+                        BorderWidth="2"
+                        TextColor="WhiteSmoke"
+                        FontAttributes="Bold"
+                        SemanticProperties.Hint="Take Code From File"
+                        Clicked="OnOpenAdressPictureButtonClicked"
+                        HorizontalOptions="Fill"
+                        HeightRequest="80"
+                    />
+                </Grid>
+            </Border>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

@@ -2,6 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Plugin.Maui.OCR;
 using ZXing.Net.Maui.Controls;
+/*
+using Microsoft.Maui.Controls.Maps;
+*/
 
 namespace PmSTools
 {
@@ -19,7 +22,9 @@ namespace PmSTools
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+                })
+                /*.UseMauiMaps()*/
+                ;
 
             builder.Services.AddTransient<MainPage>();
 
