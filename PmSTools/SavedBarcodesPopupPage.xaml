@@ -2,8 +2,9 @@
 <mauiPopup:BasePopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                          xmlns:mauiPopup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
+                         xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
                          x:Class="PmSTools.SavedBarcodesPopupPage"
-                         Title="Saved Barcodes">
+                         Title="{x:Static strings:LangResources.SavedBarcodesText}">
     
     <Grid
         Padding="5">
@@ -18,7 +19,7 @@
 
         <Label
             Grid.Row="0"
-            Text="Saved Barcodes:"
+            Text="{x:Static strings:LangResources.SavedBarcodesText}"
             FontSize="20"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
@@ -38,7 +39,9 @@
         </Border>
         <Grid Grid.Row="2"
             HorizontalOptions="Fill">
-            <Button Text="Clear All"
+            <Button Text="{x:Static strings:LangResources.ClearAllText}"
+                    FontSize="18"
+                    FontAttributes="Bold"
                     HorizontalOptions="Fill"
                     Clicked="OnClearAllSavedCodesClicked">
             </Button>

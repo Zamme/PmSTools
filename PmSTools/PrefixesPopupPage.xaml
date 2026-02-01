@@ -3,7 +3,8 @@
                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                          xmlns:mauiPopup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
                          x:Class="PmSTools.PrefixesPopupPage"
-                         Title="Prefixes">
+                         xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
+                         Title="{x:Static strings:LangResources.PrefixsText}">
                          <!--HeightRequest="350"
                          HorizontalOptions="Center"
                          VerticalOptions="Center"-->
@@ -24,22 +25,22 @@
 
         <Label Grid.Row="0" Grid.Column="0"
                Grid.ColumnSpan="3"
-               Text="Prefixes"
+               Text="{x:Static strings:LangResources.PrefixsText}"
                FontSize="20"
                VerticalOptions="Center" 
                HorizontalOptions="Center" />
         <Label Grid.Row="1" Grid.Column="0"
-               Text="Enabled"
+               Text="{x:Static strings:LangResources.EnabledText}"
                FontSize="20"
                VerticalOptions="Center" 
                HorizontalOptions="Center" />
         <Label Grid.Row="1" Grid.Column="1"
-               Text="Prefix"
+               Text="{x:Static strings:LangResources.PrefixText}"
                FontSize="20"
                VerticalOptions="Center" 
                HorizontalOptions="Center" />
         <Label Grid.Row="1" Grid.Column="2"
-               Text="Delete"
+               Text="{x:Static strings:LangResources.DeleteText}"
                FontSize="20"
                VerticalOptions="Center" 
                HorizontalOptions="Center" />
@@ -85,7 +86,8 @@
                         IsTextPredictionEnabled="False"
                         Placeholder="Prefix...">
                     </Editor>
-                    <Button Grid.Row="0" Grid.Column="1" Text="Add"
+                    <Button Grid.Row="0" Grid.Column="1"
+                        Text="{x:Static strings:LangResources.AddText}"
                         Padding="2"
                         BackgroundColor="Blue"
                         BorderColor="BlueViolet"
@@ -97,7 +99,8 @@
                         FontSize="22"
                         Clicked="OnAddPrefixClicked">
                     </Button>
-                    <Button Grid.Row="1" Grid.Column="0" Text="Save"
+                    <Button Grid.Row="1" Grid.Column="0"
+                            Text="{x:Static strings:LangResources.SaveText}"
                             BackgroundColor="Blue"
                             BorderColor="BlueViolet"
                             BorderWidth="2"

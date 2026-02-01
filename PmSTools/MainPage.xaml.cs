@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Core;
+using PmSTools.Resources.Languages;
 
 namespace PmSTools
 {
@@ -23,7 +24,7 @@ namespace PmSTools
 
         protected async void ShowNotAvailable()
         {
-            await DisplayAlertAsync("Ups!", "Encara no esta disponible", "OK");
+            await DisplayAlertAsync("Ups!", LangResources.NotAvailableYet, "OK");
         }
 
         private void OnFindPlaceButtonClicked(object? sender, EventArgs e)

@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:languages="clr-namespace:PmSTools.Resources.Languages"
              xmlns:pmSTools="clr-namespace:PmSTools"
+             xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              x:Class="PmSTools.MainPage"
              Title="PmSTools">
     <!--
     -->
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Settings" Order="Secondary" Priority="0" Clicked="SettingsMenuItem_OnClicked" />
-        <ToolbarItem Text="Help" Order="Secondary" Priority="1" Clicked="HelpMenuItem_OnClicked"/>
-        <ToolbarItem Text="About" Order="Secondary" Priority="2" Clicked="AboutMenuItem_OnClicked"/>
+        <ToolbarItem Text="{x:Static strings:LangResources.HelpText}" Order="Secondary" Priority="1" Clicked="HelpMenuItem_OnClicked"/>
+        <ToolbarItem Text="{x:Static strings:LangResources.AboutText}" Order="Secondary" Priority="2" Clicked="AboutMenuItem_OnClicked"/>
+        <ToolbarItem Text="{x:Static strings:LangResources.SettingsText}" Order="Secondary" Priority="0" Clicked="SettingsMenuItem_OnClicked" />
     </ContentPage.ToolbarItems>
 
     <Grid
         RowDefinitions="Auto,*,Auto">
         <Label x:Name="AppMainTitle"
-            Text="PmS Main Tools"
+            Text="{x:Static strings:LangResources.MainPage_MainPage_PmS_Main_Tools}"
             FontSize="20"
             HorizontalOptions="Center"
             HorizontalTextAlignment="Center">
@@ -29,7 +29,7 @@
                 ColumnSpacing="10"
                 RowSpacing="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="200" />
+                    <RowDefinition Height="250" />
                     <RowDefinition Height="200" />
                     <RowDefinition Height="200" />
                 </Grid.RowDefinitions>
@@ -40,8 +40,11 @@
                 <Button
                     x:Name="Code2BarcodeButton"
                     Grid.Column="0"
-                    Text="Code to Barcode"
+                    Text="{x:Static strings:LangResources.Code2BarcodeText}"
+                    LineBreakMode="WordWrap"
                     BackgroundColor="LightBlue"
+                    FontAttributes="Bold"
+                    FontSize="16"
                     BorderColor="BlueViolet"
                     BorderWidth="2"
                     ImageSource="code_to_barcode_01.png"
@@ -52,8 +55,11 @@
                 <Button Grid.Row="0"
                     x:Name="FindPlaceButton"
                     Grid.Column="1"
-                    Text="Find Place"
+                    Text="{x:Static strings:LangResources.FindPlaceText}"
+                    LineBreakMode="WordWrap"
                     BackgroundColor="Orange"
+                    FontAttributes="Bold"
+                    FontSize="16"
                     BorderColor="BlueViolet"
                     BorderWidth="2"
                     ImageSource="find_place_01.png"

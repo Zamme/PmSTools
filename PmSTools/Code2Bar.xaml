@@ -3,10 +3,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PmSTools.Code2Bar"
+             xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              Title="Code to Barcode">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Prefixes" Order="Secondary" Priority="0" Clicked="PrefixesMenuItem_OnClicked" />
-        <ToolbarItem Text="Saved" Order="Secondary" Priority="1" Clicked="SavedMenuItem_OnClicked" />
+        <ToolbarItem Text="{x:Static strings:LangResources.PrefixsText}" Order="Secondary" Priority="0" Clicked="PrefixesMenuItem_OnClicked" />
+        <ToolbarItem Text="{x:Static strings:LangResources.SavedsText}" Order="Secondary" Priority="1" Clicked="SavedMenuItem_OnClicked" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <Grid Margin="5">
@@ -22,14 +23,14 @@
             <Label
                 x:Name="PrefixesInfoLabel"
                 Grid.Row="0"
-                Text="No prefixes"
+                Text="{x:Static strings:LangResources.NoPrefixesText}"
                 FontSize="18"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 VerticalOptions="Center" />
             <Label
                 Grid.Row="1"
-               Text="Last codes"
+               Text="{x:Static strings:LangResources.LastCodesText}"
                FontSize="18"
                FontAttributes="Bold"
                HorizontalOptions="Center"
@@ -55,7 +56,7 @@
                     <Button
                         Grid.Column="0"
                         x:Name="TakeCodeFromCameraButton"
-                        Text="Take" 
+                        Text="{x:Static strings:LangResources.CameraText}" 
                         ImageSource="camera_icon_01.png"
                         FontSize="18"
                         BackgroundColor="Blue"
@@ -72,7 +73,7 @@
                         Grid.Column="1"
                         x:Name="TakeCodeFromFileButton"
                         ImageSource="folder_icon_01.png"
-                        Text="Select" 
+                        Text="{x:Static strings:LangResources.FileText}" 
                         FontSize="18"
                         BackgroundColor="Blue"
                         BorderColor="BlueViolet"

@@ -45,7 +45,7 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidKeyStore>true</AndroidKeyStore>
-	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-debug-key.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningKeyStore>/home/zamme/GoogleDrive/Vilo_Studio/my-debug-key.keystore</AndroidSigningKeyStore>
 	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>
 	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
@@ -56,7 +56,7 @@
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
 	  <AndroidKeyStore>true</AndroidKeyStore>
-	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-release-key.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningKeyStore>/home/zamme/GoogleDrive/Vilo_Studio/my-release-key.keystore</AndroidSigningKeyStore>
 	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>
 	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
@@ -89,9 +89,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui.Camera" Version="1.0.2" />
+		<PackageReference Include="Mapsui.Maui" Version="5.0.2" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="10.0.30" />
 		<PackageReference Include="Plugin.Maui.OCR" Version="1.1.1" />
 		<PackageReference Include="Plugin.Maui.Popup" Version="1.0.6" />
 		<PackageReference Include="ZXing.Net.Maui" Version="0.7.2" />
@@ -99,17 +101,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Resources\Languages\AppResources.resx">
+	  <EmbeddedResource Update="Resources\Languages\LangResources.resx">
 	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>Languages/AppResources.Designer.cs</LastGenOutput>
+	    <LastGenOutput>LangResources.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Resources\Languages\AppResources.Designer.cs">
+	  <Compile Update="Resources\Languages\LangResources.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Languages/AppResources.resx</DependentUpon>
+	    <DependentUpon>LangResources.resx</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 

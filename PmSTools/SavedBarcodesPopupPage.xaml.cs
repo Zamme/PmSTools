@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MauiPopup.Views;
 using PmSTools.Models;
+using PmSTools.Resources.Languages;
 using ZXing.Net.Maui;
 using ZXing.Net.Maui.Controls;
 
@@ -25,7 +26,7 @@ public partial class SavedBarcodesPopupPage : BasePopupPage
         if (savedCodes.Count == 0)
         {
             Label noSavedCodesLabel = new Label();
-            noSavedCodesLabel.Text = "No saved codes.";
+            noSavedCodesLabel.Text = LangResources.NoSavedCodesText;
             SavedBarcodesStack.Add(noSavedCodesLabel);
         }
         else
@@ -35,7 +36,7 @@ public partial class SavedBarcodesPopupPage : BasePopupPage
                 if (savedCodes[0] == "")
                 {
                     Label noSavedCodesLabel = new Label();
-                    noSavedCodesLabel.Text = "No saved codes.";
+                    noSavedCodesLabel.Text = LangResources.NoSavedCodesText;
                     SavedBarcodesStack.Add(noSavedCodesLabel);
                 }
             }
@@ -86,7 +87,10 @@ public partial class SavedBarcodesPopupPage : BasePopupPage
                     newSavedCodeVStack.Add(newCodeLabel);
                     Button newDeleteButton = new Button
                     {
-                        Text = "Delete",
+                        Text = LangResources.DeleteText,
+                        TextColor = Colors.Red,
+                        FontAttributes = FontAttributes.Bold,
+                        FontSize = 16,
                         HorizontalOptions = LayoutOptions.Fill,
                     };
                     newDeleteButton.Clicked += async (sender, args) => OnDeleteSavedCodeButtonClick(sender, args, savedCode);

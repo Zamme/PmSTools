@@ -6,12 +6,12 @@ using PmSTools.Models;
 using ZXing.Net.Maui;
 using ZXing.Net.Maui.Controls;
 using System.Collections.ObjectModel;
+using PmSTools.Resources.Languages;
 
 namespace PmSTools;
 
 public partial class Code2Bar : ContentPage
 {
-    private const string NoLastCodes = "No last codes";
     private int prefixesCount = 0;
     List<string> notiPrefixes = new List<string>();
     List<bool> notiActivePrefixes = new List<bool>();
@@ -91,7 +91,7 @@ public partial class Code2Bar : ContentPage
             if (lastCodesString == "")
             {
                 Label noLastCodesLabel = new Label();
-                noLastCodesLabel.Text = NoLastCodes;
+                noLastCodesLabel.Text = LangResources.NoLastCodesText;
                 noLastCodesLabel.VerticalOptions = LayoutOptions.Center;
                 noLastCodesLabel.HorizontalOptions = LayoutOptions.Center;
                 noLastCodesLabel.BackgroundColor = Colors.White;
@@ -162,7 +162,7 @@ public partial class Code2Bar : ContentPage
                                 {
                                     Button newSaveCodeButton = new Button
                                     {
-                                        Text = "Save",
+                                        Text = LangResources.SaveText,
                                         HorizontalOptions = LayoutOptions.Fill
                                     };
                                     newSaveCodeButton.Clicked += async (sender, args) =>
@@ -173,7 +173,7 @@ public partial class Code2Bar : ContentPage
                                 {
                                     Label newCodeSavedLabel = new Label
                                     {
-                                        Text = "SAVED",
+                                        Text = LangResources.SavedText,
                                         HorizontalOptions = LayoutOptions.Center,
                                         BackgroundColor = Colors.White,
                                         TextColor = Colors.Green,
@@ -200,7 +200,7 @@ public partial class Code2Bar : ContentPage
 
                 if (barcodeItems.Count < 1)
                 {
-                    Label newLabel = new Label { Text = NoLastCodes,
+                    Label newLabel = new Label { Text = LangResources.NoLastCodesText,
                         VerticalOptions=LayoutOptions.Center, 
                         HorizontalOptions=LayoutOptions.Center,
                         BackgroundColor=Colors.White,
@@ -212,7 +212,7 @@ public partial class Code2Bar : ContentPage
         else
         {
             Label noLastCodesLabel = new Label();
-            noLastCodesLabel.Text = NoLastCodes;
+            noLastCodesLabel.Text = LangResources.NoLastCodesText;
             noLastCodesLabel.VerticalOptions = LayoutOptions.Center;
             noLastCodesLabel.HorizontalOptions = LayoutOptions.Center;
             noLastCodesLabel.BackgroundColor = Colors.White;

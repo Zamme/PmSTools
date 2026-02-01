@@ -4,5 +4,11 @@
                          xmlns:mauiPopup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
                          x:Class="PmSTools.PlaceScanResultPopupPage"
                          Title="Place Scan Result">
+    <StackLayout
+        x:Name="PlaceScanResultContainer"
+        HorizontalOptions="Fill"
+        VerticalOptions="Fill">
+        
+    </StackLayout>
 
 </mauiPopup:BasePopupPage>

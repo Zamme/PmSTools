@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="MainPage_MainPage_PmS_Main_Tools" xml:space="preserve">
+        <value>Main Tools</value>
+    </data>
+    <data name="NotAvailableYet" xml:space="preserve">
+        <value>Not available yet</value>
+    </data>
+    <data name="SettingsText" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="HelpText" xml:space="preserve">
+        <value>Help</value>
+    </data>
+    <data name="AboutText" xml:space="preserve">
+        <value>About</value>
+    </data>
+    <data name="PrefixsText" xml:space="preserve">
+        <value>Prefixs</value>
+    </data>
+    <data name="SavedText" xml:space="preserve">
+        <value>Saved</value>
+    </data>
+    <data name="NoPrefixesText" xml:space="preserve">
+        <value>No Prefixs</value>
+    </data>
+    <data name="LastCodesText" xml:space="preserve">
+        <value>Last Codes</value>
+    </data>
+    <data name="CameraText" xml:space="preserve">
+        <value>Camera</value>
+    </data>
+    <data name="FileText" xml:space="preserve">
+        <value>File</value>
+    </data>
+    <data name="Code2BarcodeText" xml:space="preserve">
+        <value>Code to Barcode</value>
+    </data>
+    <data name="FindPlaceText" xml:space="preserve">
+        <value>Find Adress</value>
+    </data>
+    <data name="SaveText" xml:space="preserve">
+        <value>Save</value>
+    </data>
+    <data name="NoLastCodesText" xml:space="preserve">
+        <value>No Last Codes</value>
+    </data>
+    <data name="SavedsText" xml:space="preserve">
+        <value>Saved</value>
+    </data>
+    <data name="EnabledText" xml:space="preserve">
+        <value>Enabled</value>
+    </data>
+    <data name="PrefixText" xml:space="preserve">
+        <value>Prefix</value>
+    </data>
+    <data name="DeleteText" xml:space="preserve">
+        <value>Delete</value>
+    </data>
+    <data name="AddText" xml:space="preserve">
+        <value>Add</value>
+    </data>
+    <data name="SavedBarcodesText" xml:space="preserve">
+        <value>Saved Barcodes</value>
+    </data>
+    <data name="ClearAllText" xml:space="preserve">
+        <value>Clear All</value>
+    </data>
+    <data name="NoSavedCodesText" xml:space="preserve">
+        <value>No Saved Codes</value>
+    </data>
+</root>

@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MauiPopup.Views;
-using Microsoft.Maui.Controls.Maps;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+
 /*
+using Microsoft.Maui.Controls.Maps;
+
 using Microsoft.Maui.Maps;
 */
 /*
@@ -19,6 +22,11 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
     public PlaceScanResultPopupPage()
     {
         InitializeComponent();
+        
+        var mapControl = new Mapsui.UI.Maui.MapControl();
+        mapControl.Map?.Layers.Add(Mapsui.Tiling.OpenStreetMap.CreateTileLayer());
+        PlaceScanResultContainer.Add(mapControl);
+        
         /*MapPage();*/
     }
     

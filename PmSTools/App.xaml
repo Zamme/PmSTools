@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:PmSTools"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              x:Class="PmSTools.App">
     <Application.Resources>
         <ResourceDictionary>

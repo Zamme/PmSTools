@@ -1,0 +1,83 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="MainPage_MainPage_PmS_Main_Tools" xml:space="preserve">
+        <value>Eines</value>
+    </data>
+    <data name="NotAvailableYet" xml:space="preserve">
+        <value>Encara no esta disponible</value>
+    </data>
+    <data name="SettingsText" xml:space="preserve">
+        <value>Configuració</value>
+    </data>
+    <data name="HelpText" xml:space="preserve">
+        <value>Ajuda</value>
+    </data>
+    <data name="AboutText" xml:space="preserve">
+        <value>Informació</value>
+    </data>
+    <data name="PrefixsText" xml:space="preserve">
+        <value>Prefixes</value>
+    </data>
+    <data name="SavedText" xml:space="preserve">
+        <value>Guardat</value>
+    </data>
+    <data name="NoPrefixesText" xml:space="preserve">
+        <value>Sense Prefixes</value>
+    </data>
+    <data name="LastCodesText" xml:space="preserve">
+        <value>Últims Codis</value>
+    </data>
+    <data name="CameraText" xml:space="preserve">
+        <value>Càmara</value>
+    </data>
+    <data name="FileText" xml:space="preserve">
+        <value>Arxiu</value>
+    </data>
+    <data name="Code2BarcodeText" xml:space="preserve">
+        <value>Codi a Codi de Barres</value>
+    </data>
+    <data name="FindPlaceText" xml:space="preserve">
+        <value>Buscar Adreça</value>
+    </data>
+    <data name="SaveText" xml:space="preserve">
+        <value>Guardar</value>
+    </data>
+    <data name="NoLastCodesText" xml:space="preserve">
+        <value>Sense últims codis</value>
+    </data>
+    <data name="SavedsText" xml:space="preserve">
+        <value>Guardats</value>
+    </data>
+    <data name="EnabledText" xml:space="preserve">
+        <value>Activat</value>
+    </data>
+    <data name="PrefixText" xml:space="preserve">
+        <value>Prefix</value>
+    </data>
+    <data name="DeleteText" xml:space="preserve">
+        <value>Esborrar</value>
+    </data>
+    <data name="AddText" xml:space="preserve">
+        <value>Afegir</value>
+    </data>
+    <data name="SavedBarcodesText" xml:space="preserve">
+        <value>Codis Guardats</value>
+    </data>
+    <data name="ClearAllText" xml:space="preserve">
+        <value>Esborrar Tot</value>
+    </data>
+    <data name="NoSavedCodesText" xml:space="preserve">
+        <value>Sense Codis Guardats</value>
+    </data>
+</root>

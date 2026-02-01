@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Plugin.Maui.OCR;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 using ZXing.Net.Maui.Controls;
 /*
 using Microsoft.Maui.Controls.Maps;
@@ -18,6 +19,7 @@ namespace PmSTools
                 .UseMauiCommunityToolkitCamera()
                 .UseOcr()
                 .UseBarcodeReader()
+                .UseSkiaSharp()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
