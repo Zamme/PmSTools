@@ -4,7 +4,7 @@
 		<TargetFrameworks>net10.0-android</TargetFrameworks>
 		<RunAOTCompilation>false</RunAOTCompilation>
 		<AndroidLinkMode>None</AndroidLinkMode>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
 
@@ -52,6 +52,9 @@
 	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
 	  <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+	  <!-- Enable fast deploy / shared runtime for faster debug deploys -->
+	  <AndroidEnableFastDeployment>true</AndroidEnableFastDeployment>
+	  <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

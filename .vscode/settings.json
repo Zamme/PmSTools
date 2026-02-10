@@ -1,6 +1,6 @@
 {
     "maui.configuration.androidSdkPreferredPath": "/home/zamme/Android/Sdk",
-    "maui.configuration.javaSdkPreferredPath": "/home/zamme/Downloads/dotnet-sdk-10.0.101-linux-x64/sdk/10.0.101",
+    "maui.configuration.javaSdkPreferredPath": "/usr/lib/jvm/java-21-openjdk-amd64",
     "dotnetAcquisitionExtension.existingDotnetPath": [
         
     ]
