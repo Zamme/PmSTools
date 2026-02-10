@@ -2,6 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net10.0-android</TargetFrameworks>
+		<RunAOTCompilation>false</RunAOTCompilation>
+		<AndroidLinkMode>None</AndroidLinkMode>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
@@ -32,7 +34,7 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">31.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
@@ -45,7 +47,7 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidKeyStore>true</AndroidKeyStore>
-	  <AndroidSigningKeyStore>/home/zamme/GoogleDrive/Vilo_Studio/my-debug-key.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-debug-key.keystore</AndroidSigningKeyStore>
 	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>
 	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
@@ -56,10 +58,11 @@
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
 	  <AndroidKeyStore>true</AndroidKeyStore>
-	  <AndroidSigningKeyStore>/home/zamme/GoogleDrive/Vilo_Studio/my-release-key.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-release-key.keystore</AndroidSigningKeyStore>
 	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>
 	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
+	  <Optimize>false</Optimize>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -94,6 +97,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="10.0.30" />
+		<PackageReference Include="Microsoft.NET.Runtime.MonoAOTCompiler.Task" Version="10.0.1" />
 		<PackageReference Include="Plugin.Maui.OCR" Version="1.1.1" />
 		<PackageReference Include="Plugin.Maui.Popup" Version="1.0.6" />
 		<PackageReference Include="ZXing.Net.Maui" Version="0.7.2" />
