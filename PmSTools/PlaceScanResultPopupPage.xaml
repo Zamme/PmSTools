@@ -6,8 +6,39 @@
                          Title="Place Scan Result">
     <StackLayout
         x:Name="PlaceScanResultContainer"
+        Orientation="Vertical"
         HorizontalOptions="Fill"
         VerticalOptions="Fill">
+        <Label x:Name="NameResultText"
+            Text="Name"
+            FontSize="20"
+            FontAttributes="Bold"
+            HorizontalOptions="Center"
+            Margin="0,20,0,10"/>
+        <Label x:Name="StreetResultText"
+            Text="Street"
+            FontSize="20"
+            FontAttributes="Bold"
+            HorizontalOptions="Center"
+            Margin="0,20,0,10"/>
+        <Label x:Name="PostalCodeResultText"
+            Text="Postal Code"
+            FontSize="20"
+            FontAttributes="Bold"
+            HorizontalOptions="Center"
+            Margin="0,20,0,10"/>
+        <Label x:Name="CityResultText"
+            Text="City"
+            FontSize="20"
+            FontAttributes="Bold"
+            HorizontalOptions="Center"
+            Margin="0,20,0,10"/>
+        <Label x:Name="CountryResultText"
+            Text="Country"
+            FontSize="20"
+            FontAttributes="Bold"
+            HorizontalOptions="Center"
+            Margin="0,20,0,10"/>
         
     </StackLayout>
 

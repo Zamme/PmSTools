@@ -27,7 +27,7 @@
                     </Grid.ColumnDefinitions>
                     <Button
                         Grid.Column="0"
-                        x:Name="TakeCodeFromCameraButton"
+                        x:Name="TakeAdressFromCameraButton"
                         Text="Take" 
                         ImageSource="camera_icon_01.png"
                         FontSize="18"
@@ -36,14 +36,14 @@
                         BorderWidth="2"
                         TextColor="WhiteSmoke"
                         FontAttributes="Bold"
-                        SemanticProperties.Hint="Take Code From Camera"
+                        SemanticProperties.Hint="Take Address From Camera"
                         Clicked="OnTakeAdressPhotoButtonClicked"
                         HorizontalOptions="Fill"
                         HeightRequest="80"
                     />
                     <Button
                         Grid.Column="1"
-                        x:Name="TakeCodeFromFileButton"
+                        x:Name="TakeAdressFromFileButton"
                         ImageSource="folder_icon_01.png"
                         Text="Select" 
                         FontSize="18"
@@ -52,7 +52,7 @@
                         BorderWidth="2"
                         TextColor="WhiteSmoke"
                         FontAttributes="Bold"
-                        SemanticProperties.Hint="Take Code From File"
+                        SemanticProperties.Hint="Take Address From File"
                         Clicked="OnOpenAdressPictureButtonClicked"
                         HorizontalOptions="Fill"
                         HeightRequest="80"
