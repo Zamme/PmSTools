@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+             x:Class="PmSTools.PlaceScanResultPage"
+             Title="Place Scan Result">
+    <Grid RowDefinitions="Auto,*" Padding="0">
+        <!-- Header with Back Button -->
+        <Grid Padding="10" ColumnDefinitions="Auto,*,Auto" BackgroundColor="#F0F0F0">
+            <Button x:Name="BackButton" 
+                    Text="← Back" 
+                    Clicked="OnBackClicked"
+                    HorizontalOptions="Start"
+                    Padding="5"/>
+            <Label Text="Place Details" 
+                   FontSize="20" 
+                   FontAttributes="Bold"
+                   Grid.Column="1"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"/>
+        </Grid>
+
+        <!-- Content Area -->
+        <ScrollView Grid.Row="1">
+            <StackLayout Padding="15" Spacing="10">
+                <!-- Place Information -->
+                <Label Text="Place Information" 
+                       FontSize="18" 
+                       FontAttributes="Bold"
+                       Margin="0,10,0,5"/>
+                
+                <Label x:Name="NameResultText"
+                    Text="Name"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    Margin="10,0"/>
+                
+                <Label x:Name="StreetResultText"
+                    Text="Street"
+                    FontSize="16"
+                    Margin="10,0"/>
+                
+                <Label x:Name="PostalCodeResultText"
+                    Text="Postal Code"
+                    FontSize="16"
+                    Margin="10,0"/>
+                
+                <Label x:Name="CityResultText"
+                    Text="City"
+                    FontSize="16"
+                    Margin="10,0"/>
+                
+                <Label x:Name="CountryResultText"
+                    Text="Country"
+                    FontSize="16"
+                    Margin="10,0"/>
+
+                <!-- Map Section -->
+                <Label Text="Location Map" 
+                       FontSize="18" 
+                       FontAttributes="Bold"
+                       Margin="0,20,0,5"/>
+                
+                <WebView x:Name="OsmMap"
+                    HeightRequest="400"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"/>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

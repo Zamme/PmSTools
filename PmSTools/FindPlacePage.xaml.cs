@@ -35,7 +35,7 @@ public partial class FindPlacePage : ContentPage
                 }
 
                 /*await DisplayAlert("OCR Result", ocrResult.AllText, "OK");*/
-                await MauiPopup.PopupAction.DisplayPopup(new PlaceScanResultPopupPage());
+                await Navigation.PushAsync(new PlaceScanResultPage(ocrResult.AllText));
             }
         }
         catch (Exception ex)
@@ -66,7 +66,7 @@ public partial class FindPlacePage : ContentPage
                 return;
             }
 
-            await MauiPopup.PopupAction.DisplayPopup(new PlaceScanResultPopupPage(ocrResult.AllText));
+            await Navigation.PushAsync(new PlaceScanResultPage(ocrResult.AllText));
         }
         else
         {

@@ -34,34 +34,22 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
 
     private void FillPage(string ocrResult)
     {
-        PlaceInfoItem filteredLines = FilterScanResult(ocrResult);
-        if (filteredLines == null)
-            return;
-        NameResultText.Text = filteredLines.Name;
-        if (filteredLines.Street != null)
+        try
         {
-            StreetResultText.Text = filteredLines.Street;
+            PlaceInfoItem filteredLines = FilterScanResult(ocrResult);
+            if (filteredLines == null)
+                return;
+            
+            NameResultText.Text = filteredLines.Name ?? "Unknown Name";
+            StreetResultText.Text = filteredLines.Street ?? "Unknown Street";
+            PostalCodeResultText.Text = filteredLines.PostalCode ?? "Unknown Postal Code";
+            CityResultText.Text = filteredLines.City ?? "Unknown City";
+            CountryResultText.Text = filteredLines.Country ?? "Unknown Country";
         }
-        if (filteredLines.PostalCode != null)
+        catch (Exception ex)
         {
-            PostalCodeResultText.Text = filteredLines.PostalCode;
+            System.Diagnostics.Debug.WriteLine($"FillPage error: {ex.Message}");
         }
-        if (filteredLines.City != null)
-        {
-            CityResultText.Text = filteredLines.City;
-        }
-        if (filteredLines.Country != null)
-        {
-            CountryResultText.Text = filteredLines.Country;
-        }
-    }
-
-    private void FillPageWithMap(string ocrResult)
-    {
-        PlaceInfoItem filteredLines = FilterScanResult(ocrResult);
-        if (filteredLines == null)
-            return;
-        
     }
 
     private PlaceInfoItem FilterScanResult(string ocrResult)
@@ -91,15 +79,15 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
 
         if (postalCode != "")
         {
-            if (ocrResultLines.Count > 2)
+            if (postalCodeLineIndex >= 2)
             {
                 placeInfoItem.Name = ocrResultLines[postalCodeLineIndex - 2];
             }
-            if (ocrResultLines.Count > 1)
+            if (postalCodeLineIndex >= 1)
             {
                 placeInfoItem.Street = ocrResultLines[postalCodeLineIndex - 1];
             }
-            if (ocrResultLines.Count > postalCodeLineIndex)
+            if (postalCodeLineIndex < ocrResultLines.Count)
             {
                 string postalCodeLine = ocrResultLines[postalCodeLineIndex];
                 string[] postalCodeLineParts = postalCodeLine.Split(' ');
@@ -112,7 +100,7 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
                     placeInfoItem.PostalCode = postalCodeLine; // If the line only contains the postal code, we take it as is
                 }
             }
-            if (ocrResultLines.Count > postalCodeLineIndex + 1)
+            if (postalCodeLineIndex + 1 < ocrResultLines.Count)
             {                
                 placeInfoItem.City = ocrResultLines[postalCodeLineIndex + 1];
             }
@@ -120,7 +108,10 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
             {
                 // City could be in the same line as postal code, if the OCR result is not very good, so we try to extract it from the postal code line
                 string postalCodeLine = ocrResultLines[postalCodeLineIndex];
-                postalCodeLine = postalCodeLine.Replace(placeInfoItem.PostalCode, "").Trim(); // Remove postal code from line to try to extract city
+                if (!string.IsNullOrEmpty(placeInfoItem.PostalCode))
+                {
+                    postalCodeLine = postalCodeLine.Replace(placeInfoItem.PostalCode, "").Trim(); // Remove postal code from line to try to extract city
+                }
                 if (postalCodeLine != "")
                 {
                     placeInfoItem.City = postalCodeLine; // If there is still some text left after removing postal code, we take it as city
@@ -130,7 +121,7 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
                     placeInfoItem.City = "Unknown City"; // Default city if not found in OCR result
                 }
             }
-            if (ocrResultLines.Count > postalCodeLineIndex + 2)
+            if (postalCodeLineIndex + 2 < ocrResultLines.Count)
             {                
                 placeInfoItem.Country = ocrResultLines[postalCodeLineIndex + 2];
             }
