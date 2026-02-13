@@ -52,9 +52,5 @@ namespace PmSTools
             MauiPopup.PopupAction.DisplayPopup(new AboutPopupPage());
         }
     
-        private void OnCityMapButtonClicked(object? sender, EventArgs e)
-        {
-            Navigation.PushAsync(new CityMapWebViewPage());
-        }
     }
 }

@@ -59,7 +59,7 @@
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
-	  <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+	  <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 	  <AndroidKeyStore>true</AndroidKeyStore>
 	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-release-key.keystore</AndroidSigningKeyStore>
 	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>

@@ -3,23 +3,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.Text.Json;
+using System.Globalization;
+using System.Collections.ObjectModel;
 using PmSTools.Models;
 
 namespace PmSTools;
 
 public partial class PlaceScanResultPage : ContentPage
 {
+    // holds the parsed OCR/place data and (later) selected coordinates
+    private PlaceInfoItem? _currentPlace;
+
+    // candidates from Nominatim shown in native CollectionView
+    private System.Collections.ObjectModel.ObservableCollection<GeocodeCandidate> _candidates = new System.Collections.ObjectModel.ObservableCollection<GeocodeCandidate>();
+
+    // keep last generated map HTML so we can show the exact same map full-screen
+    private string _lastMapHtml = string.Empty;
+
     public PlaceScanResultPage()
     {
         InitializeComponent();
+        CandidatesList.ItemsSource = _candidates;
     }
 
     public PlaceScanResultPage(string ocrResult)
     {
         InitializeComponent();
+        CandidatesList.ItemsSource = _candidates;
         FillPageWithMap(ocrResult);
     }
 
+    public PlaceScanResultPage(PlaceInfoItem placeInfo)
+    {
+        InitializeComponent();
+        CandidatesList.ItemsSource = _candidates;
+        FillPageWithPlaceInfo(placeInfo);
+    }
+
+    private class GeocodeCandidate
+    {
+        public string DisplayName { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public double Lat { get; set; }
+        public double Lon { get; set; }
+    }
     private async void FillPageWithMap(string ocrResult)
     {
         try
@@ -27,6 +56,9 @@ public partial class PlaceScanResultPage : ContentPage
             PlaceInfoItem filteredLines = FilterScanResult(ocrResult);
             if (filteredLines == null)
                 return;
+            SaveLoadData.SaveLastPlaceInfo(filteredLines);
+            // keep a reference so JS->C# can populate chosen coordinates
+            _currentPlace = filteredLines; 
             
             // Set UI fields first - critical
             try
@@ -37,9 +69,9 @@ public partial class PlaceScanResultPage : ContentPage
                 CityResultText.Text = filteredLines.City ?? "Unknown City";
                 CountryResultText.Text = filteredLines.Country ?? "Unknown Country";
             }
-            catch (Exception uiEx)
+            catch (Exception)
             {
-                System.Diagnostics.Debug.WriteLine($"UI update error: {uiEx.Message}");
+                // System.Diagnostics.Debug.WriteLine($"UI update error: {uiEx.Message}");
             }
             
             // Try to show map centered on city/street (wrapped in try-catch to prevent startup crash)
@@ -48,22 +80,64 @@ public partial class PlaceScanResultPage : ContentPage
                 // Request location permission before geocoding
                 await RequestLocationPermission();
                 await ShowMapForLocation(filteredLines);
+
+                // populate the native candidates list (Nominatim)
+                await PopulateCandidatesAsync(filteredLines);
             }
-            catch (Exception mapEx)
+            catch (Exception)
             {
-                System.Diagnostics.Debug.WriteLine($"Map initialization error: {mapEx.Message}\n{mapEx.StackTrace}");
+                // System.Diagnostics.Debug.WriteLine($"Map initialization error: {mapEx.Message}\n{mapEx.StackTrace}");
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            System.Diagnostics.Debug.WriteLine($"FillPageWithMap error: {ex.Message}\n{ex.StackTrace}");
+            // System.Diagnostics.Debug.WriteLine($"FillPageWithMap error: {ex.Message}\n{ex.StackTrace}");
+        }
+    }
+
+    private async void FillPageWithPlaceInfo(PlaceInfoItem placeInfo)
+    {
+        try
+        {
+            if (placeInfo == null)
+            {
+                return;
+            }
+
+            SaveLoadData.SaveLastPlaceInfo(placeInfo);
+            _currentPlace = placeInfo;
+
+            try
+            {
+                NameResultText.Text = placeInfo.Name ?? "Unknown Name";
+                StreetResultText.Text = placeInfo.Street ?? "Unknown Street";
+                PostalCodeResultText.Text = placeInfo.PostalCode ?? "Unknown Postal Code";
+                CityResultText.Text = placeInfo.City ?? "Unknown City";
+                CountryResultText.Text = placeInfo.Country ?? "Unknown Country";
+            }
+            catch (Exception)
+            {
+            }
+
+            try
+            {
+                await RequestLocationPermission();
+                await ShowMapForLocation(placeInfo);
+                await PopulateCandidatesAsync(placeInfo);
+            }
+            catch (Exception)
+            {
+            }
+        }
+        catch (Exception)
+        {
         }
     }
 
     private async Task RequestLocationPermission()
     {
         // Location permission not required for OpenStreetMap (no Google API)
-        System.Diagnostics.Debug.WriteLine("OpenStreetMap loaded - no location permission needed");
+        // System.Diagnostics.Debug.WriteLine("OpenStreetMap loaded - no location permission needed");
     }
 
     public class LocationWhenInUse : Permissions.BasePlatformPermission
@@ -78,29 +152,33 @@ public partial class PlaceScanResultPage : ContentPage
             var osmMap = (WebView)this.FindByName("OsmMap");
             if (osmMap == null)
             {
-                System.Diagnostics.Debug.WriteLine("OsmMap control not found");
+                // System.Diagnostics.Debug.WriteLine("OsmMap control not found");
                 return;
             }
 
             // Generate OpenStreetMap HTML with Leaflet
             string htmlContent = GenerateOpenStreetMapHtml(filteredLines);
+            // store HTML so full-screen page can reuse the exact same map content
+            _lastMapHtml = htmlContent;
             
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 try
                 {
                     osmMap.Source = new HtmlWebViewSource { Html = htmlContent };
-                    System.Diagnostics.Debug.WriteLine($"OpenStreetMap loaded for {filteredLines.Name ?? "Place"}");
+                    // inject extra on-map controls (zoom / fit) after the page loads
+                    _ = InjectMapControlsAsync(osmMap);
+                    // System.Diagnostics.Debug.WriteLine($"OpenStreetMap loaded for {filteredLines.Name ?? \"Place\"}");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Map update error: {ex.Message}\n{ex.StackTrace}");
+                    // System.Diagnostics.Debug.WriteLine($"Map update error: {ex.Message}\n{ex.StackTrace}");
                 }
             });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            System.Diagnostics.Debug.WriteLine($"ShowMapForLocation error: {ex.Message}\n{ex.StackTrace}");
+            // System.Diagnostics.Debug.WriteLine($"ShowMapForLocation error: {ex.Message}\n{ex.StackTrace}");
         }
     }
 
@@ -112,11 +190,11 @@ public partial class PlaceScanResultPage : ContentPage
         {
             address += $", {placeInfo.Country}";
         }
-        
+
         // Escape address for JavaScript
         string escapedAddress = address.Replace("\\", "\\\\").Replace("\"", "\\\"");
         string escapedLabel = (placeInfo.Name ?? "Place").Replace("\\", "\\\\").Replace("\"", "\\\"");
-        
+
         string html = "<!DOCTYPE html>\n" +
             "<html>\n" +
             "<head>\n" +
@@ -125,45 +203,90 @@ public partial class PlaceScanResultPage : ContentPage
             "    <link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />\n" +
             "    <script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></" + "script>\n" +
             "    <style>\n" +
-            "        body { margin: 0; padding: 0; }\n" +
+            "        body { margin: 0; padding: 0; font-family: -apple-system, Roboto, 'Segoe UI', Arial; }\n" +
             "        #map { position: absolute; top: 0; bottom: 0; width: 100%; }\n" +
-            "        .info { padding: 10px; background: white; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.2); }\n" +
+            "        .no-results { position: absolute; left: 10px; top: 10px; background: rgba(255,255,255,0.95); padding: 8px; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); z-index: 400; }\n" +
             "    </style>\n" +
             "</head>\n" +
             "<body>\n" +
             "    <div id='map'></" + "div>\n" +
+            "    <div id='noResults' class='no-results' style='display:none;'>No location matches found</div>\n" +
             "    <script>\n" +
             "        var map = L.map('map').setView([40, 0], 4);\n" +
             "        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {\n" +
             "            attribution: '© OpenStreetMap contributors',\n" +
             "            maxZoom: 19\n" +
             "        }).addTo(map);\n" +
-            "        \n" +
+            "        // markers array (accessible to native code)\n" +
+            "        var markers = [];\n" +
+            "\n" +
             "        var address = \"" + escapedAddress + "\";\n" +
             "        var label = \"" + escapedLabel + "\";\n" +
-            "        \n" +
-            "        fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address))\n" +
+            "\n" +
+            "        // Request up to 5 candidates from Nominatim; native UI displays the list\n" +
+            "        fetch('https://nominatim.openstreetmap.org/search?format=json&limit=5&q=' + encodeURIComponent(address))\n" +
             "            .then(response => response.json())\n" +
             "            .then(data => {\n" +
-            "                if (data.length > 0) {\n" +
-            "                    var lat = parseFloat(data[0].lat);\n" +
-            "                    var lon = parseFloat(data[0].lon);\n" +
-            "                    var bounds = L.latLngBounds(\n" +
-            "                        [parseFloat(data[0].boundingbox[0]), parseFloat(data[0].boundingbox[2])],\n" +
-            "                        [parseFloat(data[0].boundingbox[1]), parseFloat(data[0].boundingbox[3])]\n" +
-            "                    );\n" +
-            "                    map.fitBounds(bounds, { padding: [50, 50] });\n" +
-            "                    L.marker([lat, lon]).addTo(map)\n" +
-            "                        .bindPopup('<div class=\"info\"><strong>' + label + '</strong><br/>' + address + '</div>')\n" +
-            "                        .openPopup();\n" +
-            "                }\n" +
+            "                if (!data || data.length === 0) { document.getElementById('noResults').style.display = 'block'; return; }\n" +
+            "\n" +
+            "                var bounds = L.latLngBounds();\n" +
+            "\n" +
+            "                data.forEach(function(item, index) {\n" +
+            "                    var lat = parseFloat(item.lat); var lon = parseFloat(item.lon);\n" +
+            "                    var title = item.display_name || (label + ' - ' + address);\n" +
+            "\n" +
+            "                    var marker = L.marker([lat, lon]).addTo(map)\n" +
+            "                        .bindPopup('<div style=\"font-size:14px;\"><strong>' + (item.type || label) + '</strong><br/>' + title + '<br/><a href=\"app://selected?lat=' + lat + '&lon=' + lon + '&label=' + encodeURIComponent(item.display_name) + '\" style=\"color:#0078d4; text-decoration:none;\">Use this location</a></div>');\n" +
+            "\n" +
+            "                    markers.push({ marker: marker, item: item, index: index });\n" +
+            "                    bounds.extend([lat, lon]);\n" +
+            "\n" +
+            "                    // keep marker popup behavior only (native list handles selection)\n" +
+            "                    marker.on('click', function(){ marker.openPopup(); });\n" +
+            "                });\n" +
+            "\n" +
+            "                if (!bounds.isValid()) { map.setView([parseFloat(data[0].lat), parseFloat(data[0].lon)], 16); } else { map.fitBounds(bounds, { padding: [50, 50] }); }\n" +
+            "\n" +
+            "                // open first marker popup by default\n" +
+            "                if (markers.length > 0) { markers[0].marker.openPopup(); }\n" +
             "            })\n" +
-            "            .catch(error => console.log('Geocoding error:', error));\n" +
+            "            .catch(error => { document.getElementById('noResults').style.display = 'block'; });\n" +
             "    </script>\n" +
             "</body>\n" +
             "</html>";
-        
+
         return html;
+    }
+
+    // Injects CSS + small on-map controls into the already-loaded Leaflet map inside the WebView.
+    // Uses existing `map` and `markers` variables from the embedded HTML so no HTML-string edits are required.
+    private async Task InjectMapControlsAsync(WebView web)
+    {
+        if (web == null) return;
+
+        // small delay to give the WebView time to parse the HTML/Leaflet map
+        await Task.Delay(250);
+        try
+        {
+            string js = @"(function(){
+                try{
+                    var css = '.custom-zoom-control { background: rgba(255,255,255,0.92); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); padding: 6px; display: flex; gap: 6px; } .custom-zoom-control button { background: transparent; border:none; width:36px; height:36px; border-radius:6px; font-size:18px; cursor:pointer; }';
+                    var style = document.createElement('style'); style.type='text/css'; style.appendChild(document.createTextNode(css)); document.head.appendChild(style);
+                }catch(e){}
+                try{ if(typeof L !== 'undefined' && typeof map !== 'undefined'){ L.control.scale({ position: 'bottomleft' }).addTo(map); }
+                }catch(e){}
+                try{
+                    var custom = L.control({ position: 'topright' });
+                    custom.onAdd = function(){ var d = L.DomUtil.create('div','custom-zoom-control'); d.innerHTML = '<button id=\'zoomIn\'>+</button><button id=\'zoomOut\'>−</button><button id=\'fitBounds\'>⤢</button>'; return d; };
+                    custom.addTo(map);
+                    var el = document.getElementsByClassName('custom-zoom-control')[0]; if(el) L.DomEvent.disableClickPropagation(el);
+                    document.addEventListener('click', function(ev){ var id = ev.target && ev.target.id; if(id==='zoomIn') map.zoomIn(); else if(id==='zoomOut') map.zoomOut(); else if(id==='fitBounds'){ try{ if(markers && markers.length>0){ var b = L.latLngBounds(); for(var i=0;i<markers.length;i++){ b.extend(markers[i].marker.getLatLng()); } map.fitBounds(b, {padding:[50,50]}); } }catch(e){} } });
+                }catch(e){}
+            })();";
+
+            await web.EvaluateJavaScriptAsync(js);
+        }
+        catch { /* ignore injection errors */ }
     }
 
     private PlaceInfoItem FilterScanResult(string ocrResult)
@@ -182,7 +305,7 @@ public partial class PlaceScanResultPage : ContentPage
             // Searching by postal code, as it is the most likely to be correctly recognized by OCR and can be used to determine the position of other information
             if (Contains5DigitNumber(line))
             {
-                System.Diagnostics.Debug.WriteLine("Found postal code: " + line);
+                // System.Diagnostics.Debug.WriteLine("Found postal code: " + line);
                 postalCode = line;
                 postalCodeLineIndex = i;
                 break;
@@ -244,7 +367,7 @@ public partial class PlaceScanResultPage : ContentPage
         }
         else
         {
-            System.Diagnostics.Debug.WriteLine("No postal code found in OCR result.");
+            // System.Diagnostics.Debug.WriteLine("No postal code found in OCR result.");
         }
         
         return placeInfoItem;
@@ -252,10 +375,205 @@ public partial class PlaceScanResultPage : ContentPage
 
     private bool Contains5DigitNumber(string str)
     {
-        System.Diagnostics.Debug.WriteLine("Checking if line contains a 5-digit number: " + str);
+        // System.Diagnostics.Debug.WriteLine("Checking if line contains a 5-digit number: " + str);
         bool contains5DigitNumber = System.Text.RegularExpressions.Regex.IsMatch(str, @"\d{5}");
-        System.Diagnostics.Debug.WriteLine("Contains 5-digit number: " + contains5DigitNumber);
+        // System.Diagnostics.Debug.WriteLine("Contains 5-digit number: " + contains5DigitNumber);
         return contains5DigitNumber;
+    }
+
+    // Called from the WebView when user chooses a candidate (JS navigates to app://selected?...)
+    private async void OsmMap_Navigating(object sender, WebNavigatingEventArgs e)
+    {
+        if (e == null)
+        {
+            return;
+        }
+
+        try
+        {
+            var url = e!.Url ?? string.Empty;
+            if (!url.StartsWith("app://selected", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            // prevent the WebView from actually navigating
+            e.Cancel = true;
+
+            // parse query string without System.Web dependency
+            var uri = new Uri(url);
+            double lat = 0, lon = 0;
+            string label = string.Empty;
+            var qs = (uri.Query ?? string.Empty).TrimStart('?');
+            foreach (var part in qs.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var kv = part.Split(new[] { '=' }, 2);
+                if (kv.Length != 2) continue;
+                var key = Uri.UnescapeDataString(kv[0]);
+                var value = Uri.UnescapeDataString(kv[1]);
+                if (key == "lat") double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out lat);
+                else if (key == "lon") double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out lon);
+                else if (key == "label") label = value;
+            }
+
+            // store into the model and update UI
+            if (_currentPlace != null)
+            {
+                _currentPlace.Latitude = lat;
+                _currentPlace.Longitude = lon;
+            }
+
+            LatitudeText.Text = lat != 0 ? lat.ToString("F6", CultureInfo.InvariantCulture) : "—";
+            LongitudeText.Text = lon != 0 ? lon.ToString("F6", CultureInfo.InvariantCulture) : "—";
+
+            await DisplayAlertAsync("Location selected", $"{label}\nLat: {lat:F6}, Lon: {lon:F6}", "OK");
+        }
+        catch (Exception)
+        {
+            // ignore parsing errors but don't crash the WebView handler
+        }
+    }
+
+
+    private async Task PopulateCandidatesAsync(PlaceInfoItem placeInfo)
+    {
+        try
+        {
+            if (placeInfo == null) return;
+            string address = $"{placeInfo.Street}, {placeInfo.City}" + (string.IsNullOrEmpty(placeInfo.Country) ? string.Empty : $", {placeInfo.Country}");
+            using var http = new HttpClient();
+            // Nominatim requires a valid User-Agent — set one so the request is accepted
+            try
+            {
+                http.DefaultRequestHeaders.UserAgent.ParseAdd("PmSTools/1.0 (+https://github.com/pmstools)");
+            }
+            catch { }
+
+            var url = "https://nominatim.openstreetmap.org/search?format=json&limit=5&q=" + Uri.EscapeDataString(address);
+            using var response = await http.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                // leave candidates empty — native UI will show nothing
+                return;
+            }
+
+            var resp = await response.Content.ReadAsStringAsync();
+
+            using var doc = JsonDocument.Parse(resp);
+            var root = doc.RootElement;
+
+            MainThread.BeginInvokeOnMainThread(() => _candidates.Clear());
+
+            if (root.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in root.EnumerateArray())
+                {
+                    try
+                    {
+                        var display = item.TryGetProperty("display_name", out var dn) ? dn.GetString() ?? string.Empty : string.Empty;
+                        var type = item.TryGetProperty("type", out var t) ? t.GetString() ?? string.Empty : string.Empty;
+
+                        double lat = 0, lon = 0;
+                        if (item.TryGetProperty("lat", out var latProp)) double.TryParse(latProp.GetString() ?? "0", NumberStyles.Any, CultureInfo.InvariantCulture, out lat);
+                        if (item.TryGetProperty("lon", out var lonProp)) double.TryParse(lonProp.GetString() ?? "0", NumberStyles.Any, CultureInfo.InvariantCulture, out lon);
+
+                        if (string.IsNullOrEmpty(display))
+                            display = $"{placeInfo.Name ?? string.Empty} - {placeInfo.Street}, {placeInfo.City}".Trim();
+
+                        var cand = new GeocodeCandidate { DisplayName = display, Type = type, Lat = lat, Lon = lon };
+                        MainThread.BeginInvokeOnMainThread(() => _candidates.Add(cand));
+                    }
+                    catch { /* ignore malformed items */ }
+                }
+
+                // Select first candidate by default
+                MainThread.BeginInvokeOnMainThread(() => {
+                    if (_candidates.Count > 0)
+                        CandidatesList.SelectedItem = _candidates[0];
+                });
+            }
+        }
+        catch (Exception)
+        {
+            // ignore network/parse errors — native list will remain empty
+        }
+    }
+
+    private async Task ApplyCandidateSelectionAsync(GeocodeCandidate cand, bool showAlert = true)
+    {
+        if (cand == null) return;
+
+        // update model and UI
+        if (_currentPlace != null)
+        {
+            _currentPlace.Latitude = cand.Lat;
+            _currentPlace.Longitude = cand.Lon;
+        }
+
+        LatitudeText.Text = cand.Lat.ToString("F6", CultureInfo.InvariantCulture);
+        LongitudeText.Text = cand.Lon.ToString("F6", CultureInfo.InvariantCulture);
+
+        // try to center map and open corresponding popup (if markers exist in JS)
+        try
+        {
+            var web = (WebView)this.FindByName("OsmMap");
+            if (web != null)
+            {
+                string js = $@"(function(){{
+                    var lat = {cand.Lat.ToString(CultureInfo.InvariantCulture)};
+                    var lon = {cand.Lon.ToString(CultureInfo.InvariantCulture)};
+                    try{{
+                        if(typeof markers !== 'undefined'){{
+                            for(var i=0;i<markers.length;i++){{
+                                var m = markers[i];
+                                var p = m.marker.getLatLng();
+                                if(Math.abs(p.lat - lat) < 0.00001 && Math.abs(p.lng - lon) < 0.00001){{ map.setView([lat,lon],18); m.marker.openPopup(); return true; }}
+                            }}
+                        }}
+                        var mk = L.marker([lat, lon]).addTo(map).bindPopup('Selected location').openPopup();
+                        map.setView([lat, lon], 18);
+                        return true;
+                    }}catch(e){{return false;}}
+                }})();";
+
+                await web.EvaluateJavaScriptAsync(js);
+            }
+        }
+        catch { /* ignore JS errors */ }
+
+        if (showAlert)
+        {
+            await DisplayAlertAsync("Location selected", $"{cand.DisplayName}\nLat: {cand.Lat:F6}, Lon: {cand.Lon:F6}", "OK");
+        }
+    }
+
+    private async void CandidatesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var sel = CandidatesList.SelectedItem as GeocodeCandidate;
+        if (sel != null)
+        {
+            // selecting a candidate now *applies* it and shows confirmation
+            await ApplyCandidateSelectionAsync(sel, showAlert: true);
+        }
+    }
+
+    private async Task OpenFullScreenMapAsync()
+    {
+        try
+        {
+            var html = !string.IsNullOrEmpty(_lastMapHtml) ? _lastMapHtml : string.Empty;
+            await Navigation.PushModalAsync(new FullScreenMapPage(html));
+        }
+        catch { /* ignore navigation errors */ }
+    }
+
+    private async void FullScreenButton_Clicked(object sender, EventArgs e)
+    {
+        await OpenFullScreenMapAsync();
+    }
+
+    private async void FullScreenMap_ToolbarClicked(object sender, EventArgs e)
+    {
+        // same action as the floating button
+        await OpenFullScreenMapAsync();
     }
 
     private void OnBackClicked(object sender, EventArgs e)

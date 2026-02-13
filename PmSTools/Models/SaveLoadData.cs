@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace PmSTools.Models;
 
 public static class SaveLoadData
@@ -7,6 +9,7 @@ public static class SaveLoadData
     public const string ActivePrefixesPrefsKeyPrefix = "c2bap_";
     public const string SeparatorChar = ",";
     public const string LastCodesPrefKey = "last_codes";
+    public const string LastPlaceInfoPrefKey = "last_place_info";
     
     /*
     public const string SavedCodesCountPrefName = "saved_codes_count";
@@ -137,6 +140,42 @@ public static class SaveLoadData
                     Preferences.Remove(key);
                 }
             }
+        }
+    }
+
+    public static void SaveLastPlaceInfo(PlaceInfoItem placeInfo)
+    {
+        if (placeInfo == null)
+        {
+            return;
+        }
+
+        string json = JsonSerializer.Serialize(placeInfo);
+        Preferences.Set(LastPlaceInfoPrefKey, json);
+    }
+
+    public static bool TryGetLastPlaceInfo(out PlaceInfoItem? placeInfo)
+    {
+        placeInfo = null;
+        if (!Preferences.ContainsKey(LastPlaceInfoPrefKey))
+        {
+            return false;
+        }
+
+        string json = Preferences.Get(LastPlaceInfoPrefKey, string.Empty);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return false;
+        }
+
+        try
+        {
+            placeInfo = JsonSerializer.Deserialize<PlaceInfoItem>(json);
+            return placeInfo != null;
+        }
+        catch
+        {
+            return false;
         }
     }
 

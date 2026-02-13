@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PmSTools.FullScreenMapPage"
+             Title="Map (full screen)">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Close" Clicked="OnCloseClicked" Priority="0"/>
+    </ContentPage.ToolbarItems>
+
+    <Grid BackgroundColor="Black">
+        <WebView x:Name="FullMapWebView" HorizontalOptions="Fill" VerticalOptions="Fill" />
+        <Label x:Name="NoMapLabel" Text="Map not available" TextColor="White" IsVisible="False"
+               HorizontalOptions="Center" VerticalOptions="Center" />
+
+        <!-- Always-visible close button (works even if toolbar isn't shown on some platforms) -->
+        <Button Text="✕" Clicked="OnCloseClicked" BackgroundColor="#99000000" TextColor="White"
+                WidthRequest="48" HeightRequest="48" CornerRadius="24" FontSize="20"
+                HorizontalOptions="End" VerticalOptions="Start" Margin="12"/>
+    </Grid>
+</ContentPage>

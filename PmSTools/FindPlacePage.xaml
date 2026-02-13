@@ -13,6 +13,10 @@
             </Label>
             <ScrollView Grid.Column="0" Grid.Row="1"
                         x:Name="LastSearchPlacesScroll">
+                <VerticalStackLayout
+                    x:Name="LastSearchPlacesStack"
+                    Spacing="10"
+                    Padding="5" />
             </ScrollView>
             <Border Grid.Row="2"
                     StrokeThickness="1"

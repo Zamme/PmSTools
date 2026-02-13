@@ -98,17 +98,17 @@ public partial class PrefixesPopupPage : BasePopupPage
         /*Console.WriteLine("Borrat " + _prefix);*/
         /*string prefixKey = SaveLoadData.PrefixesPrefsKeyPrefix + _prefixIndex.ToString();
         string activePrefixKey = SaveLoadData.ActivePrefixesPrefsKeyPrefix + _prefixIndex.ToString();*/
-        Console.WriteLine("Esborrant " + _prefixIndex.ToString());
+        // Console.WriteLine("Esborrant " + _prefixIndex.ToString());
         if (_prefixIndex < currentPrefixesList.Count)
         {
             currentPrefixesList.RemoveAt(_prefixIndex);
-            Console.WriteLine("Esborrat " + _prefixIndex.ToString());
+            // Console.WriteLine("Esborrat " + _prefixIndex.ToString());
         }
 
         if (_prefixIndex < currentActivePrefixesList.Count)
         {
             currentActivePrefixesList.RemoveAt(_prefixIndex);
-            Console.WriteLine("Esborrat active " + _prefixIndex.ToString());
+            // Console.WriteLine("Esborrat active " + _prefixIndex.ToString());
         }
 
         FillPrefixes(currentPrefixesList, currentActivePrefixesList);
@@ -124,9 +124,9 @@ public partial class PrefixesPopupPage : BasePopupPage
             currentActivePrefixesList.Add(true);
             FillPrefixes(currentPrefixesList, currentActivePrefixesList);
         }
-        catch (Exception exception)
+        catch (Exception)
         {
-            Console.WriteLine("No prefix written");
+            // Console.WriteLine("No prefix written");
         }
     }
 

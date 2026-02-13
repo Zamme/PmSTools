@@ -46,9 +46,9 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
             CityResultText.Text = filteredLines.City ?? "Unknown City";
             CountryResultText.Text = filteredLines.Country ?? "Unknown Country";
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            System.Diagnostics.Debug.WriteLine($"FillPage error: {ex.Message}");
+            // System.Diagnostics.Debug.WriteLine($"FillPage error: {ex.Message}");
         }
     }
 
@@ -69,7 +69,7 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
             // Searching by postal code, as it is the most likely to be correctly recognized by OCR and can be used to determine the position of other information
             if (Contains5DigitNumber(line))
             {
-                System.Diagnostics.Debug.WriteLine("Found postal code: " + line);
+                // System.Diagnostics.Debug.WriteLine("Found postal code: " + line);
                 postalCode = line;
                 postalCodeLineIndex = i;
                 break;
@@ -132,7 +132,7 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
         }
         else
         {
-            System.Diagnostics.Debug.WriteLine("No postal code found in OCR result.");
+            // System.Diagnostics.Debug.WriteLine("No postal code found in OCR result.");
         }
         
         return placeInfoItem;
@@ -140,15 +140,15 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
 
     private bool Contains5DigitNumber(string str)
     {
-        System.Diagnostics.Debug.WriteLine("Checking if line contains a 5-digit number: " + str);
+        // System.Diagnostics.Debug.WriteLine("Checking if line contains a 5-digit number: " + str);
         bool contains5DigitNumber = System.Text.RegularExpressions.Regex.IsMatch(str, @"\d{5}");
-        System.Diagnostics.Debug.WriteLine("Contains 5-digit number: " + contains5DigitNumber);
+        // System.Diagnostics.Debug.WriteLine("Contains 5-digit number: " + contains5DigitNumber);
         return contains5DigitNumber;
     }
 
     private bool Is5DigitNumber(string str)
     {
-        System.Diagnostics.Debug.WriteLine("Checking if line is a 5-digit number: " + str);
+        // System.Diagnostics.Debug.WriteLine("Checking if line is a 5-digit number: " + str);
         return str.Length == 5 && int.TryParse(str, out _);
     }
 
