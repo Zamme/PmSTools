@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Android Clean Deploy RF8R21KHRDB",
+			"type": "shell",
+			"command": "adb -s RF8R21KHRDB uninstall com.vilogamesstudio.pmstools || true && dotnet clean /home/zamme/Maui_Projects/PmSTools/PmSTools/PmSTools.csproj -c Release -f net10.0-android && dotnet build -t:Run -p:Configuration=Release -f net10.0-android -p:AdbTarget=-s%20RF8R21KHRDB -p:CustomAfterMicrosoftCSharpTargets=/home/zamme/.vscode/extensions/ms-dotnettools.dotnet-maui-1.13.20-linux-x64/dist/resources/Custom.After.Microsoft.CSharp.targets -p:MauiVSCodeBuildOutputFile=/tmp/dotnet-maui/maui-vsc-e384c21a-f824-4977-980b-b5699a26366b.json -p:AndroidSdkDirectory=/home/zamme/Android/Sdk -p:JavaSdkDirectory=/usr/lib/jvm/java-21-openjdk-amd64 -p:EnableDiagnostics=True -p:EnableMauiXamlDiagnostics=True /home/zamme/Maui_Projects/PmSTools/PmSTools/PmSTools.csproj",
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}

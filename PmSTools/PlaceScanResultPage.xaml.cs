@@ -291,94 +291,89 @@ public partial class PlaceScanResultPage : ContentPage
 
     private PlaceInfoItem FilterScanResult(string ocrResult)
     {
-        // Lines : 0 = Name, 1 = Street, 2 = Postal Code, 3 = City, 4 = Country
-        PlaceInfoItem placeInfoItem = new PlaceInfoItem();
-
-        List<string> ocrResultLines = ocrResult.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        var placeInfo = new PlaceInfoItem();
         
-        string postalCode = "";
-        int postalCodeLineIndex = -1;
-        for(int i = 0; i < ocrResultLines.Count; i++)
-        {
-            string line = ocrResultLines[i];
+        var lines = ocrResult.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(l => l.Trim())
+            .Where(l => !string.IsNullOrEmpty(l))
+            .ToList();
 
-            // Searching by postal code, as it is the most likely to be correctly recognized by OCR and can be used to determine the position of other information
-            if (Contains5DigitNumber(line))
+        // Extract name: skip very short lines (likely OCR noise) and find first substantial line
+        // Look for lines with multiple words or reasonable length before hitting street/postal code
+        if (lines.Count > 0)
+        {
+            for (int i = 0; i < lines.Count; i++)
             {
-                // System.Diagnostics.Debug.WriteLine("Found postal code: " + line);
-                postalCode = line;
-                postalCodeLineIndex = i;
-                break;
+                var line = lines[i];
+                // Skip if too short (OCR noise), or if it's a street/postal code line
+                if (line.Length > 3 && 
+                    !System.Text.RegularExpressions.Regex.IsMatch(line, @"^(?:Calle|C\.|C\/|Avenida|Av\.|Plaza|Pza\.|Paseo|Ps\.|Carrera|Cr\.|Travesía|Trav\.|Carrer|Carr\.|Avinguda|Avda\.)", System.Text.RegularExpressions.RegexOptions.IgnoreCase) &&
+                    !System.Text.RegularExpressions.Regex.IsMatch(line, @"^\d{4,5}"))
+                {
+                    placeInfo.Name = line;
+                    System.Diagnostics.Debug.WriteLine($"FilterScanResult - Name: {placeInfo.Name}");
+                    break;
+                }
+            }
+            System.Diagnostics.Debug.WriteLine($"FilterScanResult - Total lines: {lines.Count}");
+            for (int i = 0; i < lines.Count; i++)
+            {
+                System.Diagnostics.Debug.WriteLine($"  Line {i}: {lines[i]}");
             }
         }
 
-        if (postalCode != "")
+        // Extract postal code and city with pattern matching (postal code followed by city name)
+        // Matches: "28001 Madrid" or "08002 Barcelona", etc.
+        var postalCityMatch = System.Text.RegularExpressions.Regex.Match(
+            ocrResult, 
+            @"(?:^|\n)\s*([0-9]{4,5})\s+([A-Z][a-záéíóúñüA-Z\s]{2,})",
+            System.Text.RegularExpressions.RegexOptions.Multiline);
+        
+        if (postalCityMatch.Success)
         {
-            if (postalCodeLineIndex >= 2)
-            {
-                placeInfoItem.Name = ocrResultLines[postalCodeLineIndex - 2];
-            }
-            if (postalCodeLineIndex >= 1)
-            {
-                placeInfoItem.Street = ocrResultLines[postalCodeLineIndex - 1];
-            }
-            if (postalCodeLineIndex < ocrResultLines.Count)
-            {
-                string postalCodeLine = ocrResultLines[postalCodeLineIndex];
-                string[] postalCodeLineParts = postalCodeLine.Split(' ');
-                if (postalCodeLineParts.Length > 1)
-                {                    
-                    placeInfoItem.PostalCode = postalCodeLineParts[0];
-                }
-                else
-                {
-                    placeInfoItem.PostalCode = postalCodeLine;
-                }
-            }
-            if (postalCodeLineIndex + 1 < ocrResultLines.Count)
-            {                
-                placeInfoItem.City = ocrResultLines[postalCodeLineIndex + 1];
-            }
-            else
-            {
-                // City could be in the same line as postal code
-                string postalCodeLine = ocrResultLines[postalCodeLineIndex];
-                if (!string.IsNullOrEmpty(placeInfoItem.PostalCode))
-                {
-                    postalCodeLine = postalCodeLine.Replace(placeInfoItem.PostalCode, "").Trim();
-                }
-                if (postalCodeLine != "")
-                {
-                    placeInfoItem.City = postalCodeLine;
-                }
-                else
-                {
-                    placeInfoItem.City = "Unknown City";
-                }
-            }
-            if (postalCodeLineIndex + 2 < ocrResultLines.Count)
-            {                
-                placeInfoItem.Country = ocrResultLines[postalCodeLineIndex + 2];
-            }
-            else
-            {
-                placeInfoItem.Country = "Spain";
-            }
+            placeInfo.PostalCode = postalCityMatch.Groups[1].Value.Trim();
+            placeInfo.City = postalCityMatch.Groups[2].Value.Trim();
+        }
+
+        // Extract street address (patterns like "Calle/Avenida + name + optional number")
+        // Supports Spanish (Calle, Avenida, Plaza, etc.) and Catalan (Carrer, Avinguda, etc.)
+        // Matches: "Calle Mayor 123" or "Carrer Font, 4" or "C/ Font 4", etc.
+        var streetMatch = System.Text.RegularExpressions.Regex.Match(
+            ocrResult, 
+            @"((?:Calle|C\.|C\/|Avenida|Av\.|Plaza|Pza\.|Paseo|Ps\.|Carrera|Cr\.|Travesía|Trav\.|Carrer|Carr\.|Avinguda|Avda\.)\s+.{4,}?(?:\s*[,]?\s*\d+[a-z]?)?)",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Multiline);
+        
+        if (streetMatch.Success)
+        {
+            placeInfo.Street = streetMatch.Groups[1].Value.Trim();
         }
         else
         {
-            // System.Diagnostics.Debug.WriteLine("No postal code found in OCR result.");
+            // Fallback: look for lines between Name and PostalCode that might be street address
+            if (lines.Count >= 2)
+            {
+                // Typically the street is the second line (after name, before postal code)
+                for (int i = 1; i < lines.Count - 1 && i < 3; i++)
+                {
+                    var line = lines[i];
+                    // Skip if looks like postal code or city
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(line, @"^\d{4,5}") && 
+                        line.Length > 4 && 
+                        !string.IsNullOrEmpty(placeInfo.PostalCode) && 
+                        line != placeInfo.City)
+                    {
+                        placeInfo.Street = line;
+                        break;
+                    }
+                }
+            }
         }
-        
-        return placeInfoItem;
-    }
 
-    private bool Contains5DigitNumber(string str)
-    {
-        // System.Diagnostics.Debug.WriteLine("Checking if line contains a 5-digit number: " + str);
-        bool contains5DigitNumber = System.Text.RegularExpressions.Regex.IsMatch(str, @"\d{5}");
-        // System.Diagnostics.Debug.WriteLine("Contains 5-digit number: " + contains5DigitNumber);
-        return contains5DigitNumber;
+        // Set default country to Spain if not found
+        if (string.IsNullOrEmpty(placeInfo.Country))
+            placeInfo.Country = "Spain";
+
+        return placeInfo;
     }
 
     // Called from the WebView when user chooses a candidate (JS navigates to app://selected?...)

@@ -47,7 +47,7 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidKeyStore>true</AndroidKeyStore>
-	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-debug-key.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningKeyStore>/home/zamme/GoogleDrive/Vilo_Studio/my-debug-key.keystore</AndroidSigningKeyStore>
 	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>
 	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
@@ -61,7 +61,7 @@
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 	  <AndroidKeyStore>true</AndroidKeyStore>
-	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-release-key.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningKeyStore>/home/zamme/GoogleDrive/Vilo_Studio/my-release-key.keystore</AndroidSigningKeyStore>
 	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>
 	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
@@ -70,12 +70,11 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\postman_01_icon_fg.svg" />
-        <!--<MauiIcon Include="Resources\AppIcon\postman_01_icon.png" />-->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" />
 
 		<!-- Splash Screen -->
 		<!--<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#FFFFFF" BaseSize="128,128" />-->
-        <MauiSplashScreen Include="Resources\Splash\postman_01.svg" Color="#FFFFFF" BaseSize="720,720" />
+		<MauiSplashScreen Include="Resources\AppIcon\appicon.svg" Color="#00AEFF" BaseSize="1440,1440" />
 
         <!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
