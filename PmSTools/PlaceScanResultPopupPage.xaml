@@ -16,8 +16,14 @@
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Margin="0,20,0,10"/>
-            <Label x:Name="StreetResultText"
-                Text="Street"
+            <Label x:Name="StreetNameResultText"
+                Text="Street Name"
+                FontSize="20"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Margin="0,20,0,10"/>
+            <Label x:Name="StreetNumberResultText"
+                Text="Street Number"
                 FontSize="20"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
@@ -40,6 +46,35 @@
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Margin="0,20,0,10"/>
+
+            <Button x:Name="EditFieldsButton"
+                Text="Edit fields"
+                Clicked="EditFieldsButton_Clicked"
+                Margin="10,8,10,0"/>
+
+            <StackLayout x:Name="EditableFieldsPanel" IsVisible="False" Spacing="8" Margin="10,6,10,10">
+                <Label Text="Manual correction"
+                    FontAttributes="Bold"
+                    FontSize="16"/>
+
+                <Entry x:Name="EditNameEntry" Placeholder="Name"/>
+                <Entry x:Name="EditStreetNameEntry" Placeholder="Street name"/>
+                <Entry x:Name="EditStreetNumberEntry" Placeholder="Street number"/>
+                <Entry x:Name="EditPostalCodeEntry" Placeholder="Postal code" Keyboard="Numeric"/>
+                <Entry x:Name="EditCityEntry" Placeholder="City"/>
+                <Entry x:Name="EditCountryEntry" Placeholder="Country"/>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0"
+                        x:Name="ApplyEditsButton"
+                        Text="Apply corrections"
+                        Clicked="ApplyEditsButton_Clicked"/>
+                    <Button Grid.Column="1"
+                        x:Name="CancelEditsButton"
+                        Text="Cancel"
+                        Clicked="CancelEditsButton_Clicked"/>
+                </Grid>
+            </StackLayout>
         </StackLayout>
     </ScrollView>
 

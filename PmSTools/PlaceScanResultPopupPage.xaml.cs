@@ -21,6 +21,9 @@ namespace PmSTools;
 
 public partial class PlaceScanResultPopupPage : BasePopupPage
 {
+    private PlaceInfoItem? _currentPlace;
+    private bool _isEditMode;
+
     public PlaceScanResultPopupPage()
     {
         InitializeComponent();
@@ -39,16 +42,123 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
             PlaceInfoItem filteredLines = FilterScanResult(ocrResult);
             if (filteredLines == null)
                 return;
-            
-            NameResultText.Text = filteredLines.Name ?? "Unknown Name";
-            StreetResultText.Text = filteredLines.Street ?? "Unknown Street";
-            PostalCodeResultText.Text = filteredLines.PostalCode ?? "Unknown Postal Code";
-            CityResultText.Text = filteredLines.City ?? "Unknown City";
-            CountryResultText.Text = filteredLines.Country ?? "Unknown Country";
+
+            EnsureStreetParts(filteredLines);
+            _currentPlace = filteredLines;
+
+            UpdateResultLabels(filteredLines);
+            PopulateEditFields(filteredLines);
+
+            SaveLoadData.SaveLastPlaceInfo(filteredLines);
         }
         catch (Exception)
         {
             // System.Diagnostics.Debug.WriteLine($"FillPage error: {ex.Message}");
+        }
+    }
+
+    private void UpdateResultLabels(PlaceInfoItem placeInfo)
+    {
+        NameResultText.Text = placeInfo.Name ?? "Unknown Name";
+        StreetNameResultText.Text = placeInfo.StreetName ?? "Unknown Street Name";
+        StreetNumberResultText.Text = placeInfo.StreetNumber ?? "Unknown Street Number";
+        PostalCodeResultText.Text = placeInfo.PostalCode ?? "Unknown Postal Code";
+        CityResultText.Text = placeInfo.City ?? "Unknown City";
+        CountryResultText.Text = placeInfo.Country ?? "Unknown Country";
+    }
+
+    private void PopulateEditFields(PlaceInfoItem placeInfo)
+    {
+        EditNameEntry.Text = placeInfo.Name ?? string.Empty;
+        EditStreetNameEntry.Text = placeInfo.StreetName ?? string.Empty;
+        EditStreetNumberEntry.Text = placeInfo.StreetNumber ?? string.Empty;
+        EditPostalCodeEntry.Text = placeInfo.PostalCode ?? string.Empty;
+        EditCityEntry.Text = placeInfo.City ?? string.Empty;
+        EditCountryEntry.Text = placeInfo.Country ?? string.Empty;
+    }
+
+    private void SetEditMode(bool enabled)
+    {
+        _isEditMode = enabled;
+        EditableFieldsPanel.IsVisible = enabled;
+        EditFieldsButton.Text = enabled ? "Hide editor" : "Edit fields";
+    }
+
+    private void EnsureStreetParts(PlaceInfoItem? placeInfo)
+    {
+        if (placeInfo == null)
+            return;
+
+        if (!string.IsNullOrWhiteSpace(placeInfo.StreetName) || !string.IsNullOrWhiteSpace(placeInfo.StreetNumber))
+            return;
+
+        var (streetName, streetNumber) = SplitStreetParts(placeInfo.Street);
+        placeInfo.StreetName = streetName;
+        placeInfo.StreetNumber = streetNumber;
+    }
+
+    private (string StreetName, string StreetNumber) SplitStreetParts(string? street)
+    {
+        if (string.IsNullOrWhiteSpace(street))
+            return (string.Empty, string.Empty);
+
+        var normalized = System.Text.RegularExpressions.Regex.Replace(street.Trim(), @"\s+", " ");
+        var match = System.Text.RegularExpressions.Regex.Match(
+            normalized,
+            @"^(?<name>.+?)\s+(?<number>\d{1,5}[A-Za-z]?)$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        if (!match.Success)
+            return (normalized, string.Empty);
+
+        return (
+            match.Groups["name"].Value.Trim(),
+            match.Groups["number"].Value.Trim());
+    }
+
+    private void EditFieldsButton_Clicked(object sender, EventArgs e)
+    {
+        if (_currentPlace != null)
+            PopulateEditFields(_currentPlace);
+
+        SetEditMode(!_isEditMode);
+    }
+
+    private void CancelEditsButton_Clicked(object sender, EventArgs e)
+    {
+        if (_currentPlace != null)
+            PopulateEditFields(_currentPlace);
+
+        SetEditMode(false);
+    }
+
+    private async void ApplyEditsButton_Clicked(object sender, EventArgs e)
+    {
+        try
+        {
+            _currentPlace ??= new PlaceInfoItem();
+
+            _currentPlace.Name = (EditNameEntry.Text ?? string.Empty).Trim();
+            _currentPlace.StreetName = (EditStreetNameEntry.Text ?? string.Empty).Trim();
+            _currentPlace.StreetNumber = (EditStreetNumberEntry.Text ?? string.Empty).Trim();
+            _currentPlace.PostalCode = (EditPostalCodeEntry.Text ?? string.Empty).Trim();
+            _currentPlace.City = (EditCityEntry.Text ?? string.Empty).Trim();
+            _currentPlace.Country = (EditCountryEntry.Text ?? string.Empty).Trim();
+
+            if (string.IsNullOrWhiteSpace(_currentPlace.Country))
+                _currentPlace.Country = "Spain";
+
+            EnsureStreetParts(_currentPlace);
+            UpdateResultLabels(_currentPlace);
+            PopulateEditFields(_currentPlace);
+            SaveLoadData.SaveLastPlaceInfo(_currentPlace);
+
+            SetEditMode(false);
+            await DisplayAlertAsync("Saved", "Manual corrections applied.", "OK");
+        }
+        catch
+        {
+            await DisplayAlertAsync("Error", "Could not apply manual corrections.", "OK");
         }
     }
 
