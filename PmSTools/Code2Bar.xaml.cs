@@ -8,6 +8,7 @@ using ZXing.Net.Maui;
 using ZXing.Net.Maui.Controls;
 using System.Collections.ObjectModel;
 using PmSTools.Resources.Languages;
+using System.Diagnostics;
 
 namespace PmSTools;
 
@@ -107,6 +108,12 @@ public partial class Code2Bar : ContentPage
                 foreach (var textPart in textParts)
                 {
                     string modTextPart = new string(textPart.ToUpper());
+                    if (modTextPart.Length == 22 && TryAppendDniLikeControl(modTextPart, out string codeWithControl))
+                    {
+                        Debug.WriteLine($"[UpdateLastCodesScroll] Appended DNI-like control: '{modTextPart}' -> '{codeWithControl}'");
+                        modTextPart = codeWithControl;
+                    }
+
                     foreach (var notiPrefix in notiPrefixes)
                     {
                         modTextPart = modTextPart.Replace("O", "0");
@@ -334,5 +341,53 @@ public partial class Code2Bar : ContentPage
         {
             await DisplayAlertAsync("Result error", "Result is null", "OK");
         }
+    }
+
+    private static bool TryAppendDniLikeControl(string dataPart, out string codeWithControl)
+    {
+        codeWithControl = dataPart;
+        if (dataPart.Length != 22)
+        {
+            return false;
+        }
+
+        if (!TryGetDniLikeControlCharacter(dataPart, out char control))
+        {
+            return false;
+        }
+
+        codeWithControl = dataPart + control;
+        return true;
+    }
+
+    private static bool TryGetDniLikeControlCharacter(string dataPart, out char control)
+    {
+        control = '\0';
+
+        bool hasAtLeastOneDigit = false;
+        int remainder = 0;
+        foreach (char currentChar in dataPart)
+        {
+            if (char.IsDigit(currentChar))
+            {
+                hasAtLeastOneDigit = true;
+                remainder = (remainder * 10 + (currentChar - '0')) % 23;
+                continue;
+            }
+
+            if (!char.IsLetter(currentChar))
+            {
+                return false;
+            }
+        }
+
+        if (!hasAtLeastOneDigit)
+        {
+            return false;
+        }
+
+        const string dniLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
+        control = dniLetters[remainder];
+        return true;
     }
 }

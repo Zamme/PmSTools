@@ -90,6 +90,7 @@ public partial class Code2BarcodePopupPage : BasePopupPage
     public void ConstructPage(string _text, List<string> newPrefixes)
     {
         const int ShortValidLength = 13;
+        const int LongDataLengthWithoutControl = 22;
         const int LongValidLength = 23;
         char[] charSeparators = new char[] { ' ', '\n' };
         string[] textParts = _text.Split(charSeparators, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
@@ -97,6 +98,12 @@ public partial class Code2BarcodePopupPage : BasePopupPage
         {
             string upperTextPart = textPart.ToUpper();
             string modTextPart = upperTextPart.Replace("O", "0");
+            if (modTextPart.Length == LongDataLengthWithoutControl && TryAppendDniLikeControl(modTextPart, out string codeWithControl))
+            {
+                LogDniControlAppended(modTextPart, codeWithControl);
+                modTextPart = codeWithControl;
+            }
+
             bool isShortCode = modTextPart.Length == ShortValidLength;
             bool isLongCode = modTextPart.Length == LongValidLength;
             bool hasValidLength = isShortCode || isLongCode;
@@ -120,7 +127,7 @@ public partial class Code2BarcodePopupPage : BasePopupPage
                 continue;
             }
 
-            bool requiresDniControl = isLongCode && char.IsLetter(upperTextPart[^1]);
+            bool requiresDniControl = isLongCode && char.IsLetter(modTextPart[^1]);
             if (requiresDniControl && !HasValidDniLikeControl(modTextPart))
             {
                 LogRejectedTextPart(modTextPart, "invalid DNI-like control character");
@@ -209,25 +216,70 @@ public partial class Code2BarcodePopupPage : BasePopupPage
         }
 
         string dataPart = modTextPart[..^1];
+        if (!TryGetDniLikeControlCharacter(dataPart, out char expectedControl))
+        {
+            return false;
+        }
+
+        return char.ToUpperInvariant(providedControl) == expectedControl;
+    }
+
+    private static bool TryAppendDniLikeControl(string dataPart, out string codeWithControl)
+    {
+        codeWithControl = dataPart;
+        if (dataPart.Length != 22)
+        {
+            return false;
+        }
+
+        if (!TryGetDniLikeControlCharacter(dataPart, out char control))
+        {
+            return false;
+        }
+
+        codeWithControl = dataPart + control;
+        return true;
+    }
+
+    private static bool TryGetDniLikeControlCharacter(string dataPart, out char control)
+    {
+        control = '\0';
+
+        bool hasAtLeastOneDigit = false;
         int remainder = 0;
         foreach (char currentChar in dataPart)
         {
-            if (!char.IsDigit(currentChar))
+            if (char.IsDigit(currentChar))
+            {
+                hasAtLeastOneDigit = true;
+                remainder = (remainder * 10 + (currentChar - '0')) % 23;
+                continue;
+            }
+
+            if (!char.IsLetter(currentChar))
             {
                 return false;
             }
+        }
 
-            remainder = (remainder * 10 + (currentChar - '0')) % 23;
+        if (!hasAtLeastOneDigit)
+        {
+            return false;
         }
 
         const string dniLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
-        char expectedControl = dniLetters[remainder];
-        return char.ToUpperInvariant(providedControl) == expectedControl;
+        control = dniLetters[remainder];
+        return true;
     }
 
     private static void LogRejectedTextPart(string value, string reason)
     {
         Debug.WriteLine($"[ConstructPage] Rejected '{value}': {reason}");
+    }
+
+    private static void LogDniControlAppended(string originalValue, string normalizedValue)
+    {
+        Debug.WriteLine($"[ConstructPage] Appended DNI-like control: '{originalValue}' -> '{normalizedValue}'");
     }
 
 
