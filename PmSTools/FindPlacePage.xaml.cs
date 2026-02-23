@@ -99,69 +99,75 @@ public partial class FindPlacePage : ContentPage
             VerticalOptions = LayoutOptions.Start
         };
 
-        if (SaveLoadData.TryGetLastPlaceInfo(out PlaceInfoItem? lastPlace) && lastPlace != null)
+        List<PlaceInfoItem> lastPlaces = SaveLoadData.GetLastPlaceInfos();
+        ClearHistoryButton.IsEnabled = lastPlaces.Count > 0;
+
+        if (lastPlaces.Count > 0)
         {
-            string title = string.IsNullOrWhiteSpace(lastPlace.Name) ? "Unknown Name" : lastPlace.Name;
-
-            List<string> addressParts = new List<string>();
-            if (!string.IsNullOrWhiteSpace(lastPlace.Street))
+            foreach (PlaceInfoItem lastPlace in lastPlaces)
             {
-                addressParts.Add(lastPlace.Street);
+                string title = string.IsNullOrWhiteSpace(lastPlace.Name) ? "Unknown Name" : lastPlace.Name;
+
+                List<string> addressParts = new List<string>();
+                if (!string.IsNullOrWhiteSpace(lastPlace.Street))
+                {
+                    addressParts.Add(lastPlace.Street);
+                }
+
+                string cityLine = string.Join(" ", new[] { lastPlace.PostalCode, lastPlace.City }
+                    .Where(part => !string.IsNullOrWhiteSpace(part)));
+                if (!string.IsNullOrWhiteSpace(cityLine))
+                {
+                    addressParts.Add(cityLine);
+                }
+
+                if (!string.IsNullOrWhiteSpace(lastPlace.Country))
+                {
+                    addressParts.Add(lastPlace.Country);
+                }
+
+                var titleLabel = new Label
+                {
+                    Text = title,
+                    FontAttributes = FontAttributes.Bold,
+                    FontSize = 16,
+                    TextColor = Colors.Black
+                };
+
+                var addressLabel = new Label
+                {
+                    Text = addressParts.Count > 0 ? string.Join("\n", addressParts) : "Unknown address",
+                    FontSize = 14,
+                    TextColor = Colors.Black
+                };
+
+                var openButton = new Button
+                {
+                    Text = "Open",
+                    HorizontalOptions = LayoutOptions.End
+                };
+                openButton.Clicked += async (_, _) => await OpenPlaceAsync(lastPlace);
+
+                var contentStack = new VerticalStackLayout
+                {
+                    Spacing = 6,
+                    HorizontalOptions = LayoutOptions.Fill
+                };
+                contentStack.Add(titleLabel);
+                contentStack.Add(addressLabel);
+                contentStack.Add(openButton);
+
+                var border = new Border
+                {
+                    Padding = 10,
+                    StrokeThickness = 1,
+                    BackgroundColor = Colors.White,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    Content = contentStack
+                };
+
+                lastPlacesStack.Add(border);
             }
-
-            string cityLine = string.Join(" ", new[] { lastPlace.PostalCode, lastPlace.City }
-                .Where(part => !string.IsNullOrWhiteSpace(part)));
-            if (!string.IsNullOrWhiteSpace(cityLine))
-            {
-                addressParts.Add(cityLine);
-            }
-
-            if (!string.IsNullOrWhiteSpace(lastPlace.Country))
-            {
-                addressParts.Add(lastPlace.Country);
-            }
-
-            var titleLabel = new Label
-            {
-                Text = title,
-                FontAttributes = FontAttributes.Bold,
-                FontSize = 16,
-                TextColor = Colors.Black
-            };
-
-            var addressLabel = new Label
-            {
-                Text = addressParts.Count > 0 ? string.Join("\n", addressParts) : "Unknown address",
-                FontSize = 14,
-                TextColor = Colors.Black
-            };
-
-            var openButton = new Button
-            {
-                Text = "Open",
-                HorizontalOptions = LayoutOptions.End
-            };
-            openButton.Clicked += OnOpenLastPlaceClicked;
-
-            var contentStack = new VerticalStackLayout
-            {
-                Spacing = 6,
-                HorizontalOptions = LayoutOptions.Fill
-            };
-            contentStack.Add(titleLabel);
-            contentStack.Add(addressLabel);
-            contentStack.Add(openButton);
-
-            var border = new Border
-            {
-                Padding = 10,
-                StrokeThickness = 1,
-                BackgroundColor = Colors.White,
-                HorizontalOptions = LayoutOptions.Fill,
-                Content = contentStack
-            };
-
-            lastPlacesStack.Add(border);
         }
         else
         {
@@ -179,15 +185,27 @@ public partial class FindPlacePage : ContentPage
         LastSearchPlacesScroll.Content = lastPlacesStack;
     }
 
-    private async void OnOpenLastPlaceClicked(object? sender, EventArgs e)
+    private async Task OpenPlaceAsync(PlaceInfoItem placeInfo)
     {
-        if (SaveLoadData.TryGetLastPlaceInfo(out PlaceInfoItem? lastPlace) && lastPlace != null)
+        if (placeInfo != null)
         {
-            await Navigation.PushAsync(new PlaceScanResultPage(lastPlace));
+            await Navigation.PushAsync(new PlaceScanResultPage(placeInfo));
         }
         else
         {
             await DisplayAlertAsync("No data", "No last place info available", "OK");
         }
+    }
+
+    private async void OnClearLastSearchPlacesClicked(object? sender, EventArgs e)
+    {
+        bool confirm = await DisplayAlertAsync("Clear history", "Delete saved address history?", "Yes", "No");
+        if (!confirm)
+        {
+            return;
+        }
+
+        SaveLoadData.ClearLastPlaceInfos();
+        UpdateLastSearchPlaces();
     }
 }

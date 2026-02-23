@@ -10,6 +10,8 @@ public static class SaveLoadData
     public const string SeparatorChar = ",";
     public const string LastCodesPrefKey = "last_codes";
     public const string LastPlaceInfoPrefKey = "last_place_info";
+    public const string LastPlacesInfoPrefKey = "last_places_info";
+    public const int LastPlacesMaxCount = 10;
     
     /*
     public const string SavedCodesCountPrefName = "saved_codes_count";
@@ -150,11 +152,67 @@ public static class SaveLoadData
             return;
         }
 
-        string json = JsonSerializer.Serialize(placeInfo);
-        Preferences.Set(LastPlaceInfoPrefKey, json);
+        AddLastPlaceInfo(placeInfo);
     }
 
-    public static bool TryGetLastPlaceInfo(out PlaceInfoItem? placeInfo)
+    public static void AddLastPlaceInfo(PlaceInfoItem placeInfo)
+    {
+        if (placeInfo == null)
+        {
+            return;
+        }
+
+        List<PlaceInfoItem> places = GetLastPlaceInfos();
+        places.Insert(0, placeInfo);
+
+        if (places.Count > LastPlacesMaxCount)
+        {
+            places = places.Take(LastPlacesMaxCount).ToList();
+        }
+
+        string placesJson = JsonSerializer.Serialize(places);
+        Preferences.Set(LastPlacesInfoPrefKey, placesJson);
+
+        string lastPlaceJson = JsonSerializer.Serialize(places[0]);
+        Preferences.Set(LastPlaceInfoPrefKey, lastPlaceJson);
+    }
+
+    public static List<PlaceInfoItem> GetLastPlaceInfos()
+    {
+        if (Preferences.ContainsKey(LastPlacesInfoPrefKey))
+        {
+            string json = Preferences.Get(LastPlacesInfoPrefKey, string.Empty);
+            if (!string.IsNullOrWhiteSpace(json))
+            {
+                try
+                {
+                    List<PlaceInfoItem>? places = JsonSerializer.Deserialize<List<PlaceInfoItem>>(json);
+                    if (places != null)
+                    {
+                        return places.Where(place => place != null).ToList();
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        if (TryGetLegacyLastPlaceInfo(out PlaceInfoItem? legacyPlace) && legacyPlace != null)
+        {
+            return new List<PlaceInfoItem> { legacyPlace };
+        }
+
+        return new List<PlaceInfoItem>();
+    }
+
+    public static void ClearLastPlaceInfos()
+    {
+        Preferences.Remove(LastPlacesInfoPrefKey);
+        Preferences.Remove(LastPlaceInfoPrefKey);
+    }
+
+    private static bool TryGetLegacyLastPlaceInfo(out PlaceInfoItem? placeInfo)
     {
         placeInfo = null;
         if (!Preferences.ContainsKey(LastPlaceInfoPrefKey))
@@ -177,6 +235,12 @@ public static class SaveLoadData
         {
             return false;
         }
+    }
+
+    public static bool TryGetLastPlaceInfo(out PlaceInfoItem? placeInfo)
+    {
+        placeInfo = GetLastPlaceInfos().FirstOrDefault();
+        return placeInfo != null;
     }
 
 }
