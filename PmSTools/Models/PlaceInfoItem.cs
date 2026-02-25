@@ -54,6 +54,12 @@ namespace PmSTools.Models
                 return;
 
             var normalized = System.Text.RegularExpressions.Regex.Replace(street.Trim(), @"\s+", " ");
+            normalized = System.Text.RegularExpressions.Regex.Replace(
+                normalized,
+                @"\b([\p{L}'\-]{2,})(\d{1,5}[A-Za-z]?)\b",
+                "$1 $2",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
             var match = System.Text.RegularExpressions.Regex.Match(
                 normalized,
                 @"^(?<name>.+?)\s+(?:(?:n\.?|nº|no\.?|num\.?)\s*)?(?<number>\d{1,5}[A-Za-z]?)$",

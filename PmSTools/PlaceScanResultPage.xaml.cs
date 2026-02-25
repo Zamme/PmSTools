@@ -13,7 +13,12 @@ namespace PmSTools;
 
 public partial class PlaceScanResultPage : ContentPage
 {
-    private const bool EnableGeocodeDebugPopup = true;
+    private static readonly bool EnableGeocodeDebugPopup = false;
+    private const int GeocodeMaxSpainQueryAttempts = 4;
+    private const int GeocodeMaxGlobalQueryAttempts = 2;
+    private const int GeocodeDesiredExactMatchesToStop = 2;
+    private const int GeocodeDesiredNumberedMatchesToStop = 4;
+    private const int GeocodeRequestTimeoutSeconds = 5;
     private const double PhoneCandidatesMinHeight = 170;
     private const double PhoneCandidatesMaxHeight = 320;
     private const double TabletCandidatesMinHeight = 220;
@@ -100,9 +105,12 @@ public partial class PlaceScanResultPage : ContentPage
     {
         public string DisplayName { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
+        public string MatchBadge { get; set; } = string.Empty;
         public double Lat { get; set; }
         public double Lon { get; set; }
         public string HouseNumber { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string PostalCode { get; set; } = string.Empty;
         public int SourceOrder { get; set; }
     }
 
@@ -281,12 +289,10 @@ public partial class PlaceScanResultPage : ContentPage
             "    <style>\n" +
             "        body { margin: 0; padding: 0; font-family: -apple-system, Roboto, 'Segoe UI', Arial; }\n" +
             "        #map { position: absolute; top: 0; bottom: 0; width: 100%; }\n" +
-            "        .no-results { position: absolute; left: 10px; top: 10px; background: rgba(255,255,255,0.95); padding: 8px; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); z-index: 400; }\n" +
             "    </style>\n" +
             "</head>\n" +
             "<body>\n" +
             "    <div id='map'></" + "div>\n" +
-            "    <div id='noResults' class='no-results' style='display:none;'>No location matches found</div>\n" +
             "    <script>\n" +
             "        var map = L.map('map').setView([40, 0], 4);\n" +
             "        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {\n" +
@@ -299,34 +305,22 @@ public partial class PlaceScanResultPage : ContentPage
             "        var address = \"" + escapedAddress + "\";\n" +
             "        var label = \"" + escapedLabel + "\";\n" +
             "\n" +
-            "        // Request up to 5 candidates from Nominatim; native UI displays the list\n" +
-            "        fetch('https://nominatim.openstreetmap.org/search?format=json&limit=5&q=' + encodeURIComponent(address))\n" +
+            "        // Lightweight fallback: place one marker quickly while native candidates load.\n" +
+            "        fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(address))\n" +
             "            .then(response => response.json())\n" +
             "            .then(data => {\n" +
-            "                if (!data || data.length === 0) { document.getElementById('noResults').style.display = 'block'; return; }\n" +
-            "\n" +
-            "                var bounds = L.latLngBounds();\n" +
-            "\n" +
-            "                data.forEach(function(item, index) {\n" +
-            "                    var lat = parseFloat(item.lat); var lon = parseFloat(item.lon);\n" +
-            "                    var title = item.display_name || (label + ' - ' + address);\n" +
-            "\n" +
-            "                    var marker = L.marker([lat, lon]).addTo(map)\n" +
-            "                        .bindPopup('<div style=\"font-size:14px;\"><strong>' + (item.type || label) + '</strong><br/>' + title + '<br/><a href=\"app://selected?lat=' + lat + '&lon=' + lon + '&label=' + encodeURIComponent(item.display_name) + '\" style=\"color:#0078d4; text-decoration:none;\">Use this location</a></div>');\n" +
-            "\n" +
-            "                    markers.push({ marker: marker, item: item, index: index });\n" +
-            "                    bounds.extend([lat, lon]);\n" +
-            "\n" +
-            "                    // keep marker popup behavior only (native list handles selection)\n" +
-            "                    marker.on('click', function(){ marker.openPopup(); });\n" +
-            "                });\n" +
-            "\n" +
-            "                if (!bounds.isValid()) { map.setView([parseFloat(data[0].lat), parseFloat(data[0].lon)], 16); } else { map.fitBounds(bounds, { padding: [50, 50] }); }\n" +
-            "\n" +
-            "                // open first marker popup by default\n" +
-            "                if (markers.length > 0) { markers[0].marker.openPopup(); }\n" +
+            "                if (!data || data.length === 0) return;\n" +
+            "                var first = data[0];\n" +
+            "                var lat = parseFloat(first.lat);\n" +
+            "                var lon = parseFloat(first.lon);\n" +
+            "                if (isNaN(lat) || isNaN(lon)) return;\n" +
+            "                var title = first.display_name || (label + ' - ' + address);\n" +
+            "                var marker = L.marker([lat, lon]).addTo(map)\n" +
+            "                    .bindPopup('<div style=\"font-size:14px;\"><strong>' + (first.type || label) + '</strong><br/>' + title + '</div>');\n" +
+            "                markers.push({ marker: marker, item: first, index: 0 });\n" +
+            "                map.setView([lat, lon], 16);\n" +
             "            })\n" +
-            "            .catch(error => { document.getElementById('noResults').style.display = 'block'; });\n" +
+            "            .catch(function(){});\n" +
             "    </script>\n" +
             "</body>\n" +
             "</html>";
@@ -389,6 +383,11 @@ public partial class PlaceScanResultPage : ContentPage
             return (string.Empty, string.Empty);
 
         var normalized = System.Text.RegularExpressions.Regex.Replace(street.Trim(), @"\s+", " ");
+        normalized = System.Text.RegularExpressions.Regex.Replace(
+            normalized,
+            @"\b([\p{L}'\-]{2,})(\d{1,5}[A-Za-z]?)\b",
+            "$1 $2",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
         // Strong signal: house number followed by floor/door token with '-' or '/'.
         // Example: "AV GENERALITAT 117 4-8" -> number "117".
@@ -501,13 +500,12 @@ public partial class PlaceScanResultPage : ContentPage
 
     private string NormalizeHouseNumberForCompare(string? value)
     {
-        if (string.IsNullOrWhiteSpace(value))
-            return string.Empty;
+        return GeocodeScoring.NormalizeHouseNumberForCompare(value);
+    }
 
-        var normalized = value.Trim().ToUpperInvariant();
-        normalized = System.Text.RegularExpressions.Regex.Replace(normalized, @"\s+", string.Empty);
-        normalized = System.Text.RegularExpressions.Regex.Replace(normalized, @"[^0-9A-Z]", string.Empty);
-        return normalized;
+    private string NormalizeCityForCompare(string? value)
+    {
+        return GeocodeScoring.NormalizeCityForCompare(NormalizeCityForGeocoding(value ?? string.Empty));
     }
 
     private bool CandidateMatchesHouseNumber(GeocodeCandidate candidate, string desiredHouseNumber)
@@ -515,42 +513,31 @@ public partial class PlaceScanResultPage : ContentPage
         if (candidate == null)
             return false;
 
-        var desired = NormalizeHouseNumberForCompare(desiredHouseNumber);
-        if (string.IsNullOrWhiteSpace(desired))
-            return false;
-
-        var candidateHouse = NormalizeHouseNumberForCompare(candidate.HouseNumber);
-        return !string.IsNullOrWhiteSpace(candidateHouse) && string.Equals(candidateHouse, desired, StringComparison.OrdinalIgnoreCase);
+        return GeocodeScoring.CandidateMatchesHouseNumber(candidate.HouseNumber, desiredHouseNumber);
     }
 
-    private int ComputeCandidateScore(GeocodeCandidate candidate, string desiredHouseNumber)
+    private bool CandidateHasHouseNumber(GeocodeCandidate candidate)
+    {
+        if (candidate == null)
+            return false;
+
+        return GeocodeScoring.CandidateHasHouseNumber(candidate.HouseNumber);
+    }
+
+    private int ComputeCandidateScore(GeocodeCandidate candidate, string desiredHouseNumber, string desiredPostalCode, string desiredCity)
     {
         if (candidate == null)
             return int.MinValue;
 
-        var score = 0;
-
-        if (CandidateMatchesHouseNumber(candidate, desiredHouseNumber))
-            score += 1000;
-
-        if (!string.IsNullOrWhiteSpace(candidate.Type) &&
-            (candidate.Type.Equals("house", StringComparison.OrdinalIgnoreCase) ||
-             candidate.Type.Equals("residential", StringComparison.OrdinalIgnoreCase) ||
-             candidate.Type.Equals("building", StringComparison.OrdinalIgnoreCase)))
-        {
-            score += 40;
-        }
-
-        if (!string.IsNullOrWhiteSpace(desiredHouseNumber))
-        {
-            var desired = NormalizeHouseNumberForCompare(desiredHouseNumber);
-            var candidateHouse = NormalizeHouseNumberForCompare(candidate.HouseNumber);
-            if (!string.IsNullOrWhiteSpace(candidateHouse) && !string.Equals(candidateHouse, desired, StringComparison.OrdinalIgnoreCase))
-                score -= 80;
-        }
-
-        score -= Math.Max(0, candidate.SourceOrder);
-        return score;
+        return GeocodeScoring.ComputeCandidateScore(
+            candidate.Type,
+            candidate.HouseNumber,
+            candidate.PostalCode,
+            candidate.City,
+            desiredHouseNumber,
+            desiredPostalCode,
+            NormalizeCityForGeocoding(desiredCity),
+            candidate.SourceOrder);
     }
 
     private string SimplifyStreetForGeocoding(string street)
@@ -559,6 +546,33 @@ public partial class PlaceScanResultPage : ContentPage
             return string.Empty;
 
         var cleaned = street.Trim();
+
+        cleaned = System.Text.RegularExpressions.Regex.Replace(
+            cleaned,
+            @"^\s*CL(?:\.|\b)\s*",
+            "Carrer ",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
+
+        cleaned = System.Text.RegularExpressions.Regex.Replace(
+            cleaned,
+            @"^\s*CR(?:\.|\b)\s*",
+            "Carrer ",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
+
+        // Number abbreviations are optional noise for geocoding.
+        // Examples: "Nº 71", "N. 71", "NUM. 71" -> "71".
+        cleaned = System.Text.RegularExpressions.Regex.Replace(
+            cleaned,
+            @"\b(?:n\.?|nº|no\.?|num\.?)\s*(\d{1,5}[A-Za-z]?)\b",
+            "$1",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        // Also remove standalone number abbreviations when OCR splits tokens oddly.
+        cleaned = System.Text.RegularExpressions.Regex.Replace(
+            cleaned,
+            @"\b(?:n\.?|nº|no\.?|num\.?)\b",
+            " ",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
         // Keep only the main street line before apartment/floor details after commas.
         var commaSplit = cleaned.Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -610,7 +624,7 @@ public partial class PlaceScanResultPage : ContentPage
         // Example: "Calle de Francesc Moragas 4" -> "Francesc Moragas 4"
         cleaned = System.Text.RegularExpressions.Regex.Replace(
             cleaned,
-            @"^(?:Calle|C\.|C\/|C\b|CL(?:\.|\b)|Avenida|Av\.|Avda\.?|Avgda\.?|Plaza|Pza\.|Paseo|Ps\.|Passeig|Pg\.?|Passatge|PTGE(?:\.|\b)|PTG(?:\.|\b)|Carrera|Cr\.|Cr\/|Carretera|Ctra\.?|Camino|Cam\.?|Traves[ií]a|Trav\.?|Travessera|Carrer|CARRE(?:\.|\b)|Carr\.|Avinguda|Ronda|Rda\.?|Rambla|Pla[cç]a|Pol[íi]gono|Pol\.?|Urbanizaci[oó]n|Urb\.?|Via|R[uú]a)\b\s*",
+            @"^(?:Calle|C\.|C\/|C\b|CL(?:\.|\b)|Avenida|Av\.|Avda\.?|Avgda\.?|Plaza|Pza\.|Paseo|Ps\.|Passeig|Pg\.?|Passatge|PTGE(?:\.|\b)|PTG(?:\.|\b)|Carrera|Cr(?:\.|\/|\b)|Carretera|Ctra\.?|Camino|Cam\.?|Traves[ií]a|Trav\.?|Travessera|Carrer|CARRE(?:\.|\b)|Carr\.|Avinguda|Ronda|Rda\.?|Rambla|Pla[cç]a|Pol[íi]gono|Pol\.?|Urbanizaci[oó]n|Urb\.?|Via|R[uú]a)\b\s*",
             string.Empty,
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
@@ -681,12 +695,23 @@ public partial class PlaceScanResultPage : ContentPage
         var postalCode = (placeInfo.PostalCode ?? string.Empty).Trim();
         var city = (placeInfo.City ?? string.Empty).Trim();
         var street = (placeInfo.Street ?? string.Empty).Trim();
+        street = System.Text.RegularExpressions.Regex.Replace(
+            street,
+            @"^\s*CL(?:\.|\b)\s*",
+            "Carrer ",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
+        street = System.Text.RegularExpressions.Regex.Replace(
+            street,
+            @"^\s*CR(?:\.|\b)\s*",
+            "Carrer ",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
         var streetMain = SimplifyStreetForGeocoding(street);
         var streetVariants = BuildStreetVariants(streetMain);
         var country = (placeInfo.Country ?? string.Empty).Trim();
         var name = (placeInfo.Name ?? string.Empty).Trim();
 
         var postalCity = string.Join(" ", new[] { postalCode, city }.Where(v => !string.IsNullOrWhiteSpace(v))).Trim();
+        var postalOnly = postalCode;
 
         void AddQuery(params string[] parts)
         {
@@ -700,12 +725,15 @@ public partial class PlaceScanResultPage : ContentPage
         // Prefer precise but practical queries first.
         foreach (var streetVariant in streetVariants)
         {
+            AddQuery(streetVariant, postalOnly, country);
             AddQuery(streetVariant, postalCity, country);
             AddQuery(postalCity, streetVariant, country);
             AddQuery(streetVariant, city, country);
         }
 
         AddQuery(street, postalCity, country);
+        AddQuery(street, postalOnly, country);
+        AddQuery(postalOnly, country);
         AddQuery(postalCity, country);
         AddQuery(city, country);
         AddQuery(name, city, country);
@@ -913,7 +941,7 @@ public partial class PlaceScanResultPage : ContentPage
 
         var cityNoAcc = RemoveDiacritics(city);
 
-        var baseUrl = "https://nominatim.openstreetmap.org/search?format=json&limit=5&addressdetails=1";
+        var baseUrl = "https://nominatim.openstreetmap.org/search?format=json&limit=3&addressdetails=1";
         if (restrictToSpain)
             baseUrl += "&countrycodes=es";
 
@@ -933,20 +961,24 @@ public partial class PlaceScanResultPage : ContentPage
             if (parts.Count > 0) AddUrl(baseUrl + "&" + string.Join("&", parts));
         }
 
+        // Fast path first: postal-only query is usually stable even with OCR city noise.
+        AddStructured(string.Empty, string.Empty, postal, country);
+        AddStructured(string.Empty, city, postal, country);
+        AddStructured(string.Empty, cityNoAcc, postal, country);
+
         // Structured queries first (more reliable than free text).
         foreach (var streetVariant in streetVariants)
         {
             var streetNoAcc = RemoveDiacritics(streetVariant);
 
+            AddStructured(streetVariant, string.Empty, postal, country);
+            AddStructured(streetNoAcc, string.Empty, postal, country);
             AddStructured(streetVariant, city, postal, country);
             AddStructured(streetVariant, cityNoAcc, postal, country);
             AddStructured(streetNoAcc, cityNoAcc, postal, country);
             AddStructured(streetVariant, city, string.Empty, country);
             AddStructured(streetNoAcc, cityNoAcc, string.Empty, country);
         }
-
-        AddStructured(string.Empty, city, postal, country);
-        AddStructured(string.Empty, cityNoAcc, postal, country);
 
         // Free-text fallbacks.
         foreach (var query in BuildGeocodeQueries(placeInfo))
@@ -1166,7 +1198,7 @@ public partial class PlaceScanResultPage : ContentPage
     {
         return System.Text.RegularExpressions.Regex.IsMatch(
             line ?? string.Empty,
-            @"^(?:Calle|C\.|C\/|C\b|CL(?:\.|\b)|Avenida|Av\.|Avda\.?|Avgda\.?|Plaza|Pza\.|Paseo|Ps\.|Passeig|Pg\.?|Passatge|PTGE(?:\.|\b)|PTG(?:\.|\b)|Carrera|Cr\.|Cr\/|Carretera|Ctra\.?|Camino|Cam\.?|Travesía|Trav\.?|Travessera|Carrer|CARRE(?:\.|\b)|Carr\.|Avinguda|Ronda|Rda\.?|Rambla|Plaça|Placa|Pol[íi]gono|Pol\.?|Urbanizaci[oó]n|Urb\.?|Via|R[uú]a)",
+            @"^(?:Calle|C\.|C\/|C\b|CL(?:\.|\b)|Avenida|Av\.|Avda\.?|Avgda\.?|Plaza|Pza\.|Paseo|Ps\.|Passeig|Pg\.?|Passatge|PTGE(?:\.|\b)|PTG(?:\.|\b)|Carrera|Cr(?:\.|\/|\b)|Carretera|Ctra\.?|Camino|Cam\.?|Travesía|Trav\.?|Travessera|Carrer|CARRE(?:\.|\b)|Carr\.|Avinguda|Ronda|Rda\.?|Rambla|Plaça|Placa|Pol[íi]gono|Pol\.?|Urbanizaci[oó]n|Urb\.?|Via|R[uú]a)",
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
     }
 
@@ -1220,7 +1252,7 @@ public partial class PlaceScanResultPage : ContentPage
         // Examples: "Calle", "C/", "Calle de", "Avda del"
         return System.Text.RegularExpressions.Regex.IsMatch(
             trimmed,
-            @"^(?:Calle|C\.|C\/|C\b|CL(?:\.|\b)|Avenida|Av\.|Avda\.?|Avgda\.?|Carrer|CARRE(?:\.|\b)|Carr\.|Cr\.|Cr\/|Passeig|Pg\.?|Passatge|PTGE(?:\.|\b)|PTG(?:\.|\b)|Plaza|Pza\.?|Ronda|Rda\.?|Rambla)(?:\s+(?:de|del|de la|de l'|d'))?\s*$",
+            @"^(?:Calle|C\.|C\/|C\b|CL(?:\.|\b)|Avenida|Av\.|Avda\.?|Avgda\.?|Carrer|CARRE(?:\.|\b)|Carr\.|Cr(?:\.|\/|\b)|Passeig|Pg\.?|Passatge|PTGE(?:\.|\b)|PTG(?:\.|\b)|Plaza|Pza\.?|Ronda|Rda\.?|Rambla)(?:\s+(?:de|del|de la|de l'|d'))?\s*$",
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
     }
 
@@ -1681,6 +1713,12 @@ public partial class PlaceScanResultPage : ContentPage
 
             placeInfo.Street = System.Text.RegularExpressions.Regex.Replace(
                 placeInfo.Street,
+                @"^\s*CR(?:\.|\b)\s*",
+                "Carrer ",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
+
+            placeInfo.Street = System.Text.RegularExpressions.Regex.Replace(
+                placeInfo.Street,
                 @"^\s*CARRE(?:\.|\b)\s*",
                 "Carrer ",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
@@ -1703,7 +1741,7 @@ public partial class PlaceScanResultPage : ContentPage
         {
             var streetMatch = System.Text.RegularExpressions.Regex.Match(
                 ocrResult,
-                @"((?:Calle|C\.|C\/|C\b|CL(?:\.|\b)|Avenida|Av\.|Avda\.?|Avgda\.?|Plaza|Pza\.|Paseo|Ps\.|Passeig|Pg\.?|Passatge|PTGE(?:\.|\b)|PTG(?:\.|\b)|Carrera|Cr\.|Cr\/|Carretera|Ctra\.?|Camino|Cam\.?|Travesía|Trav\.?|Travessera|Carrer|CARRE(?:\.|\b)|Carr\.|Avinguda|Ronda|Rda\.?|Rambla|Plaça|Placa|Pol[íi]gono|Pol\.?|Urbanizaci[oó]n|Urb\.?|Via|R[uú]a)\s+[^\r\n]{4,}(?:\s*[,]?\s*\d+[a-z]?)?)",
+                @"((?:Calle|C\.|C\/|C\b|CL(?:\.|\b)|Avenida|Av\.|Avda\.?|Avgda\.?|Plaza|Pza\.|Paseo|Ps\.|Passeig|Pg\.?|Passatge|PTGE(?:\.|\b)|PTG(?:\.|\b)|Carrera|Cr(?:\.|\/|\b)|Carretera|Ctra\.?|Camino|Cam\.?|Travesía|Trav\.?|Travessera|Carrer|CARRE(?:\.|\b)|Carr\.|Avinguda|Ronda|Rda\.?|Rambla|Plaça|Placa|Pol[íi]gono|Pol\.?|Urbanizaci[oó]n|Urb\.?|Via|R[uú]a)\s+[^\r\n]{4,}(?:\s*[,]?\s*\d+[a-z]?)?)",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Multiline);
 
             if (streetMatch.Success)
@@ -1843,6 +1881,7 @@ public partial class PlaceScanResultPage : ContentPage
             queryUrlsGlobal = BuildGeocodeUrls(placeInfo, restrictToSpain: false);
 
             using var http = new HttpClient();
+            http.Timeout = TimeSpan.FromSeconds(GeocodeRequestTimeoutSeconds);
             // Nominatim requires a valid User-Agent — set one so the request is accepted
             try
             {
@@ -1858,10 +1897,16 @@ public partial class PlaceScanResultPage : ContentPage
                 : parsedStreetNumber;
             int sourceOrder = 0;
 
-            async Task QueryCandidatesAsync(List<string> queryUrls)
+            async Task QueryCandidatesAsync(List<string> queryUrls, int maxQueryAttempts)
             {
+                var attempts = 0;
                 foreach (var queryUrl in queryUrls)
                 {
+                    if (attempts >= maxQueryAttempts)
+                        break;
+
+                    attempts++;
+
                     try
                     {
                         using var response = await http.GetAsync(queryUrl);
@@ -1886,11 +1931,18 @@ public partial class PlaceScanResultPage : ContentPage
                                 var display = item.TryGetProperty("display_name", out var dn) ? dn.GetString() ?? string.Empty : string.Empty;
                                 var type = item.TryGetProperty("type", out var t) ? t.GetString() ?? string.Empty : string.Empty;
                                 var houseNumber = string.Empty;
+                                var candidateCity = string.Empty;
+                                var candidatePostalCode = string.Empty;
 
                                 if (item.TryGetProperty("address", out var addressProp) && addressProp.ValueKind == JsonValueKind.Object)
                                 {
                                     if (addressProp.TryGetProperty("house_number", out var houseNumberProp))
                                         houseNumber = houseNumberProp.GetString() ?? string.Empty;
+
+                                    candidateCity = ExtractCityFromAddress(addressProp);
+
+                                    if (addressProp.TryGetProperty("postcode", out var postcodeProp))
+                                        candidatePostalCode = NormalizePostalCodeCandidate(postcodeProp.GetString() ?? string.Empty);
                                 }
 
                                 double lat = 0, lon = 0;
@@ -1907,6 +1959,8 @@ public partial class PlaceScanResultPage : ContentPage
                                     Lat = lat,
                                     Lon = lon,
                                     HouseNumber = houseNumber,
+                                    City = candidateCity,
+                                    PostalCode = candidatePostalCode,
                                     SourceOrder = sourceOrder++
                                 });
                             }
@@ -1920,22 +1974,31 @@ public partial class PlaceScanResultPage : ContentPage
                         continue;
                     }
 
-                    if (foundCandidates.Count > 0)
+                    if (foundCandidates.Count == 0)
+                        continue;
+
+                    if (string.IsNullOrWhiteSpace(desiredHouseNumber))
                     {
-                        if (string.IsNullOrWhiteSpace(desiredHouseNumber) ||
-                            foundCandidates.Any(c => CandidateMatchesHouseNumber(c, desiredHouseNumber)))
-                        {
+                        if (foundCandidates.Count >= GeocodeDesiredNumberedMatchesToStop)
                             break;
-                        }
+                        continue;
                     }
+
+                    var exactMatches = foundCandidates.Count(c => CandidateMatchesHouseNumber(c, desiredHouseNumber));
+                    if (exactMatches >= GeocodeDesiredExactMatchesToStop)
+                        break;
+
+                    var candidatesWithAnyNumber = foundCandidates.Count(CandidateHasHouseNumber);
+                    if (attempts >= 3 && candidatesWithAnyNumber >= GeocodeDesiredNumberedMatchesToStop)
+                        break;
                 }
             }
 
-            await QueryCandidatesAsync(queryUrlsSpain);
+            await QueryCandidatesAsync(queryUrlsSpain, GeocodeMaxSpainQueryAttempts);
             if (foundCandidates.Count == 0)
             {
                 // Fallback: remove country-code restriction for OCR inputs that produce out-of-country or noisy locality terms.
-                await QueryCandidatesAsync(queryUrlsGlobal);
+                await QueryCandidatesAsync(queryUrlsGlobal, GeocodeMaxGlobalQueryAttempts);
             }
 
             if (!string.IsNullOrWhiteSpace(desiredHouseNumber))
@@ -1948,12 +2011,59 @@ public partial class PlaceScanResultPage : ContentPage
                     foundCandidates = strictMatches;
             }
 
+                var desiredPostal = NormalizePostalCodeCandidate(placeInfo.PostalCode ?? string.Empty);
+                if (desiredPostal.Length == 5)
+                {
+                    var postalMatches = foundCandidates
+                        .Where(c => NormalizePostalCodeCandidate(c.PostalCode) == desiredPostal)
+                        .ToList();
+
+                    if (postalMatches.Count > 0)
+                        foundCandidates = postalMatches;
+                }
+
+            // Deduplicate repeated results from multiple query variants.
+            if (foundCandidates.Count > 1)
+            {
+                foundCandidates = foundCandidates
+                    .GroupBy(c =>
+                        $"{Math.Round(c.Lat, 6).ToString(CultureInfo.InvariantCulture)}|{Math.Round(c.Lon, 6).ToString(CultureInfo.InvariantCulture)}|{NormalizeHouseNumberForCompare(c.HouseNumber)}|{c.Type}",
+                        StringComparer.OrdinalIgnoreCase)
+                    .Select(g => g.OrderBy(c => c.SourceOrder).First())
+                    .ToList();
+            }
+
             if (foundCandidates.Count > 0)
             {
                 foundCandidates = foundCandidates
-                    .OrderByDescending(c => ComputeCandidateScore(c, desiredHouseNumber))
+                    .OrderByDescending(c => ComputeCandidateScore(c, desiredHouseNumber, placeInfo.PostalCode ?? string.Empty, placeInfo.City ?? string.Empty))
+                    .ThenByDescending(c => CandidateMatchesHouseNumber(c, desiredHouseNumber))
+                    .ThenByDescending(c => CandidateHasHouseNumber(c))
                     .ThenBy(c => c.SourceOrder)
                     .ToList();
+
+                // Keep the list concise in the UI.
+                const int maxCandidatesToShow = 10;
+                if (foundCandidates.Count > maxCandidatesToShow)
+                    foundCandidates = foundCandidates.Take(maxCandidatesToShow).ToList();
+
+                foreach (var candidate in foundCandidates)
+                    candidate.MatchBadge = string.Empty;
+
+                if (foundCandidates.Count > 0 && CandidateMatchesHouseNumber(foundCandidates[0], desiredHouseNumber))
+                    foundCandidates[0].MatchBadge = "✓ exact number match";
+
+                var resolvedCity = ResolveCityFromCandidates(placeInfo, foundCandidates);
+                if (!string.IsNullOrWhiteSpace(resolvedCity) &&
+                    !string.Equals(placeInfo.City ?? string.Empty, resolvedCity, StringComparison.OrdinalIgnoreCase))
+                {
+                    placeInfo.City = resolvedCity;
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        UpdateResultLabels(placeInfo);
+                        PopulateEditFields(placeInfo);
+                    });
+                }
             }
 
             if (EnableGeocodeDebugPopup)
@@ -2127,6 +2237,41 @@ public partial class PlaceScanResultPage : ContentPage
         {
             await DisplayAlertAsync("Location selected", $"{cand.DisplayName}\nLat: {cand.Lat:F6}, Lon: {cand.Lon:F6}", "OK");
         }
+    }
+
+    private string ExtractCityFromAddress(JsonElement addressProp)
+    {
+        foreach (var key in new[] { "city", "town", "village", "municipality", "hamlet", "county" })
+        {
+            if (addressProp.TryGetProperty(key, out var cityProp))
+            {
+                var value = cityProp.GetString() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(value))
+                    return NormalizeCityForGeocoding(value);
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private string ResolveCityFromCandidates(PlaceInfoItem placeInfo, List<GeocodeCandidate> candidates)
+    {
+        if (placeInfo == null || candidates == null || candidates.Count == 0)
+            return string.Empty;
+
+        var desiredPostal = NormalizePostalCodeCandidate(placeInfo.PostalCode ?? string.Empty);
+        if (desiredPostal.Length == 5)
+        {
+            var postalMatch = candidates.FirstOrDefault(c =>
+                !string.IsNullOrWhiteSpace(c.City) &&
+                NormalizePostalCodeCandidate(c.PostalCode) == desiredPostal);
+
+            if (postalMatch != null)
+                return postalMatch.City;
+        }
+
+        var firstWithCity = candidates.FirstOrDefault(c => !string.IsNullOrWhiteSpace(c.City));
+        return firstWithCity?.City ?? string.Empty;
     }
 
     private async void CandidatesList_SelectionChanged(object sender, SelectionChangedEventArgs e)

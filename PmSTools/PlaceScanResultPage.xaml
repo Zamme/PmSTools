@@ -106,6 +106,10 @@
                                     <Label Text="{Binding DisplayName}"
                                            FontAttributes="Bold"
                                            LineBreakMode="WordWrap"/>
+                                     <Label Text="{Binding MatchBadge}"
+                                         FontSize="12"
+                                         FontAttributes="Bold"
+                                         LineBreakMode="WordWrap"/>
                                     <Label Text="{Binding Type}"
                                            FontSize="12"
                                            LineBreakMode="WordWrap"/>
