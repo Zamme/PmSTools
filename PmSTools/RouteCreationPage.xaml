@@ -5,15 +5,10 @@
              xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              x:Class="PmSTools.RouteCreationPage"
              Title="{x:Static strings:LangResources.RouteCreationPageTitleText}">
-    <Grid RowDefinitions="Auto,*" Padding="16">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
         <VerticalStackLayout Grid.Row="0" Spacing="8">
             <Button Text="Create new route"
                     Clicked="OnCreateNewRouteClicked" />
-                <Button Text="Delete all routes"
-                    BackgroundColor="IndianRed"
-                    TextColor="White"
-                    IsEnabled="{Binding HasRoutes}"
-                    Clicked="OnDeleteAllRoutesClicked" />
         </VerticalStackLayout>
 
         <ScrollView Grid.Row="1" Margin="0,12,0,0">
@@ -66,5 +61,12 @@
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
+
+        <Button Grid.Row="2"
+                Text="Delete all routes"
+                BackgroundColor="IndianRed"
+                TextColor="White"
+                IsEnabled="{Binding HasRoutes}"
+                Clicked="OnDeleteAllRoutesClicked" />
     </Grid>
 </ContentPage>
