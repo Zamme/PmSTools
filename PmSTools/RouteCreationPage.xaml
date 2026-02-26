@@ -5,9 +5,66 @@
              xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              x:Class="PmSTools.RouteCreationPage"
              Title="{x:Static strings:LangResources.RouteCreationPageTitleText}">
-    <Grid>
-        <Label Text="{x:Static strings:LangResources.RouteCreationPageLabelText}"
-               HorizontalOptions="Center"
-               VerticalOptions="Center" />
+    <Grid RowDefinitions="Auto,*" Padding="16">
+        <VerticalStackLayout Grid.Row="0" Spacing="8">
+            <Button Text="Create new route"
+                    Clicked="OnCreateNewRouteClicked" />
+                <Button Text="Delete all routes"
+                    BackgroundColor="IndianRed"
+                    TextColor="White"
+                    IsEnabled="{Binding HasRoutes}"
+                    Clicked="OnDeleteAllRoutesClicked" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1" Margin="0,12,0,0">
+            <VerticalStackLayout Spacing="12">
+                <Label x:Name="EmptyStateLabel"
+                       Text="No routes yet"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+
+                <VerticalStackLayout Spacing="12"
+                             BindableLayout.ItemsSource="{Binding RouteItems}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                        <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+                          ColumnSpacing="8">
+                        <Button Grid.Column="0"
+                            Text="{Binding DisplayName}"
+                            LineBreakMode="WordWrap"
+                            CommandParameter="{Binding .}"
+                            Clicked="OnRouteSelectedClicked" />
+                        <Button Grid.Column="1"
+                            Text="Rename"
+                            FontSize="12"
+                            Padding="8,4"
+                            CommandParameter="{Binding .}"
+                            Clicked="OnRenameRouteClicked" />
+                        <Button Grid.Column="2"
+                            Text="Delete"
+                            FontSize="12"
+                            Padding="8,4"
+                            CommandParameter="{Binding .}"
+                            Clicked="OnDeleteRouteClicked" />
+                        <Button Grid.Column="3"
+                            Text="U"
+                            FontSize="12"
+                            Padding="8,4"
+                            IsEnabled="{Binding CanMoveUp}"
+                            CommandParameter="{Binding .}"
+                            Clicked="OnMoveRouteUpClicked" />
+                        <Button Grid.Column="4"
+                            Text="D"
+                            FontSize="12"
+                            Padding="8,4"
+                            IsEnabled="{Binding CanMoveDown}"
+                            CommandParameter="{Binding .}"
+                            Clicked="OnMoveRouteDownClicked" />
+                        </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 </ContentPage>

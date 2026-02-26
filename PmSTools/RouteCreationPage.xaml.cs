@@ -1,9 +1,187 @@
+using System.Collections.ObjectModel;
+using PmSTools.Models;
+
 namespace PmSTools;
 
 public partial class RouteCreationPage : ContentPage
 {
+    private readonly ObservableCollection<DeliveryRoute> _routes;
+    public ObservableCollection<DeliveryRoute> Routes => _routes;
+    public bool HasRoutes => _routes.Count > 0;
+
+    public ObservableCollection<RouteListItem> RouteItems { get; }
+
     public RouteCreationPage()
     {
         InitializeComponent();
+
+        _routes = SaveLoadData.TryGetSavedDeliveryRoutes(out var savedRoutes) && savedRoutes.Count > 0
+            ? new ObservableCollection<DeliveryRoute>(savedRoutes)
+            : new ObservableCollection<DeliveryRoute>();
+
+        RouteItems = new ObservableCollection<RouteListItem>();
+
+        BindingContext = this;
+        SyncRouteItemsWithRoutes();
+        UpdateEmptyStateVisibility();
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        SyncRouteItemsWithRoutes();
+        UpdateEmptyStateVisibility();
+    }
+
+    private void OnCreateNewRouteClicked(object? sender, EventArgs e)
+    {
+        var newRoute = new DeliveryRoute();
+        if (SaveLoadData.TryGetLastPlaceInfo(out var lastPlaceInfo) && lastPlaceInfo != null)
+        {
+            newRoute.AddStop(lastPlaceInfo);
+        }
+
+        _routes.Add(newRoute);
+        SaveLoadData.SaveDeliveryRoutes(_routes);
+        SyncRouteItemsWithRoutes();
+        UpdateEmptyStateVisibility();
+    }
+
+    private void UpdateEmptyStateVisibility()
+    {
+        EmptyStateLabel.IsVisible = RouteItems.Count == 0;
+        OnPropertyChanged(nameof(HasRoutes));
+    }
+
+    private async void OnRouteSelectedClicked(object? sender, EventArgs e)
+    {
+        if (sender is not Button { CommandParameter: RouteListItem routeItem })
+            return;
+
+        await Navigation.PushAsync(new RouteEditorPage(_routes, routeItem.Route, routeItem.Number));
+    }
+
+    private async void OnRenameRouteClicked(object? sender, EventArgs e)
+    {
+        if (sender is not Button { CommandParameter: RouteListItem routeItem })
+            return;
+
+        var currentName = routeItem.Route.Name ?? string.Empty;
+        var newName = await DisplayPromptAsync("Rename route", "Enter a name for this route.",
+            initialValue: currentName);
+
+        if (newName == null)
+            return;
+
+        routeItem.Route.Name = string.IsNullOrWhiteSpace(newName) ? null : newName.Trim();
+        SaveLoadData.SaveDeliveryRoutes(_routes);
+        SyncRouteItemsWithRoutes();
+    }
+
+    private async void OnDeleteRouteClicked(object? sender, EventArgs e)
+    {
+        if (sender is not Button { CommandParameter: RouteListItem routeItem })
+            return;
+
+        var confirm = await DisplayAlert("Delete route",
+            $"Delete {routeItem.DisplayName} and all of its stops?", "Delete", "Cancel");
+
+        if (!confirm)
+            return;
+
+        _routes.Remove(routeItem.Route);
+        SaveLoadData.SaveDeliveryRoutes(_routes);
+        SyncRouteItemsWithRoutes();
+        UpdateEmptyStateVisibility();
+    }
+
+    private async void OnDeleteAllRoutesClicked(object? sender, EventArgs e)
+    {
+        if (_routes.Count == 0)
+            return;
+
+        var confirm = await DisplayAlert("Delete all routes",
+            "Delete all routes and their stops?", "Delete all", "Cancel");
+
+        if (!confirm)
+            return;
+
+        _routes.Clear();
+        SaveLoadData.ClearSavedDeliveryRoute();
+        SyncRouteItemsWithRoutes();
+        UpdateEmptyStateVisibility();
+    }
+
+    private void OnMoveRouteUpClicked(object? sender, EventArgs e)
+    {
+        if (sender is not Button { CommandParameter: RouteListItem routeItem })
+            return;
+
+        var index = _routes.IndexOf(routeItem.Route);
+        if (index <= 0)
+            return;
+
+        _routes.Move(index, index - 1);
+        SaveLoadData.SaveDeliveryRoutes(_routes);
+        SyncRouteItemsWithRoutes();
+    }
+
+    private void OnMoveRouteDownClicked(object? sender, EventArgs e)
+    {
+        if (sender is not Button { CommandParameter: RouteListItem routeItem })
+            return;
+
+        var index = _routes.IndexOf(routeItem.Route);
+        if (index < 0 || index >= _routes.Count - 1)
+            return;
+
+        _routes.Move(index, index + 1);
+        SaveLoadData.SaveDeliveryRoutes(_routes);
+        SyncRouteItemsWithRoutes();
+    }
+
+    private void SyncRouteItemsWithRoutes()
+    {
+        RouteItems.Clear();
+
+        for (var routeIndex = 0; routeIndex < _routes.Count; routeIndex++)
+        {
+            var number = routeIndex + 1;
+            var route = _routes[routeIndex];
+            RouteItems.Add(new RouteListItem(
+                route,
+                number,
+                BuildRouteDisplayName(route, number),
+                routeIndex > 0,
+                routeIndex < _routes.Count - 1));
+        }
+    }
+
+    private static string BuildRouteDisplayName(DeliveryRoute route, int number)
+    {
+        if (route == null)
+            return $"Route {number}";
+
+        return string.IsNullOrWhiteSpace(route.Name)
+            ? $"Route {number}"
+            : $"Route {number} - {route.Name.Trim()}";
+    }
+
+    public sealed class RouteListItem
+    {
+        public RouteListItem(DeliveryRoute route, int number, string displayName, bool canMoveUp, bool canMoveDown)
+        {
+            Route = route;
+            Number = number;
+            DisplayName = displayName;
+            CanMoveUp = canMoveUp;
+            CanMoveDown = canMoveDown;
+        }
+
+        public DeliveryRoute Route { get; }
+        public int Number { get; }
+        public string DisplayName { get; }
+        public bool CanMoveUp { get; }
+        public bool CanMoveDown { get; }
     }
 }

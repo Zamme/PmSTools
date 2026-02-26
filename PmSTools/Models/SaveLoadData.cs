@@ -11,6 +11,8 @@ public static class SaveLoadData
     public const string LastCodesPrefKey = "last_codes";
     public const string LastPlaceInfoPrefKey = "last_place_info";
     public const string LastPlacesInfoPrefKey = "last_places_info";
+    public const string SavedDeliveryRoutePrefKey = "saved_delivery_route";
+    public const string SavedDeliveryRoutesPrefKey = "saved_delivery_routes";
     public const int LastPlacesMaxCount = 10;
     
     /*
@@ -241,6 +243,121 @@ public static class SaveLoadData
     {
         placeInfo = GetLastPlaceInfos().FirstOrDefault();
         return placeInfo != null;
+    }
+
+    public static void SaveDeliveryRoutes(IEnumerable<DeliveryRoute> routes)
+    {
+        if (routes == null)
+            return;
+
+        var persistedRoutes = routes
+            .Select(route => new DeliveryRouteSnapshot
+            {
+                Name = route.Name,
+                Stops = route.Stops.Select(BuildPersistedStop).ToList()
+            })
+            .ToList();
+
+        var routesJson = JsonSerializer.Serialize(persistedRoutes);
+        Preferences.Set(SavedDeliveryRoutesPrefKey, routesJson);
+    }
+
+    public static bool TryGetSavedDeliveryRoutes(out List<DeliveryRoute> routes)
+    {
+        routes = new List<DeliveryRoute>();
+
+        if (Preferences.ContainsKey(SavedDeliveryRoutesPrefKey))
+        {
+            var routesJson = Preferences.Get(SavedDeliveryRoutesPrefKey, string.Empty);
+            if (string.IsNullOrWhiteSpace(routesJson))
+                return false;
+
+            try
+            {
+                var savedRoutes = JsonSerializer.Deserialize<List<DeliveryRouteSnapshot>>(routesJson);
+                if (savedRoutes == null || savedRoutes.Count == 0)
+                    return false;
+
+                foreach (var savedRoute in savedRoutes)
+                {
+                    var restoredRoute = new DeliveryRoute();
+                    restoredRoute.Name = string.IsNullOrWhiteSpace(savedRoute.Name) ? null : savedRoute.Name.Trim();
+                    foreach (var stop in savedRoute.Stops.Where(stop => stop != null))
+                    {
+                        stop.IsExpanded = false;
+                        restoredRoute.AddStop(stop);
+                    }
+
+                    restoredRoute.RenumberStops();
+                    routes.Add(restoredRoute);
+                }
+
+                return routes.Count > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        if (!Preferences.ContainsKey(SavedDeliveryRoutePrefKey))
+            return false;
+
+        var legacyRouteJson = Preferences.Get(SavedDeliveryRoutePrefKey, string.Empty);
+        if (string.IsNullOrWhiteSpace(legacyRouteJson))
+            return false;
+
+        try
+        {
+            var savedStops = JsonSerializer.Deserialize<List<DeliveryRouteStop>>(legacyRouteJson);
+            if (savedStops == null || savedStops.Count == 0)
+                return false;
+
+            var restoredRoute = new DeliveryRoute();
+            foreach (var stop in savedStops.Where(stop => stop != null))
+            {
+                stop.IsExpanded = false;
+                restoredRoute.AddStop(stop);
+            }
+
+            restoredRoute.RenumberStops();
+            routes.Add(restoredRoute);
+            SaveDeliveryRoutes(routes);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public static void ClearSavedDeliveryRoute()
+    {
+        Preferences.Remove(SavedDeliveryRoutePrefKey);
+        Preferences.Remove(SavedDeliveryRoutesPrefKey);
+    }
+
+    private static DeliveryRouteStop BuildPersistedStop(DeliveryRouteStop stop)
+    {
+        return new DeliveryRouteStop
+        {
+            Order = stop.Order,
+            Name = stop.Name,
+            StreetName = stop.StreetName,
+            StreetNumber = stop.StreetNumber,
+            PostalCode = stop.PostalCode,
+            City = stop.City,
+            Country = stop.Country,
+            Latitude = stop.Latitude,
+            Longitude = stop.Longitude,
+            IsExpanded = false
+        };
+    }
+
+    private sealed class DeliveryRouteSnapshot
+    {
+        public string? Name { get; set; }
+        public List<DeliveryRouteStop> Stops { get; set; } = new List<DeliveryRouteStop>();
     }
 
 }

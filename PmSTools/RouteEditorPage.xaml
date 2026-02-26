@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PmSTools.RouteEditorPage"
+             Title="Route editor">
+    <ScrollView>
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Padding="16">
+    <Grid Grid.Row="0"
+              Margin="0,12,0,0"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="10">
+            <Button Grid.Column="0"
+                Text="Take"
+                ImageSource="camera_icon_01.png"
+                FontSize="18"
+                BackgroundColor="Blue"
+                BorderColor="BlueViolet"
+                BorderWidth="2"
+                TextColor="WhiteSmoke"
+                FontAttributes="Bold"
+                SemanticProperties.Hint="Take Address From Camera"
+                HorizontalOptions="Fill"
+                HeightRequest="80"
+                Clicked="OnTakeAddressPhotoClicked" />
+            <Button Grid.Column="1"
+                Text="Select"
+                ImageSource="folder_icon_01.png"
+                FontSize="18"
+                BackgroundColor="Blue"
+                BorderColor="BlueViolet"
+                BorderWidth="2"
+                TextColor="WhiteSmoke"
+                FontAttributes="Bold"
+                SemanticProperties.Hint="Take Address From File"
+                HorizontalOptions="Fill"
+                HeightRequest="80"
+                Clicked="OnOpenAddressPictureClicked" />
+        </Grid>
+
+         <Label x:Name="EmptyStopsLabel"
+             Grid.Row="1"
+               Margin="0,12,0,0"
+               Text="No stops yet"
+               HorizontalOptions="Center" />
+
+         <Frame Grid.Row="2"
+             Margin="0,12,0,0"
+             Padding="0">
+             <Grid RowDefinitions="Auto,*">
+              <Label Grid.Row="0"
+                  Margin="12,12,12,0"
+                  Text="Route map"
+                  FontAttributes="Bold" />
+              <WebView x:Name="RouteMapWebView"
+                  Grid.Row="1"
+                  HeightRequest="320" />
+             </Grid>
+         </Frame>
+
+         <CollectionView Grid.Row="3"
+                        Margin="0,12,0,0"
+                        HeightRequest="260"
+                        ItemsSource="{Binding Stops}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Margin="0,0,0,10" Padding="12">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnStopCardTapped"
+                                                  CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
+
+                        <Grid>
+                            <HorizontalStackLayout Spacing="8">
+                                <HorizontalStackLayout.Triggers>
+                                    <DataTrigger TargetType="HorizontalStackLayout"
+                                                 Binding="{Binding IsExpanded}"
+                                                 Value="True">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </HorizontalStackLayout.Triggers>
+                                <Label Text="{Binding Order, StringFormat='#{0}'}" FontAttributes="Bold" />
+                                <Label Text="{Binding StreetName}" FontAttributes="Bold" />
+                                <Label Text="{Binding StreetNumber}" FontAttributes="Bold" />
+                            </HorizontalStackLayout>
+
+                            <VerticalStackLayout Spacing="8" IsVisible="False">
+                                <VerticalStackLayout.Triggers>
+                                    <DataTrigger TargetType="VerticalStackLayout"
+                                                 Binding="{Binding IsExpanded}"
+                                                 Value="True">
+                                        <Setter Property="IsVisible" Value="True" />
+                                    </DataTrigger>
+                                </VerticalStackLayout.Triggers>
+                                <Label Text="{Binding Order, StringFormat='Stop #{0}'}" FontAttributes="Bold" />
+                                <Entry Placeholder="Name" Text="{Binding Name}" />
+                                <Entry Placeholder="Street name" Text="{Binding StreetName}" />
+                                <Entry Placeholder="Street number" Text="{Binding StreetNumber}" />
+                                <Entry Placeholder="Postal code" Text="{Binding PostalCode}" />
+                                <Entry Placeholder="City" Text="{Binding City}" />
+                                <Entry Placeholder="Country" Text="{Binding Country}" />
+                                <Button Text="Delete stop"
+                                        CommandParameter="{Binding .}"
+                                        Clicked="OnDeleteRouteStopClicked" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Frame Grid.Row="4"
+               Margin="0,12,0,0"
+               Padding="12">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="New stop (manual)" FontAttributes="Bold" />
+                <Entry x:Name="ManualNameEntry" Placeholder="Name" />
+                <Entry x:Name="ManualStreetNameEntry" Placeholder="Street name" />
+                <Entry x:Name="ManualStreetNumberEntry" Placeholder="Street number" />
+                <Entry x:Name="ManualPostalCodeEntry" Placeholder="Postal code" />
+                <Entry x:Name="ManualCityEntry" Placeholder="City" />
+                <Entry x:Name="ManualCountryEntry" Placeholder="Country" />
+            </VerticalStackLayout>
+        </Frame>
+
+        <Button Grid.Row="5"
+                Margin="0,12,0,0"
+                Text="Add route stop"
+                Clicked="OnAddRouteStopClicked" />
+    </Grid>
+    </ScrollView>
+</ContentPage>
