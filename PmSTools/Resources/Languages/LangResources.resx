@@ -57,6 +57,15 @@
     <data name="FindPlaceText" xml:space="preserve">
         <value>Find Adress</value>
     </data>
+    <data name="RouteCreationText" xml:space="preserve">
+        <value>Route Creation</value>
+    </data>
+    <data name="RouteCreationPageTitleText" xml:space="preserve">
+        <value>Route Creation</value>
+    </data>
+    <data name="RouteCreationPageLabelText" xml:space="preserve">
+        <value>Route Creation Page</value>
+    </data>
     <data name="SaveText" xml:space="preserve">
         <value>Save</value>
     </data>

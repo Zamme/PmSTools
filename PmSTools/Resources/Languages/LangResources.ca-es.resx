@@ -50,6 +50,15 @@
     <data name="FindPlaceText" xml:space="preserve">
         <value>Buscar Adreça</value>
     </data>
+    <data name="RouteCreationText" xml:space="preserve">
+        <value>Creació de Ruta</value>
+    </data>
+    <data name="RouteCreationPageTitleText" xml:space="preserve">
+        <value>Creació de Ruta</value>
+    </data>
+    <data name="RouteCreationPageLabelText" xml:space="preserve">
+        <value>Pàgina de Creació de Ruta</value>
+    </data>
     <data name="SaveText" xml:space="preserve">
         <value>Guardar</value>
     </data>

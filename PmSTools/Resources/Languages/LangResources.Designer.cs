@@ -122,6 +122,24 @@ namespace PmSTools.Resources.Languages {
                 return ResourceManager.GetString("FindPlaceText", resourceCulture);
             }
         }
+
+        internal static string RouteCreationText {
+            get {
+                return ResourceManager.GetString("RouteCreationText", resourceCulture);
+            }
+        }
+
+        internal static string RouteCreationPageTitleText {
+            get {
+                return ResourceManager.GetString("RouteCreationPageTitleText", resourceCulture);
+            }
+        }
+
+        internal static string RouteCreationPageLabelText {
+            get {
+                return ResourceManager.GetString("RouteCreationPageLabelText", resourceCulture);
+            }
+        }
         
         internal static string SaveText {
             get {

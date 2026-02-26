@@ -32,6 +32,11 @@ namespace PmSTools
             Navigation.PushAsync(new FindPlacePage());      
         }
 
+        private void OnRouteCreationButtonClicked(object? sender, EventArgs e)
+        {
+            Navigation.PushAsync(new RouteCreationPage());
+        }
+
         private void ConfigMenuItem_OnClicked(object? sender, EventArgs e)
         {
             ShowNotAvailable();
