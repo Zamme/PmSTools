@@ -2,6 +2,8 @@ using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices.Sensors;
 using Plugin.Maui.OCR;
 using PmSTools.Models;
 
@@ -18,6 +20,8 @@ public partial class RouteEditorPage : ContentPage
     private readonly System.Collections.ObjectModel.ObservableCollection<DeliveryRoute> _routes;
     private string _lastRouteMapHtml = string.Empty;
     private bool _isMapDirty;
+    private int _mapLoadingCount;
+    private bool _mapUpdatePending;
 
     private static readonly HashSet<string> AddressProperties = new(StringComparer.Ordinal)
     {
@@ -220,6 +224,149 @@ public partial class RouteEditorPage : ContentPage
         IsMapDirty = false;
     }
 
+    private async void OnOptimizeRouteClicked(object? sender, EventArgs e)
+    {
+        if (Route.Stops.Count < 2)
+        {
+            await DisplayAlertAsync("Optimize route", "Add at least two stops to optimize.", "OK");
+            return;
+        }
+
+        BeginMapLoading();
+
+        try
+        {
+            var routeStops = await BuildRouteMapStopsAsync();
+            var geocodedStops = routeStops
+                .Where(stop => stop.SourceStop != null && stop.Lat.HasValue && stop.Lon.HasValue)
+                .ToList();
+            var missingStops = routeStops
+                .Where(stop => stop.SourceStop != null && (!stop.Lat.HasValue || !stop.Lon.HasValue))
+                .OrderBy(stop => stop.Order)
+                .ToList();
+
+            if (geocodedStops.Count < 2)
+            {
+                await DisplayAlertAsync("Optimize route", "Not enough stops with coordinates to optimize.", "OK");
+                return;
+            }
+
+            var location = await GetCurrentLocationAsync();
+            List<RouteMapStop> optimizedStops;
+            if (location != null)
+            {
+                var nearest = geocodedStops
+                    .OrderBy(stop => ComputeDistanceKm(location.Latitude, location.Longitude, stop.Lat!.Value, stop.Lon!.Value))
+                    .FirstOrDefault();
+                optimizedStops = nearest == null
+                    ? BuildNearestNeighborRoute(geocodedStops)
+                    : BuildNearestNeighborRouteFromStart(geocodedStops, nearest);
+            }
+            else
+            {
+                optimizedStops = BuildNearestNeighborRoute(geocodedStops);
+            }
+            var orderedStops = optimizedStops
+                .Select(stop => stop.SourceStop!)
+                .Concat(missingStops.Select(stop => stop.SourceStop!))
+                .ToList();
+
+            ApplyRouteStopOrder(orderedStops);
+
+            await UpdateRouteMapAsync();
+            IsMapDirty = false;
+
+            if (missingStops.Count > 0)
+            {
+                await DisplayAlertAsync(
+                    "Optimize route",
+                    "Some stops could not be geocoded and were placed at the end.",
+                    "OK");
+            }
+            else if (location == null)
+            {
+                await DisplayAlertAsync(
+                    "Optimize route",
+                    "Could not access your location. Optimized without a start point.",
+                    "OK");
+            }
+        }
+        finally
+        {
+            EndMapLoading();
+        }
+    }
+
+    private async void OnStartNearMeClicked(object? sender, EventArgs e)
+    {
+        if (Route.Stops.Count < 2)
+        {
+            await DisplayAlertAsync("Start near me", "Add at least two stops to reorder.", "OK");
+            return;
+        }
+
+        BeginMapLoading();
+
+        try
+        {
+            var location = await GetCurrentLocationAsync();
+            if (location == null)
+            {
+                await DisplayAlertAsync("Start near me", "Unable to access your location.", "OK");
+                return;
+            }
+
+            var routeStops = await BuildRouteMapStopsAsync();
+            var geocodedStops = routeStops
+                .Where(stop => stop.SourceStop != null && stop.Lat.HasValue && stop.Lon.HasValue)
+                .ToList();
+
+            if (geocodedStops.Count == 0)
+            {
+                await DisplayAlertAsync("Start near me", "No stops with coordinates found.", "OK");
+                return;
+            }
+
+            var nearest = geocodedStops
+                .OrderBy(stop => ComputeDistanceKm(location.Latitude, location.Longitude, stop.Lat!.Value, stop.Lon!.Value))
+                .FirstOrDefault();
+
+            if (nearest?.SourceStop == null)
+            {
+                await DisplayAlertAsync("Start near me", "Unable to pick the nearest stop.", "OK");
+                return;
+            }
+
+            var optimizedStops = BuildNearestNeighborRouteFromStart(geocodedStops, nearest);
+            var missingStops = routeStops
+                .Where(stop => stop.SourceStop != null && (!stop.Lat.HasValue || !stop.Lon.HasValue))
+                .OrderBy(stop => stop.Order)
+                .ToList();
+
+            var orderedStops = optimizedStops
+                .Select(stop => stop.SourceStop!)
+                .Concat(missingStops.Select(stop => stop.SourceStop!))
+                .ToList();
+
+            ApplyRouteStopOrder(orderedStops);
+
+            await UpdateRouteMapAsync();
+            IsMapDirty = false;
+
+            if (missingStops.Count > 0)
+            {
+                await DisplayAlertAsync(
+                    "Start near me",
+                    "Some stops could not be geocoded and were placed at the end.",
+                    "OK");
+            }
+        }
+        finally
+        {
+            EndMapLoading();
+        }
+    }
+
     private async void OnTakeAddressPhotoClicked(object? sender, EventArgs e)
     {
         try
@@ -286,10 +433,9 @@ public partial class RouteEditorPage : ContentPage
 
     private async Task UpdateRouteMapAsync()
     {
-        Dispatcher.Dispatch(() =>
-        {
-            RouteMapLoadingOverlay.IsVisible = true;
-        });
+        BeginMapLoading();
+        _mapUpdatePending = true;
+        var sourceSet = false;
 
         try
         {
@@ -303,14 +449,46 @@ public partial class RouteEditorPage : ContentPage
                     Html = _lastRouteMapHtml
                 };
             });
+            sourceSet = true;
         }
         finally
         {
-            Dispatcher.Dispatch(() =>
+            if (!sourceSet)
             {
-                RouteMapLoadingOverlay.IsVisible = false;
-            });
+                _mapUpdatePending = false;
+                EndMapLoading();
+            }
         }
+    }
+
+    private void OnRouteMapNavigated(object? sender, WebNavigatedEventArgs e)
+    {
+        if (!_mapUpdatePending)
+            return;
+
+        _mapUpdatePending = false;
+        EndMapLoading();
+    }
+
+    private void BeginMapLoading()
+    {
+        _mapLoadingCount++;
+        if (_mapLoadingCount != 1)
+            return;
+
+        Dispatcher.Dispatch(() => { RouteMapLoadingOverlay.IsVisible = true; });
+    }
+
+    private void EndMapLoading()
+    {
+        if (_mapLoadingCount == 0)
+            return;
+
+        _mapLoadingCount--;
+        if (_mapLoadingCount != 0)
+            return;
+
+        Dispatcher.Dispatch(() => { RouteMapLoadingOverlay.IsVisible = false; });
     }
 
     private async Task<List<RouteMapStop>> BuildRouteMapStopsAsync()
@@ -360,6 +538,192 @@ public partial class RouteEditorPage : ContentPage
             SaveLoadData.SaveDeliveryRoutes(_routes);
 
         return routeStops;
+    }
+
+    private void ApplyRouteStopOrder(IReadOnlyList<DeliveryRouteStop> orderedStops)
+    {
+        if (orderedStops.Count != Route.Stops.Count)
+            return;
+
+        DetachRouteSubscriptions();
+        Route.Stops.Clear();
+        foreach (var stop in orderedStops)
+        {
+            Route.Stops.Add(stop);
+        }
+        Route.RenumberStops();
+        AttachRouteSubscriptions();
+        SaveLoadData.SaveDeliveryRoutes(_routes);
+        UpdateEmptyStopsVisibility();
+        SetMapDirty();
+    }
+
+    private static List<RouteMapStop> BuildNearestNeighborRoute(List<RouteMapStop> stops)
+    {
+        if (stops.Count <= 1)
+            return stops;
+
+        var distance = BuildDistanceMatrix(stops);
+        var bestOrder = new List<int>();
+        var bestLength = double.MaxValue;
+
+        for (var start = 0; start < stops.Count; start++)
+        {
+            var unvisited = new HashSet<int>(Enumerable.Range(0, stops.Count));
+            var order = new List<int>(stops.Count);
+            var current = start;
+            var total = 0.0;
+
+            order.Add(current);
+            unvisited.Remove(current);
+
+            while (unvisited.Count > 0)
+            {
+                var next = -1;
+                var nextDistance = double.MaxValue;
+
+                foreach (var candidate in unvisited)
+                {
+                    var d = distance[current, candidate];
+                    if (d < nextDistance)
+                    {
+                        nextDistance = d;
+                        next = candidate;
+                    }
+                }
+
+                if (next == -1)
+                    break;
+
+                total += nextDistance;
+                current = next;
+                order.Add(current);
+                unvisited.Remove(current);
+            }
+
+            if (order.Count == stops.Count && total < bestLength)
+            {
+                bestLength = total;
+                bestOrder = order;
+            }
+        }
+
+        if (bestOrder.Count == 0)
+            return stops;
+
+        return bestOrder.Select(index => stops[index]).ToList();
+    }
+
+    private static List<RouteMapStop> BuildNearestNeighborRouteFromStart(List<RouteMapStop> stops, RouteMapStop start)
+    {
+        if (stops.Count <= 1)
+            return stops;
+
+        var startIndex = stops.IndexOf(start);
+        if (startIndex < 0)
+            return BuildNearestNeighborRoute(stops);
+
+        var distance = BuildDistanceMatrix(stops);
+        var unvisited = new HashSet<int>(Enumerable.Range(0, stops.Count));
+        var order = new List<int>(stops.Count);
+        var current = startIndex;
+
+        order.Add(current);
+        unvisited.Remove(current);
+
+        while (unvisited.Count > 0)
+        {
+            var next = -1;
+            var nextDistance = double.MaxValue;
+
+            foreach (var candidate in unvisited)
+            {
+                var d = distance[current, candidate];
+                if (d < nextDistance)
+                {
+                    nextDistance = d;
+                    next = candidate;
+                }
+            }
+
+            if (next == -1)
+                break;
+
+            current = next;
+            order.Add(current);
+            unvisited.Remove(current);
+        }
+
+        if (order.Count != stops.Count)
+            return BuildNearestNeighborRoute(stops);
+
+        return order.Select(index => stops[index]).ToList();
+    }
+
+    private static double[,] BuildDistanceMatrix(IReadOnlyList<RouteMapStop> stops)
+    {
+        var count = stops.Count;
+        var matrix = new double[count, count];
+
+        for (var i = 0; i < count; i++)
+        {
+            var lat1 = stops[i].Lat ?? 0;
+            var lon1 = stops[i].Lon ?? 0;
+            for (var j = i + 1; j < count; j++)
+            {
+                var lat2 = stops[j].Lat ?? 0;
+                var lon2 = stops[j].Lon ?? 0;
+                var d = ComputeDistanceKm(lat1, lon1, lat2, lon2);
+                matrix[i, j] = d;
+                matrix[j, i] = d;
+            }
+        }
+
+        return matrix;
+    }
+
+    private static double ComputeDistanceKm(double lat1, double lon1, double lat2, double lon2)
+    {
+        const double radiusKm = 6371.0;
+        var dLat = ToRadians(lat2 - lat1);
+        var dLon = ToRadians(lon2 - lon1);
+
+        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *
+                Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+        var c = 2 * Math.Asin(Math.Min(1, Math.Sqrt(a)));
+        return radiusKm * c;
+    }
+
+    private static double ToRadians(double degrees)
+    {
+        return degrees * (Math.PI / 180.0);
+    }
+
+    private static async Task<Location?> GetCurrentLocationAsync()
+    {
+        try
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+            if (status != PermissionStatus.Granted)
+            {
+                status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+            }
+
+            if (status != PermissionStatus.Granted)
+                return null;
+
+            var last = await Geolocation.GetLastKnownLocationAsync();
+            if (last != null)
+                return last;
+
+            var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+            return await Geolocation.GetLocationAsync(request);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private static async Task<(double? Lat, double? Lon)> TryGeocodeAddressAsync(IEnumerable<string> queries, System.Net.Http.HttpClient http)

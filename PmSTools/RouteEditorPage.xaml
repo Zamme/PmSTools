@@ -4,6 +4,8 @@
              x:Class="PmSTools.RouteEditorPage"
              Title="Route editor">
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Start near me" Clicked="OnStartNearMeClicked" Priority="0" />
+        <ToolbarItem Text="Optimize" Clicked="OnOptimizeRouteClicked" Priority="0" />
         <ToolbarItem Text="Full map" Clicked="FullRouteMap_ToolbarClicked" Priority="0" />
     </ContentPage.ToolbarItems>
     <ScrollView x:Name="RouteScrollView">
@@ -76,7 +78,8 @@
               <Grid Grid.Row="1" HeightRequest="400">
                   <WebView x:Name="RouteMapWebView"
                       HorizontalOptions="Fill"
-                      VerticalOptions="Fill" />
+                      VerticalOptions="Fill"
+                      Navigated="OnRouteMapNavigated" />
                   <Grid x:Name="RouteMapLoadingOverlay"
                         BackgroundColor="#66000000"
                     InputTransparent="True"
@@ -128,6 +131,18 @@
                                     </DataTrigger>
                                 </HorizontalStackLayout.Triggers>
                                 <Label Text="{Binding Order, StringFormat='#{0}'}" FontAttributes="Bold" />
+                                <Label Text="First"
+                                       BackgroundColor="#1E88E5"
+                                       TextColor="White"
+                                       FontSize="12"
+                                       Padding="6,2"
+                                       IsVisible="{Binding IsFirst}" />
+                                <Label Text="Last"
+                                       BackgroundColor="#6A1B9A"
+                                       TextColor="White"
+                                       FontSize="12"
+                                       Padding="6,2"
+                                       IsVisible="{Binding IsLast}" />
                                 <Label Text="{Binding StreetName}" FontAttributes="Bold" />
                                 <Label Text="{Binding StreetNumber}" FontAttributes="Bold" />
                             </HorizontalStackLayout>
@@ -140,7 +155,21 @@
                                         <Setter Property="IsVisible" Value="True" />
                                     </DataTrigger>
                                 </VerticalStackLayout.Triggers>
-                                <Label Text="{Binding Order, StringFormat='Stop #{0}'}" FontAttributes="Bold" />
+                                    <HorizontalStackLayout Spacing="8">
+                                     <Label Text="{Binding Order, StringFormat='Stop #{0}'}" FontAttributes="Bold" />
+                                     <Label Text="First"
+                                         BackgroundColor="#1E88E5"
+                                         TextColor="White"
+                                         FontSize="12"
+                                         Padding="6,2"
+                                         IsVisible="{Binding IsFirst}" />
+                                     <Label Text="Last"
+                                         BackgroundColor="#6A1B9A"
+                                         TextColor="White"
+                                         FontSize="12"
+                                         Padding="6,2"
+                                         IsVisible="{Binding IsLast}" />
+                                    </HorizontalStackLayout>
                                 <Entry Placeholder="Name" Text="{Binding Name}" />
                                 <Entry Placeholder="Street name" Text="{Binding StreetName}" />
                                 <Entry Placeholder="Street number" Text="{Binding StreetNumber}" />

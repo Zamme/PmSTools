@@ -11,8 +11,8 @@ namespace PmSTools.Models
         public DeliveryRouteStop AddStop(DeliveryRouteStop? stop = null)
         {
             var routeStop = stop ?? new DeliveryRouteStop();
-            routeStop.Order = Stops.Count + 1;
             Stops.Add(routeStop);
+            RenumberStops();
             return routeStop;
         }
 
@@ -27,9 +27,13 @@ namespace PmSTools.Models
 
         public void RenumberStops()
         {
-            for (var index = 0; index < Stops.Count; index++)
+            var totalStops = Stops.Count;
+            for (var index = 0; index < totalStops; index++)
             {
-                Stops[index].Order = index + 1;
+                var stop = Stops[index];
+                stop.Order = index + 1;
+                stop.IsFirst = index == 0;
+                stop.IsLast = index == totalStops - 1;
             }
         }
 

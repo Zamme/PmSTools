@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Core;
+﻿using System.Threading.Tasks;
+using CommunityToolkit.Maui.Core;
 using PmSTools.Resources.Languages;
 
 namespace PmSTools
@@ -32,9 +33,23 @@ namespace PmSTools
             Navigation.PushAsync(new FindPlacePage());      
         }
 
-        private void OnRouteCreationButtonClicked(object? sender, EventArgs e)
+        private async void OnRouteCreationButtonClicked(object? sender, EventArgs e)
         {
-            Navigation.PushAsync(new RouteCreationPage());
+            try
+            {
+                RouteCreationButton.IsEnabled = false;
+                BusyOverlay.IsVisible = true;
+                BusyIndicator.IsRunning = true;
+                await Task.Yield();
+
+                await Navigation.PushAsync(new RouteCreationPage());
+            }
+            finally
+            {
+                BusyIndicator.IsRunning = false;
+                BusyOverlay.IsVisible = false;
+                RouteCreationButton.IsEnabled = true;
+            }
         }
 
         private void ConfigMenuItem_OnClicked(object? sender, EventArgs e)

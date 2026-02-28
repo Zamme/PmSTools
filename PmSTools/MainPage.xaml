@@ -83,6 +83,28 @@
                     HorizontalOptions="Fill" />
             </Grid>
         </ScrollView>
+        <Grid
+            x:Name="BusyOverlay"
+            Grid.RowSpan="3"
+            BackgroundColor="#80000000"
+            IsVisible="False"
+            InputTransparent="False">
+            <StackLayout
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                <ActivityIndicator
+                    x:Name="BusyIndicator"
+                    IsRunning="False"
+                    Color="White"
+                    WidthRequest="48"
+                    HeightRequest="48" />
+                <Label
+                    Text="Loading..."
+                    TextColor="White"
+                    HorizontalTextAlignment="Center"
+                    Margin="0,12,0,0" />
+            </StackLayout>
+        </Grid>
     </Grid>
 
 </ContentPage>

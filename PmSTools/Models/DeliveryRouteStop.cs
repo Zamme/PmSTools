@@ -145,6 +145,34 @@ namespace PmSTools.Models
             }
         }
 
+        private bool _isFirst;
+        public bool IsFirst
+        {
+            get => _isFirst;
+            set
+            {
+                if (_isFirst == value)
+                    return;
+
+                _isFirst = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isLast;
+        public bool IsLast
+        {
+            get => _isLast;
+            set
+            {
+                if (_isLast == value)
+                    return;
+
+                _isLast = value;
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
