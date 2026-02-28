@@ -22,65 +22,73 @@
                              BindableLayout.ItemsSource="{Binding RouteItems}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
-                        <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto"
-                              ColumnSpacing="8">
-                                <Button Grid.Column="0"
-                                    Text="{Binding DisplayName}"
-                                    LineBreakMode="WordWrap"
-                                    FontSize="18"
-                                    Padding="16,12"
-                                    MinimumHeightRequest="56"
-                                    BackgroundColor="Orange"
-                                    TextColor="White"
-                                    CommandParameter="{Binding .}"
-                                    Clicked="OnRouteSelectedClicked" />
-                            <ImageButton Grid.Column="1"
-                                         Source="rename_icon.svg"
-                                         WidthRequest="40"
-                                         HeightRequest="40"
-                                         Padding="8"
-                                         BackgroundColor="{StaticResource Secondary}"
-                                         CornerRadius="8"
-                                         TintColor="{StaticResource MidnightBlue}"
-                                         SemanticProperties.Description="Rename route"
-                                         CommandParameter="{Binding .}"
-                                         Clicked="OnRenameRouteClicked" />
-                            <ImageButton Grid.Column="2"
-                                         Source="trash_icon.svg"
-                                         WidthRequest="40"
-                                         HeightRequest="40"
-                                         Padding="8"
-                                         BackgroundColor="IndianRed"
-                                         CornerRadius="8"
-                                         TintColor="White"
-                                         SemanticProperties.Description="Delete route"
-                                         CommandParameter="{Binding .}"
-                                         Clicked="OnDeleteRouteClicked" />
-                            <ImageButton Grid.Column="3"
-                                         Source="arrow_up.svg"
-                                         WidthRequest="40"
-                                         HeightRequest="40"
-                                         Padding="8"
-                                         BackgroundColor="{StaticResource Primary}"
-                                         CornerRadius="8"
-                                         TintColor="White"
-                                         IsEnabled="{Binding CanMoveUp}"
-                                         SemanticProperties.Description="Move route up"
-                                         CommandParameter="{Binding .}"
-                                         Clicked="OnMoveRouteUpClicked" />
-                            <ImageButton Grid.Column="4"
-                                         Source="arrow_down.svg"
-                                         WidthRequest="40"
-                                         HeightRequest="40"
-                                         Padding="8"
-                                         BackgroundColor="{StaticResource Primary}"
-                                         CornerRadius="8"
-                                         TintColor="White"
-                                         IsEnabled="{Binding CanMoveDown}"
-                                         SemanticProperties.Description="Move route down"
-                                         CommandParameter="{Binding .}"
-                                         Clicked="OnMoveRouteDownClicked" />
-                        </Grid>
+                            <Frame Padding="10"
+                                   Margin="0,0,0,6"
+                                   CornerRadius="12"
+                                   BorderColor="{StaticResource Gray200}"
+                                   BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
+                                   HasShadow="False">
+                                <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+                                      ColumnSpacing="8"
+                                      IsEnabled="{Binding Source={RelativeSource AncestorType=ContentPage}, Path=BindingContext.IsNotNavigating}">
+                                    <Button Grid.Column="0"
+                                            Text="{Binding DisplayName}"
+                                            LineBreakMode="WordWrap"
+                                            FontSize="18"
+                                            Padding="16,12"
+                                            MinimumHeightRequest="56"
+                                            BackgroundColor="Orange"
+                                            TextColor="White"
+                                            CommandParameter="{Binding .}"
+                                            Clicked="OnRouteSelectedClicked" />
+                                    <ImageButton Grid.Column="1"
+                                                 Source="rename_icon.svg"
+                                                 WidthRequest="40"
+                                                 HeightRequest="40"
+                                                 Padding="8"
+                                                 BackgroundColor="{StaticResource Secondary}"
+                                                 CornerRadius="8"
+                                                 TintColor="{StaticResource MidnightBlue}"
+                                                 SemanticProperties.Description="Rename route"
+                                                 CommandParameter="{Binding .}"
+                                                 Clicked="OnRenameRouteClicked" />
+                                    <ImageButton Grid.Column="2"
+                                                 Source="trash_icon.svg"
+                                                 WidthRequest="40"
+                                                 HeightRequest="40"
+                                                 Padding="8"
+                                                 BackgroundColor="IndianRed"
+                                                 CornerRadius="8"
+                                                 TintColor="White"
+                                                 SemanticProperties.Description="Delete route"
+                                                 CommandParameter="{Binding .}"
+                                                 Clicked="OnDeleteRouteClicked" />
+                                    <ImageButton Grid.Column="3"
+                                                 Source="arrow_up.svg"
+                                                 WidthRequest="40"
+                                                 HeightRequest="40"
+                                                 Padding="8"
+                                                 BackgroundColor="#FFF3B0"
+                                                 CornerRadius="8"
+                                                 TintColor="{StaticResource MidnightBlue}"
+                                                 IsEnabled="{Binding CanMoveUp}"
+                                                 SemanticProperties.Description="Move route up"
+                                                 CommandParameter="{Binding .}"
+                                                 Clicked="OnMoveRouteUpClicked" />
+                                    <ImageButton Grid.Column="4"
+                                                 Source="arrow_down.svg"
+                                                 WidthRequest="40"
+                                                 HeightRequest="40"
+                                                 Padding="8"
+                                                 BackgroundColor="#FFF3B0"
+                                                 CornerRadius="8"
+                                                 TintColor="{StaticResource MidnightBlue}"
+                                                 IsEnabled="{Binding CanMoveDown}"
+                                                 SemanticProperties.Description="Move route down"
+                                                 CommandParameter="{Binding .}"
+                                                 Clicked="OnMoveRouteDownClicked" />
+                                </Grid>
+                            </Frame>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
@@ -93,5 +101,13 @@
                 TextColor="White"
                 IsEnabled="{Binding HasRoutes}"
                 Clicked="OnDeleteAllRoutesClicked" />
+
+        <Grid Grid.RowSpan="3"
+              IsVisible="{Binding IsNavigating}"
+              BackgroundColor="#80000000">
+            <ActivityIndicator IsRunning="{Binding IsNavigating}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+        </Grid>
     </Grid>
 </ContentPage>

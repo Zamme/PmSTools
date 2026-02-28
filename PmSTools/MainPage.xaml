@@ -71,7 +71,7 @@
                     Grid.Column="0"
                     Text="{x:Static strings:LangResources.RouteCreationText}"
                     LineBreakMode="WordWrap"
-                    BackgroundColor="LightBlue"
+                    BackgroundColor="LightGreen"
                     FontAttributes="Bold"
                     FontSize="16"
                     BorderColor="BlueViolet"

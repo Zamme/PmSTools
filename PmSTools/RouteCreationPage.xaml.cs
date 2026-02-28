@@ -6,8 +6,25 @@ namespace PmSTools;
 public partial class RouteCreationPage : ContentPage
 {
     private readonly ObservableCollection<DeliveryRoute> _routes;
+    private bool _isNavigating;
     public ObservableCollection<DeliveryRoute> Routes => _routes;
     public bool HasRoutes => _routes.Count > 0;
+
+    public bool IsNavigating
+    {
+        get => _isNavigating;
+        private set
+        {
+            if (_isNavigating == value)
+                return;
+
+            _isNavigating = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsNotNavigating));
+        }
+    }
+
+    public bool IsNotNavigating => !_isNavigating;
 
     public ObservableCollection<RouteListItem> RouteItems { get; }
 
@@ -55,15 +72,26 @@ public partial class RouteCreationPage : ContentPage
 
     private async void OnRouteSelectedClicked(object? sender, EventArgs e)
     {
-        if (sender is not Button { CommandParameter: RouteListItem routeItem })
+        if (!TryGetRouteItem(sender, out var routeItem))
             return;
 
-        await Navigation.PushAsync(new RouteEditorPage(_routes, routeItem.Route, routeItem.Number));
+        if (IsNavigating)
+            return;
+
+        try
+        {
+            IsNavigating = true;
+            await Navigation.PushAsync(new RouteEditorPage(_routes, routeItem.Route, routeItem.Number));
+        }
+        finally
+        {
+            IsNavigating = false;
+        }
     }
 
     private async void OnRenameRouteClicked(object? sender, EventArgs e)
     {
-        if (sender is not Button { CommandParameter: RouteListItem routeItem })
+        if (!TryGetRouteItem(sender, out var routeItem))
             return;
 
         var currentName = routeItem.Route.Name ?? string.Empty;
@@ -80,7 +108,7 @@ public partial class RouteCreationPage : ContentPage
 
     private async void OnDeleteRouteClicked(object? sender, EventArgs e)
     {
-        if (sender is not Button { CommandParameter: RouteListItem routeItem })
+        if (!TryGetRouteItem(sender, out var routeItem))
             return;
 
         var confirm = await DisplayAlert("Delete route",
@@ -114,7 +142,7 @@ public partial class RouteCreationPage : ContentPage
 
     private void OnMoveRouteUpClicked(object? sender, EventArgs e)
     {
-        if (sender is not Button { CommandParameter: RouteListItem routeItem })
+        if (!TryGetRouteItem(sender, out var routeItem))
             return;
 
         var index = _routes.IndexOf(routeItem.Route);
@@ -128,7 +156,7 @@ public partial class RouteCreationPage : ContentPage
 
     private void OnMoveRouteDownClicked(object? sender, EventArgs e)
     {
-        if (sender is not Button { CommandParameter: RouteListItem routeItem })
+        if (!TryGetRouteItem(sender, out var routeItem))
             return;
 
         var index = _routes.IndexOf(routeItem.Route);
@@ -165,6 +193,23 @@ public partial class RouteCreationPage : ContentPage
         return string.IsNullOrWhiteSpace(route.Name)
             ? $"Route {number}"
             : $"Route {number} - {route.Name.Trim()}";
+    }
+
+    private static bool TryGetRouteItem(object? sender, out RouteListItem routeItem)
+    {
+        routeItem = null!;
+
+        if (sender is not BindableObject bindable)
+            return false;
+
+        var parameter = bindable.GetValue(Button.CommandParameterProperty)
+            ?? bindable.GetValue(ImageButton.CommandParameterProperty);
+
+        if (parameter is not RouteListItem item)
+            return false;
+
+        routeItem = item;
+        return true;
     }
 
     public sealed class RouteListItem
