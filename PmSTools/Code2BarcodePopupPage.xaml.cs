@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using MauiPopup.Views;
 using ZXing.Net.Maui;
 using ZXing.Net.Maui.Controls;
 using PmSTools.Models;
@@ -8,7 +7,7 @@ using Xamarin.Google.MLKit.Vision.Text;
 
 namespace PmSTools;
  
-public partial class Code2BarcodePopupPage : BasePopupPage
+public partial class Code2BarcodePopupPage : ContentPage
 {
     // TODO : Refer tot el tema de validació de codis a un servei separat, per tenir el codi més net i poder-lo reutilitzar en altres parts de l'app si cal
     // TODO : Hi ha codis que no agafa. Mira-ho amb arxiu que tens de proves.
@@ -98,12 +97,6 @@ public partial class Code2BarcodePopupPage : BasePopupPage
         {
             string upperTextPart = textPart.ToUpper();
             string modTextPart = upperTextPart.Replace("O", "0");
-            if (modTextPart.Length == LongDataLengthWithoutControl && TryAppendDniLikeControl(modTextPart, out string codeWithControl))
-            {
-                LogDniControlAppended(modTextPart, codeWithControl);
-                modTextPart = codeWithControl;
-            }
-
             bool isShortCode = modTextPart.Length == ShortValidLength;
             bool isLongCode = modTextPart.Length == LongValidLength;
             bool hasValidLength = isShortCode || isLongCode;
@@ -124,13 +117,6 @@ public partial class Code2BarcodePopupPage : BasePopupPage
             if (isLongCode && !startsWithTwoLetters && !startsWith90)
             {
                 LogRejectedTextPart(modTextPart, "23-char code does not start with two letters or 90");
-                continue;
-            }
-
-            bool requiresDniControl = isLongCode && char.IsLetter(modTextPart[^1]);
-            if (requiresDniControl && !HasValidDniLikeControl(modTextPart))
-            {
-                LogRejectedTextPart(modTextPart, "invalid DNI-like control character");
                 continue;
             }
 

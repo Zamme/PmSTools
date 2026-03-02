@@ -266,7 +266,7 @@ public partial class Code2Bar : ContentPage
                 }
 
                 /*await DisplayAlert("OCR Result", ocrResult.AllText, "OK");*/
-                await MauiPopup.PopupAction.DisplayPopup(new Code2BarcodePopupPage(ocrResult.AllText, notiPrefixes));
+                await Navigation.PushAsync(new Code2BarcodePopupPage(ocrResult.AllText, notiPrefixes));
             }
         }
         catch (Exception ex)
@@ -335,7 +335,7 @@ public partial class Code2Bar : ContentPage
                 return;
             }
 
-            await MauiPopup.PopupAction.DisplayPopup(new Code2BarcodePopupPage(ocrResult.AllText, notiPrefixes));
+            await Navigation.PushAsync(new Code2BarcodePopupPage(ocrResult.AllText, notiPrefixes));
         }
         else
         {
