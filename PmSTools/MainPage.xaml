@@ -4,7 +4,7 @@
              xmlns:pmSTools="clr-namespace:PmSTools"
              xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              x:Class="PmSTools.MainPage"
-             Title="PmSTools">
+             Title="{x:Static strings:LangResources.AppTitleText}">
     <!--
     -->
     <ContentPage.ToolbarItems>
@@ -48,7 +48,7 @@
                     BorderWidth="2"
                     ImageSource="code_to_barcode_01.png"
                     ContentLayout="Top"
-                    SemanticProperties.Hint="Crear codis de barres"
+                    SemanticProperties.Hint="{x:Static strings:LangResources.CodeToBarcodeHintText}"
                     Clicked="OnCode2BarcodeButtonClicked"
                     HorizontalOptions="Fill" />
                 <Button Grid.Row="0"
@@ -63,7 +63,7 @@
                     BorderWidth="2"
                     ImageSource="find_place_01.png"
                     ContentLayout="Top"
-                    SemanticProperties.Hint="Trobar lloc"
+                    SemanticProperties.Hint="{x:Static strings:LangResources.FindPlaceHintText}"
                     Clicked="OnFindPlaceButtonClicked"
                     HorizontalOptions="Fill" />
                 <Button Grid.Row="1"
@@ -78,7 +78,7 @@
                     BorderWidth="2"
                     ImageSource="route_map_01.svg"
                     ContentLayout="Top"
-                    SemanticProperties.Hint="Create routes"
+                    SemanticProperties.Hint="{x:Static strings:LangResources.CreateRoutesHintText}"
                     Clicked="OnRouteCreationButtonClicked"
                     HorizontalOptions="Fill" />
             </Grid>
@@ -99,7 +99,7 @@
                     WidthRequest="48"
                     HeightRequest="48" />
                 <Label
-                    Text="Loading..."
+                    Text="{x:Static strings:LangResources.LoadingText}"
                     TextColor="White"
                     HorizontalTextAlignment="Center"
                     Margin="0,12,0,0" />

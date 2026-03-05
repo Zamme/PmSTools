@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using PmSTools.Models;
+using PmSTools.Resources.Languages;
 
 namespace PmSTools;
 
@@ -95,7 +96,7 @@ public partial class RouteCreationPage : ContentPage
             return;
 
         var currentName = routeItem.Route.Name ?? string.Empty;
-        var newName = await DisplayPromptAsync("Rename route", "Enter a name for this route.",
+        var newName = await DisplayPromptAsync(LangResources.RenameRouteTitleText, LangResources.RenameRoutePromptText,
             initialValue: currentName);
 
         if (newName == null)
@@ -111,8 +112,11 @@ public partial class RouteCreationPage : ContentPage
         if (!TryGetRouteItem(sender, out var routeItem))
             return;
 
-        var confirm = await DisplayAlert("Delete route",
-            $"Delete {routeItem.DisplayName} and all of its stops?", "Delete", "Cancel");
+        var confirm = await DisplayAlertAsync(
+            LangResources.DeleteRouteTitleText,
+            string.Format(LangResources.DeleteRouteMessageFormatText, routeItem.DisplayName),
+            LangResources.DeleteText,
+            LangResources.CancelText);
 
         if (!confirm)
             return;
@@ -128,8 +132,11 @@ public partial class RouteCreationPage : ContentPage
         if (_routes.Count == 0)
             return;
 
-        var confirm = await DisplayAlert("Delete all routes",
-            "Delete all routes and their stops?", "Delete all", "Cancel");
+        var confirm = await DisplayAlertAsync(
+            LangResources.DeleteAllRoutesTitleText,
+            LangResources.DeleteAllRoutesMessageText,
+            LangResources.DeleteAllText,
+            LangResources.CancelText);
 
         if (!confirm)
             return;
@@ -188,11 +195,11 @@ public partial class RouteCreationPage : ContentPage
     private static string BuildRouteDisplayName(DeliveryRoute route, int number)
     {
         if (route == null)
-            return $"Route {number}";
+            return string.Format(LangResources.RouteDisplayNameFormatText, number);
 
         return string.IsNullOrWhiteSpace(route.Name)
-            ? $"Route {number}"
-            : $"Route {number} - {route.Name.Trim()}";
+            ? string.Format(LangResources.RouteDisplayNameFormatText, number)
+            : string.Format(LangResources.RouteDisplayNameWithNameFormatText, number, route.Name.Trim());
     }
 
     private static bool TryGetRouteItem(object? sender, out RouteListItem routeItem)

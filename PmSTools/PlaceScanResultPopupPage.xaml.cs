@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using MauiPopup.Views;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using PmSTools.Models;
+using PmSTools.Resources.Languages;
 
 
 /*
@@ -83,12 +84,12 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
 
     private void UpdateResultLabels(PlaceInfoItem placeInfo)
     {
-        NameResultText.Text = placeInfo.Name ?? "Unknown Name";
-        StreetNameResultText.Text = placeInfo.StreetName ?? "Unknown Street Name";
-        StreetNumberResultText.Text = placeInfo.StreetNumber ?? "Unknown Street Number";
-        PostalCodeResultText.Text = placeInfo.PostalCode ?? "Unknown Postal Code";
-        CityResultText.Text = placeInfo.City ?? "Unknown City";
-        CountryResultText.Text = placeInfo.Country ?? "Unknown Country";
+        NameResultText.Text = placeInfo.Name ?? LangResources.UnknownNameText;
+        StreetNameResultText.Text = placeInfo.StreetName ?? LangResources.UnknownStreetNameText;
+        StreetNumberResultText.Text = placeInfo.StreetNumber ?? LangResources.UnknownStreetNumberText;
+        PostalCodeResultText.Text = placeInfo.PostalCode ?? LangResources.UnknownPostalCodeText;
+        CityResultText.Text = placeInfo.City ?? LangResources.UnknownCityText;
+        CountryResultText.Text = placeInfo.Country ?? LangResources.UnknownCountryText;
     }
 
     private void PopulateEditFields(PlaceInfoItem placeInfo)
@@ -105,7 +106,7 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
     {
         _isEditMode = enabled;
         EditableFieldsPanel.IsVisible = enabled;
-        EditFieldsButton.Text = enabled ? "Hide editor" : "Edit fields";
+        EditFieldsButton.Text = enabled ? LangResources.HideEditorText : LangResources.EditFieldsText;
     }
 
     private void EnsureStreetParts(PlaceInfoItem? placeInfo)
@@ -176,7 +177,7 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
             _currentPlace.Country = (EditCountryEntry.Text ?? string.Empty).Trim();
 
             if (string.IsNullOrWhiteSpace(_currentPlace.Country))
-                _currentPlace.Country = "Spain";
+                _currentPlace.Country = LangResources.DefaultCountryText;
 
             EnsureStreetParts(_currentPlace);
             UpdateResultLabels(_currentPlace);
@@ -188,11 +189,11 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
             _ = PopulateCandidatesAsync(_currentPlace);
 
             SetEditMode(false);
-            await DisplayAlertAsync("Saved", "Manual corrections applied.", "OK");
+            await DisplayAlertAsync(LangResources.SavedTitleText, LangResources.ManualCorrectionsAppliedText, LangResources.OkText);
         }
         catch
         {
-            await DisplayAlertAsync("Error", "Could not apply manual corrections.", "OK");
+            await DisplayAlertAsync(LangResources.ErrorTitleText, LangResources.ManualCorrectionsApplyErrorText, LangResources.OkText);
         }
     }
 
@@ -258,10 +259,10 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
             placeInfoItem.Country = ocrResultLines[postalCodeLineIndex + 2];
 
         if (string.IsNullOrWhiteSpace(placeInfoItem.Country))
-            placeInfoItem.Country = "Spain";
+            placeInfoItem.Country = LangResources.DefaultCountryText;
 
         if (string.IsNullOrWhiteSpace(placeInfoItem.City))
-            placeInfoItem.City = "Unknown City";
+            placeInfoItem.City = LangResources.UnknownCityText;
 
         return placeInfoItem;
     }
@@ -419,7 +420,7 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
             System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
         var postal = NormalizePostalCodeCandidate(placeInfo.PostalCode ?? string.Empty);
         var city = NormalizeCityForGeocoding(placeInfo.City ?? string.Empty);
-        var country = string.IsNullOrWhiteSpace(placeInfo.Country) ? "Spain" : placeInfo.Country.Trim();
+        var country = string.IsNullOrWhiteSpace(placeInfo.Country) ? LangResources.DefaultCountryText : placeInfo.Country.Trim();
 
         var baseUrl = "https://nominatim.openstreetmap.org/search?format=json&limit=" + PopupGeocodePerQueryResultLimit.ToString(CultureInfo.InvariantCulture) + "&addressdetails=1";
 
@@ -630,7 +631,7 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
                 candidate.MatchBadge = string.Empty;
 
             if (foundCandidates.Count > 0 && CandidateMatchesHouseNumber(foundCandidates[0], desiredHouseNumber))
-                foundCandidates[0].MatchBadge = "✓ exact number match";
+                foundCandidates[0].MatchBadge = LangResources.ExactNumberMatchBadgeText;
 
             await MainThread.InvokeOnMainThreadAsync(() =>
             {

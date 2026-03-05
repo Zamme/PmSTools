@@ -6,6 +6,7 @@ using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices.Sensors;
 using Plugin.Maui.OCR;
 using PmSTools.Models;
+using PmSTools.Resources.Languages;
 
 namespace PmSTools;
 
@@ -228,7 +229,10 @@ public partial class RouteEditorPage : ContentPage
     {
         if (Route.Stops.Count < 2)
         {
-            await DisplayAlertAsync("Optimize route", "Add at least two stops to optimize.", "OK");
+            await DisplayAlertAsync(
+                LangResources.OptimizeRouteTitleText,
+                LangResources.OptimizeNeedTwoStopsText,
+                LangResources.OkText);
             return;
         }
 
@@ -247,7 +251,10 @@ public partial class RouteEditorPage : ContentPage
 
             if (geocodedStops.Count < 2)
             {
-                await DisplayAlertAsync("Optimize route", "Not enough stops with coordinates to optimize.", "OK");
+                await DisplayAlertAsync(
+                    LangResources.OptimizeRouteTitleText,
+                    LangResources.OptimizeNotEnoughStopsWithCoordsText,
+                    LangResources.OkText);
                 return;
             }
 
@@ -279,16 +286,16 @@ public partial class RouteEditorPage : ContentPage
             if (missingStops.Count > 0)
             {
                 await DisplayAlertAsync(
-                    "Optimize route",
-                    "Some stops could not be geocoded and were placed at the end.",
-                    "OK");
+                    LangResources.OptimizeRouteTitleText,
+                    LangResources.SomeStopsCouldNotBeGeocodedText,
+                    LangResources.OkText);
             }
             else if (location == null)
             {
                 await DisplayAlertAsync(
-                    "Optimize route",
-                    "Could not access your location. Optimized without a start point.",
-                    "OK");
+                    LangResources.OptimizeRouteTitleText,
+                    LangResources.OptimizeNoLocationText,
+                    LangResources.OkText);
             }
         }
         finally
@@ -301,7 +308,10 @@ public partial class RouteEditorPage : ContentPage
     {
         if (Route.Stops.Count < 2)
         {
-            await DisplayAlertAsync("Start near me", "Add at least two stops to reorder.", "OK");
+            await DisplayAlertAsync(
+                LangResources.StartNearMeText,
+                LangResources.StartNearMeNeedTwoStopsText,
+                LangResources.OkText);
             return;
         }
 
@@ -312,7 +322,10 @@ public partial class RouteEditorPage : ContentPage
             var location = await GetCurrentLocationAsync();
             if (location == null)
             {
-                await DisplayAlertAsync("Start near me", "Unable to access your location.", "OK");
+                await DisplayAlertAsync(
+                    LangResources.StartNearMeText,
+                    LangResources.StartNearMeNoLocationText,
+                    LangResources.OkText);
                 return;
             }
 
@@ -323,7 +336,10 @@ public partial class RouteEditorPage : ContentPage
 
             if (geocodedStops.Count == 0)
             {
-                await DisplayAlertAsync("Start near me", "No stops with coordinates found.", "OK");
+                await DisplayAlertAsync(
+                    LangResources.StartNearMeText,
+                    LangResources.StartNearMeNoStopsWithCoordsText,
+                    LangResources.OkText);
                 return;
             }
 
@@ -333,7 +349,10 @@ public partial class RouteEditorPage : ContentPage
 
             if (nearest?.SourceStop == null)
             {
-                await DisplayAlertAsync("Start near me", "Unable to pick the nearest stop.", "OK");
+                await DisplayAlertAsync(
+                    LangResources.StartNearMeText,
+                    LangResources.StartNearMeNearestStopErrorText,
+                    LangResources.OkText);
                 return;
             }
 
@@ -356,9 +375,9 @@ public partial class RouteEditorPage : ContentPage
             if (missingStops.Count > 0)
             {
                 await DisplayAlertAsync(
-                    "Start near me",
-                    "Some stops could not be geocoded and were placed at the end.",
-                    "OK");
+                    LangResources.StartNearMeText,
+                    LangResources.SomeStopsCouldNotBeGeocodedText,
+                    LangResources.OkText);
             }
         }
         finally
@@ -385,7 +404,7 @@ public partial class RouteEditorPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            await DisplayAlertAsync(LangResources.ErrorTitleText, ex.Message, LangResources.OkText);
         }
     }
 
@@ -406,7 +425,7 @@ public partial class RouteEditorPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            await DisplayAlertAsync(LangResources.ErrorTitleText, ex.Message, LangResources.OkText);
         }
     }
 
@@ -415,7 +434,7 @@ public partial class RouteEditorPage : ContentPage
         var ocrResult = await OcrPlugin.Default.RecognizeTextAsync(imageBytes);
         if (!ocrResult.Success)
         {
-            await DisplayAlertAsync("No success", "No OCR possible", "OK");
+            await DisplayAlertAsync(LangResources.NoSuccessTitleText, LangResources.NoOcrPossibleText, LangResources.OkText);
             return;
         }
 
@@ -793,6 +812,7 @@ public partial class RouteEditorPage : ContentPage
             : "{ attributionControl: false, zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, boxZoom: false, keyboard: false }";
 
         var attribution = interactive ? "© OpenStreetMap contributors" : string.Empty;
+        var stopLabelPrefix = LangResources.StopLabelPrefixText.Replace("'", "\\'");
 
          return "<!DOCTYPE html>\n" +
              "<html>\n" +
@@ -819,7 +839,7 @@ public partial class RouteEditorPage : ContentPage
              "        var points = [];\n" +
              "\n" +
              "        function buildPopup(stop) {\n" +
-             "            const title = 'Stop #' + stop.order;\n" +
+             "            const title = '" + stopLabelPrefix + "' + stop.order;\n" +
              "            if (stop.address && stop.address.trim().length > 0) {\n" +
              "                return title + '<br/>' + stop.address;\n" +
              "            }\n" +
@@ -1328,11 +1348,11 @@ public partial class RouteEditorPage : ContentPage
     private static string BuildRouteTitle(int routeNumber, string? routeName, int? stopNumber = null)
     {
         var baseTitle = string.IsNullOrWhiteSpace(routeName)
-            ? $"Route {routeNumber}"
-            : $"Route {routeNumber} - {routeName.Trim()}";
+            ? string.Format(LangResources.RouteTitleFormatText, routeNumber)
+            : string.Format(LangResources.RouteTitleWithNameFormatText, routeNumber, routeName.Trim());
 
         return stopNumber.HasValue
-            ? $"{baseTitle} - Stop {stopNumber.Value}"
+            ? string.Format(LangResources.RouteTitleWithStopFormatText, baseTitle, stopNumber.Value)
             : baseTitle;
     }
 

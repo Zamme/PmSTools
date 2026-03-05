@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-
+             xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              x:Class="PmSTools.PlaceScanResultPage"
-             Title="Place Scan Result">
+             Title="{x:Static strings:LangResources.PlaceScanResultTitleText}">
     <!-- toolbar: quick full-screen map action -->
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Full map" Clicked="FullScreenMap_ToolbarClicked" Priority="0"/>
+        <ToolbarItem Text="{x:Static strings:LangResources.FullMapText}" Clicked="FullScreenMap_ToolbarClicked" Priority="0"/>
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="Auto,*" Padding="0">
         <!-- Header with Back Button -->
         <Grid Padding="10" ColumnDefinitions="Auto,*,Auto" BackgroundColor="Black">
-            <Label Text="Place Details" 
+            <Label Text="{x:Static strings:LangResources.PlaceDetailsText}" 
                    FontSize="20" 
                    FontAttributes="Bold"
                    Grid.Column="0"
@@ -24,76 +24,76 @@
         <ScrollView Grid.Row="1">
             <StackLayout Padding="15" Spacing="10">
                 <!-- Place Information -->
-                <Label Text="Place Information" 
+                <Label Text="{x:Static strings:LangResources.PlaceInformationText}" 
                        FontSize="18" 
                        FontAttributes="Bold"
                        Margin="0,10,0,5"/>
                 
                 <Label x:Name="NameResultText"
-                    Text="Name"
+                    Text="{x:Static strings:LangResources.NamePlaceholderText}"
                     FontSize="14"
                     FontAttributes="Bold"
                     Margin="10,0"/>
                 
                 <Label x:Name="StreetNameResultText"
-                    Text="Street Name"
+                    Text="{x:Static strings:LangResources.StreetNamePlaceholderText}"
                     FontSize="14"
                     Margin="10,0"/>
 
                 <Label x:Name="StreetNumberResultText"
-                    Text="Street Number"
+                    Text="{x:Static strings:LangResources.StreetNumberPlaceholderText}"
                     FontSize="14"
                     Margin="10,0"/>
                 
                 <Label x:Name="PostalCodeResultText"
-                    Text="Postal Code"
+                    Text="{x:Static strings:LangResources.PostalCodePlaceholderText}"
                     FontSize="14"
                     Margin="10,0"/>
                 
                 <Label x:Name="CityResultText"
-                    Text="City"
+                    Text="{x:Static strings:LangResources.CityPlaceholderText}"
                     FontSize="14"
                     Margin="10,0"/>
                 
                 <Label x:Name="CountryResultText"
-                    Text="Country"
+                    Text="{x:Static strings:LangResources.CountryPlaceholderText}"
                     FontSize="14"
                     Margin="10,0"/>
 
                 <Button x:Name="EditFieldsButton"
-                        Text="Edit fields"
+                        Text="{x:Static strings:LangResources.EditFieldsText}"
                         Clicked="EditFieldsButton_Clicked"
                         Margin="0,8,0,0"/>
 
                 <Button x:Name="RepeatPhotoButton"
-                    Text="Repeat photo"
+                    Text="{x:Static strings:LangResources.RepeatPhotoText}"
                     Clicked="RepeatPhotoButton_Clicked"
                     Margin="0,8,0,0"/>
 
                 <StackLayout x:Name="EditableFieldsPanel" IsVisible="False" Spacing="8" Margin="0,6,0,0">
-                    <Label Text="Manual correction" FontAttributes="Bold" FontSize="16"/>
+                    <Label Text="{x:Static strings:LangResources.ManualCorrectionText}" FontAttributes="Bold" FontSize="16"/>
 
-                    <Entry x:Name="EditNameEntry" Placeholder="Name"/>
-                    <Entry x:Name="EditStreetNameEntry" Placeholder="Street name"/>
-                    <Entry x:Name="EditStreetNumberEntry" Placeholder="Street number"/>
-                    <Entry x:Name="EditPostalCodeEntry" Placeholder="Postal code" Keyboard="Numeric"/>
-                    <Entry x:Name="EditCityEntry" Placeholder="City"/>
-                    <Entry x:Name="EditCountryEntry" Placeholder="Country"/>
+                    <Entry x:Name="EditNameEntry" Placeholder="{x:Static strings:LangResources.NamePlaceholderText}"/>
+                    <Entry x:Name="EditStreetNameEntry" Placeholder="{x:Static strings:LangResources.StreetNamePlaceholderText}"/>
+                    <Entry x:Name="EditStreetNumberEntry" Placeholder="{x:Static strings:LangResources.StreetNumberPlaceholderText}"/>
+                    <Entry x:Name="EditPostalCodeEntry" Placeholder="{x:Static strings:LangResources.PostalCodePlaceholderText}" Keyboard="Numeric"/>
+                    <Entry x:Name="EditCityEntry" Placeholder="{x:Static strings:LangResources.CityPlaceholderText}"/>
+                    <Entry x:Name="EditCountryEntry" Placeholder="{x:Static strings:LangResources.CountryPlaceholderText}"/>
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                         <Button Grid.Column="0"
                                 x:Name="ApplyEditsButton"
-                                Text="Apply corrections"
+                                Text="{x:Static strings:LangResources.ApplyCorrectionsText}"
                                 Clicked="ApplyEditsButton_Clicked"/>
                         <Button Grid.Column="1"
                                 x:Name="CancelEditsButton"
-                                Text="Cancel"
+                                Text="{x:Static strings:LangResources.CancelText}"
                                 Clicked="CancelEditsButton_Clicked"/>
                     </Grid>
                 </StackLayout>
 
                 <!-- Location selector (native, below place info) -->
-                <Label Text="Location candidates" FontSize="16" FontAttributes="Bold" Margin="0,12,0,6"/>
+                <Label Text="{x:Static strings:LangResources.LocationCandidatesText}" FontSize="16" FontAttributes="Bold" Margin="0,12,0,6"/>
                 <CollectionView x:Name="CandidatesList"
                                 SelectionMode="Single"
                                 HeightRequest="220"
@@ -120,15 +120,15 @@
                 </CollectionView>
 
                 <!-- Map Section -->
-                <Label Text="Location Map" 
+                <Label Text="{x:Static strings:LangResources.LocationMapText}" 
                        FontSize="18" 
                        FontAttributes="Bold"
                        Margin="0,20,0,5"/>
                 
                 <StackLayout Orientation="Horizontal" Spacing="15" Padding="0,0,0,10">
-                    <Label Text="Latitude:" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Label Text="{x:Static strings:LangResources.LatitudeLabelText}" FontAttributes="Bold" VerticalOptions="Center"/>
                     <Label x:Name="LatitudeText" Text="—" VerticalOptions="Center"/>
-                    <Label Text="Longitude:" FontAttributes="Bold" VerticalOptions="Center" Margin="20,0,0,0"/>
+                    <Label Text="{x:Static strings:LangResources.LongitudeLabelText}" FontAttributes="Bold" VerticalOptions="Center" Margin="20,0,0,0"/>
                     <Label x:Name="LongitudeText" Text="—" VerticalOptions="Center"/>
                 </StackLayout>
 
@@ -138,7 +138,7 @@
                         VerticalOptions="Fill" />
 
                     <!-- Floating full-screen button -->
-                    <Button Text="⤢" SemanticProperties.Hint="Open map full screen" Clicked="FullScreenButton_Clicked"
+                    <Button Text="⤢" SemanticProperties.Hint="{x:Static strings:LangResources.OpenMapFullScreenHintText}" Clicked="FullScreenButton_Clicked"
                             BackgroundColor="#80000000" TextColor="White" WidthRequest="48" HeightRequest="48"
                             CornerRadius="24" FontSize="20"
                             HorizontalOptions="End" VerticalOptions="Start" Margin="10"/>

@@ -1,6 +1,7 @@
 using Java.Lang;
 using MauiPopup.Views;
 using PmSTools.Models;
+using PmSTools.Resources.Languages;
 using Exception = System.Exception;
 
 namespace PmSTools;
@@ -73,7 +74,7 @@ public partial class PrefixesPopupPage : BasePopupPage
             newLabel.VerticalOptions = LayoutOptions.Center;
             newGrid.Add(newLabel, 1, 0);
             Button newButton = new Button();
-            newButton.Text = "X";
+            newButton.Text = LangResources.RemoveSymbolText;
             newButton.FontSize = 20;
             newButton.FontAttributes = FontAttributes.Bold;
             newButton.TextColor = Colors.Red;
@@ -146,7 +147,7 @@ public partial class PrefixesPopupPage : BasePopupPage
         currentActivePrefixesList.Clear();
         if (prefixesCount < 1)
         {
-            DisplayAlertAsync("Error", "Prefixes count is empty", "OK");
+            DisplayAlertAsync(LangResources.ErrorTitleText, LangResources.PrefixesCountEmptyText, LangResources.OkText);
         }
         else
         {

@@ -2,8 +2,9 @@
 <mauiPopup:BasePopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                          xmlns:mauiPopup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
+                         xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
                          x:Class="PmSTools.PlaceScanResultPopupPage"
-                         Title="Place Scan Result">
+                         Title="{x:Static strings:LangResources.PlaceScanResultTitleText}">
     <ScrollView>
         <StackLayout
             x:Name="PlaceScanResultContainer"
@@ -11,43 +12,43 @@
             HorizontalOptions="Fill"
             VerticalOptions="StartAndExpand">
             <Label x:Name="NameResultText"
-                Text="Name"
+                Text="{x:Static strings:LangResources.NamePlaceholderText}"
                 FontSize="20"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Margin="0,20,0,10"/>
             <Label x:Name="StreetNameResultText"
-                Text="Street Name"
+                Text="{x:Static strings:LangResources.StreetNamePlaceholderText}"
                 FontSize="20"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Margin="0,20,0,10"/>
             <Label x:Name="StreetNumberResultText"
-                Text="Street Number"
+                Text="{x:Static strings:LangResources.StreetNumberPlaceholderText}"
                 FontSize="20"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Margin="0,20,0,10"/>
             <Label x:Name="PostalCodeResultText"
-                Text="Postal Code"
+                Text="{x:Static strings:LangResources.PostalCodePlaceholderText}"
                 FontSize="20"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Margin="0,20,0,10"/>
             <Label x:Name="CityResultText"
-                Text="City"
+                Text="{x:Static strings:LangResources.CityPlaceholderText}"
                 FontSize="20"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Margin="0,20,0,10"/>
             <Label x:Name="CountryResultText"
-                Text="Country"
+                Text="{x:Static strings:LangResources.CountryPlaceholderText}"
                 FontSize="20"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 Margin="0,20,0,10"/>
 
-            <Label Text="Location candidates"
+            <Label Text="{x:Static strings:LangResources.LocationCandidatesText}"
                 FontSize="16"
                 FontAttributes="Bold"
                 Margin="10,10,10,4"/>
@@ -77,30 +78,30 @@
             </CollectionView>
 
             <Button x:Name="EditFieldsButton"
-                Text="Edit fields"
+                Text="{x:Static strings:LangResources.EditFieldsText}"
                 Clicked="EditFieldsButton_Clicked"
                 Margin="10,8,10,0"/>
 
             <StackLayout x:Name="EditableFieldsPanel" IsVisible="False" Spacing="8" Margin="10,6,10,10">
-                <Label Text="Manual correction"
+                <Label Text="{x:Static strings:LangResources.ManualCorrectionText}"
                     FontAttributes="Bold"
                     FontSize="16"/>
 
-                <Entry x:Name="EditNameEntry" Placeholder="Name"/>
-                <Entry x:Name="EditStreetNameEntry" Placeholder="Street name"/>
-                <Entry x:Name="EditStreetNumberEntry" Placeholder="Street number"/>
-                <Entry x:Name="EditPostalCodeEntry" Placeholder="Postal code" Keyboard="Numeric"/>
-                <Entry x:Name="EditCityEntry" Placeholder="City"/>
-                <Entry x:Name="EditCountryEntry" Placeholder="Country"/>
+                <Entry x:Name="EditNameEntry" Placeholder="{x:Static strings:LangResources.NamePlaceholderText}"/>
+                <Entry x:Name="EditStreetNameEntry" Placeholder="{x:Static strings:LangResources.StreetNamePlaceholderText}"/>
+                <Entry x:Name="EditStreetNumberEntry" Placeholder="{x:Static strings:LangResources.StreetNumberPlaceholderText}"/>
+                <Entry x:Name="EditPostalCodeEntry" Placeholder="{x:Static strings:LangResources.PostalCodePlaceholderText}" Keyboard="Numeric"/>
+                <Entry x:Name="EditCityEntry" Placeholder="{x:Static strings:LangResources.CityPlaceholderText}"/>
+                <Entry x:Name="EditCountryEntry" Placeholder="{x:Static strings:LangResources.CountryPlaceholderText}"/>
 
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                     <Button Grid.Column="0"
                         x:Name="ApplyEditsButton"
-                        Text="Apply corrections"
+                        Text="{x:Static strings:LangResources.ApplyCorrectionsText}"
                         Clicked="ApplyEditsButton_Clicked"/>
                     <Button Grid.Column="1"
                         x:Name="CancelEditsButton"
-                        Text="Cancel"
+                        Text="{x:Static strings:LangResources.CancelText}"
                         Clicked="CancelEditsButton_Clicked"/>
                 </Grid>
             </StackLayout>

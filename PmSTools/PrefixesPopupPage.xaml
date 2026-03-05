@@ -84,7 +84,7 @@
                         VerticalOptions="Fill"
                         IsSpellCheckEnabled="False"
                         IsTextPredictionEnabled="False"
-                        Placeholder="Prefix...">
+                        Placeholder="{x:Static strings:LangResources.PrefixPlaceholderText}">
                     </Editor>
                     <Button Grid.Row="0" Grid.Column="1"
                         Text="{x:Static strings:LangResources.AddText}"

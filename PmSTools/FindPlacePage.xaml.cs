@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Plugin.Maui.OCR;
 using System.IO;
 using PmSTools.Models;
+using PmSTools.Resources.Languages;
 
 namespace PmSTools;
 
@@ -39,7 +40,7 @@ public partial class FindPlacePage : ContentPage
 
                 if (!ocrResult.Success)
                 {
-                    await DisplayAlertAsync("No success", "No OCR possible", "OK");
+                    await DisplayAlertAsync(LangResources.NoSuccessTitleText, LangResources.NoOcrPossibleText, LangResources.OkText);
                     return;
                 }
 
@@ -49,7 +50,7 @@ public partial class FindPlacePage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            await DisplayAlertAsync(LangResources.ErrorTitleText, ex.Message, LangResources.OkText);
         }
     }
 
@@ -72,7 +73,7 @@ public partial class FindPlacePage : ContentPage
 
             if (!ocrResult.Success)
             {
-                await DisplayAlertAsync("No success", "No OCR possible", "OK");
+                await DisplayAlertAsync(LangResources.NoSuccessTitleText, LangResources.NoOcrPossibleText, LangResources.OkText);
                 return;
             }
 
@@ -80,7 +81,7 @@ public partial class FindPlacePage : ContentPage
         }
         else
         {
-            await DisplayAlertAsync("Result error", "Result is null", "OK");
+            await DisplayAlertAsync(LangResources.ResultErrorTitleText, LangResources.ResultIsNullText, LangResources.OkText);
         }
     }
     
@@ -106,7 +107,7 @@ public partial class FindPlacePage : ContentPage
         {
             foreach (PlaceInfoItem lastPlace in lastPlaces)
             {
-                string title = string.IsNullOrWhiteSpace(lastPlace.Name) ? "Unknown Name" : lastPlace.Name;
+                string title = string.IsNullOrWhiteSpace(lastPlace.Name) ? LangResources.UnknownNameText : lastPlace.Name;
 
                 List<string> addressParts = new List<string>();
                 if (!string.IsNullOrWhiteSpace(lastPlace.Street))
@@ -136,14 +137,14 @@ public partial class FindPlacePage : ContentPage
 
                 var addressLabel = new Label
                 {
-                    Text = addressParts.Count > 0 ? string.Join("\n", addressParts) : "Unknown address",
+                    Text = addressParts.Count > 0 ? string.Join("\n", addressParts) : LangResources.UnknownAddressText,
                     FontSize = 14,
                     TextColor = Colors.Black
                 };
 
                 var openButton = new Button
                 {
-                    Text = "Open",
+                    Text = LangResources.OpenText,
                     HorizontalOptions = LayoutOptions.End
                 };
                 openButton.Clicked += async (_, _) => await OpenPlaceAsync(lastPlace);
@@ -173,7 +174,7 @@ public partial class FindPlacePage : ContentPage
         {
             var emptyLabel = new Label
             {
-                Text = "No last place info",
+                Text = LangResources.NoLastPlaceInfoText,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Center,
                 BackgroundColor = Colors.White,
@@ -193,13 +194,17 @@ public partial class FindPlacePage : ContentPage
         }
         else
         {
-            await DisplayAlertAsync("No data", "No last place info available", "OK");
+            await DisplayAlertAsync(LangResources.NoDataTitleText, LangResources.NoLastPlaceInfoAvailableText, LangResources.OkText);
         }
     }
 
     private async void OnClearLastSearchPlacesClicked(object? sender, EventArgs e)
     {
-        bool confirm = await DisplayAlertAsync("Clear history", "Delete saved address history?", "Yes", "No");
+        bool confirm = await DisplayAlertAsync(
+            LangResources.ClearHistoryTitleText,
+            LangResources.DeleteSavedAddressHistoryText,
+            LangResources.YesText,
+            LangResources.NoText);
         if (!confirm)
         {
             return;

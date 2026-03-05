@@ -2,17 +2,18 @@
 <mauiPopup:BasePopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                          xmlns:mauiPopup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
+                         xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
                          x:Class="PmSTools.AboutPopupPage"
-                         Title="About"
+                         Title="{x:Static strings:LangResources.AboutTitleText}"
                          HorizontalOptions="Center"
                          VerticalOptions="Center">
     
     <VerticalStackLayout BackgroundColor="White" VerticalOptions="Fill" HorizontalOptions="Fill">
         <!--TODO Make up this page, please-->
-        <Label Text="Made by Jaume Castells Carles" TextColor="Black" FontSize="20" VerticalOptions="Fill" HorizontalOptions="Center"></Label>
-        <Label Text="For Vilo Games Studio" TextColor="Black" FontSize="20" VerticalOptions="Fill" HorizontalOptions="Center"></Label>
-        <Label Text="@ 2026" TextColor="Black" FontSize="20" VerticalOptions="Fill" HorizontalOptions="Center"></Label>
-        <Button Text="OK"
+        <Label Text="{x:Static strings:LangResources.AboutMadeByText}" TextColor="Black" FontSize="20" VerticalOptions="Fill" HorizontalOptions="Center"></Label>
+        <Label Text="{x:Static strings:LangResources.AboutForStudioText}" TextColor="Black" FontSize="20" VerticalOptions="Fill" HorizontalOptions="Center"></Label>
+        <Label Text="{x:Static strings:LangResources.AboutCopyrightText}" TextColor="Black" FontSize="20" VerticalOptions="Fill" HorizontalOptions="Center"></Label>
+        <Button Text="{x:Static strings:LangResources.OkText}"
                 TextColor="GreenYellow"
                 Clicked="OnOkButtonClicked"
                 HorizontalOptions="Fill"

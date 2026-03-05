@@ -4,11 +4,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:PmSTools"
+    xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
     Shell.FlyoutBehavior="Disabled"
-    Title="PmSTools">
+    Title="{x:Static strings:LangResources.AppTitleText}">
 
     <ShellContent
-        Title="PmS Tools"
+        Title="{x:Static strings:LangResources.ShellMainTitleText}"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 

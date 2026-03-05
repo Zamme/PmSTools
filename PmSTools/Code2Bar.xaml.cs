@@ -55,7 +55,7 @@ public partial class Code2Bar : ContentPage
         notiActivePrefixes.Clear();
         if (prefixesCount < 1)
         {
-            DisplayAlertAsync("Error", "Prefixes count is empty", "OK");
+            DisplayAlertAsync(LangResources.ErrorTitleText, LangResources.PrefixesCountEmptyText, LangResources.OkText);
         }
         else
         {
@@ -261,7 +261,7 @@ public partial class Code2Bar : ContentPage
 
                 if (!ocrResult.Success)
                 {
-                    await DisplayAlertAsync("No success", "No OCR possible", "OK");
+                    await DisplayAlertAsync(LangResources.NoSuccessTitleText, LangResources.NoOcrPossibleText, LangResources.OkText);
                     return;
                 }
 
@@ -271,7 +271,7 @@ public partial class Code2Bar : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync("Error", ex.Message, "OK");
+            await DisplayAlertAsync(LangResources.ErrorTitleText, ex.Message, LangResources.OkText);
         }
     }
 
@@ -297,18 +297,8 @@ public partial class Code2Bar : ContentPage
 
     private void UpdatePrefixesInfoLabel()
     {
-        string infoLabelText = "Prefixes: ";
-        int pendingPrefixes = notiPrefixes.Count;
-        foreach (var notiPrefix in notiPrefixes)
-        {
-            infoLabelText += notiPrefix;
-            if (pendingPrefixes > 1)
-            {
-                infoLabelText += ", ";
-                pendingPrefixes--;
-            }
-        }
-        PrefixesInfoLabel.Text = infoLabelText;
+        var prefixesText = string.Join(", ", notiPrefixes);
+        PrefixesInfoLabel.Text = string.Format(LangResources.PrefixesLabelFormatText, prefixesText);
         /*PrefixesInfoLabel.Text = prefixesCount.ToString();*/
     }
 
@@ -331,7 +321,7 @@ public partial class Code2Bar : ContentPage
 
             if (!ocrResult.Success)
             {
-                await DisplayAlertAsync("No success", "No OCR possible", "OK");
+                await DisplayAlertAsync(LangResources.NoSuccessTitleText, LangResources.NoOcrPossibleText, LangResources.OkText);
                 return;
             }
 
@@ -339,7 +329,7 @@ public partial class Code2Bar : ContentPage
         }
         else
         {
-            await DisplayAlertAsync("Result error", "Result is null", "OK");
+            await DisplayAlertAsync(LangResources.ResultErrorTitleText, LangResources.ResultIsNullText, LangResources.OkText);
         }
     }
 

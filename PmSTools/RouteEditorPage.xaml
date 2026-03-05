@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              x:Class="PmSTools.RouteEditorPage"
-             Title="Route editor">
+             Title="{x:Static strings:LangResources.RouteEditorTitleText}">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Start near me" Clicked="OnStartNearMeClicked" Priority="0" />
-        <ToolbarItem Text="Optimize" Clicked="OnOptimizeRouteClicked" Priority="0" />
-        <ToolbarItem Text="Full map" Clicked="FullRouteMap_ToolbarClicked" Priority="0" />
+        <ToolbarItem Text="{x:Static strings:LangResources.StartNearMeText}" Clicked="OnStartNearMeClicked" Priority="0" />
+        <ToolbarItem Text="{x:Static strings:LangResources.OptimizeText}" Clicked="OnOptimizeRouteClicked" Priority="0" />
+        <ToolbarItem Text="{x:Static strings:LangResources.FullMapText}" Clicked="FullRouteMap_ToolbarClicked" Priority="0" />
     </ContentPage.ToolbarItems>
     <ScrollView x:Name="RouteScrollView">
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Padding="16">
@@ -15,7 +16,7 @@
               ColumnDefinitions="*,*"
               ColumnSpacing="10">
             <Button Grid.Column="0"
-                Text="Take"
+                Text="{x:Static strings:LangResources.TakeText}"
                 ImageSource="camera_icon_01.png"
                 FontSize="18"
                 BackgroundColor="Blue"
@@ -23,12 +24,12 @@
                 BorderWidth="2"
                 TextColor="WhiteSmoke"
                 FontAttributes="Bold"
-                SemanticProperties.Hint="Take Address From Camera"
+                SemanticProperties.Hint="{x:Static strings:LangResources.TakeAddressFromCameraHintText}"
                 HorizontalOptions="Fill"
                 HeightRequest="80"
                 Clicked="OnTakeAddressPhotoClicked" />
             <Button Grid.Column="1"
-                Text="Select"
+                Text="{x:Static strings:LangResources.SelectText}"
                 ImageSource="folder_icon_01.png"
                 FontSize="18"
                 BackgroundColor="Blue"
@@ -36,7 +37,7 @@
                 BorderWidth="2"
                 TextColor="WhiteSmoke"
                 FontAttributes="Bold"
-                SemanticProperties.Hint="Take Address From File"
+                SemanticProperties.Hint="{x:Static strings:LangResources.TakeAddressFromFileHintText}"
                 HorizontalOptions="Fill"
                 HeightRequest="80"
                 Clicked="OnOpenAddressPictureClicked" />
@@ -45,7 +46,7 @@
          <Label x:Name="EmptyStopsLabel"
              Grid.Row="1"
                Margin="0,12,0,0"
-               Text="No stops yet"
+               Text="{x:Static strings:LangResources.NoStopsYetText}"
                HorizontalOptions="Center" />
 
          <Frame Grid.Row="2"
@@ -56,10 +57,10 @@
                     ColumnDefinitions="*,Auto"
                     Margin="12,12,12,0">
                   <Label Grid.Column="0"
-                         Text="Route map"
+                         Text="{x:Static strings:LangResources.RouteMapText}"
                          FontAttributes="Bold" />
                   <Button Grid.Column="1"
-                          Text="Refresh"
+                          Text="{x:Static strings:LangResources.RefreshText}"
                           FontSize="12"
                           Padding="8,4"
                           BackgroundColor="#2E7D32"
@@ -88,13 +89,13 @@
                                            VerticalOptions="Center"
                                            Spacing="8">
                           <ActivityIndicator IsRunning="True" Color="White" />
-                          <Label Text="Geocoding..."
+                          <Label Text="{x:Static strings:LangResources.GeocodingText}"
                                  TextColor="White"
                                  FontAttributes="Bold" />
                       </VerticalStackLayout>
                   </Grid>
                   <Button Text="⤢"
-                          SemanticProperties.Hint="Open map full screen"
+                      SemanticProperties.Hint="{x:Static strings:LangResources.OpenMapFullScreenHintText}"
                           Clicked="FullRouteMap_FloatingClicked"
                           BackgroundColor="#80000000"
                           TextColor="White"
@@ -130,14 +131,14 @@
                                         <Setter Property="IsVisible" Value="False" />
                                     </DataTrigger>
                                 </HorizontalStackLayout.Triggers>
-                                <Label Text="{Binding Order, StringFormat='#{0}'}" FontAttributes="Bold" />
-                                <Label Text="First"
+                                <Label Text="{Binding Order, StringFormat={x:Static strings:LangResources.StopOrderShortFormatText}}" FontAttributes="Bold" />
+                                <Label Text="{x:Static strings:LangResources.FirstText}"
                                        BackgroundColor="#1E88E5"
                                        TextColor="White"
                                        FontSize="12"
                                        Padding="6,2"
                                        IsVisible="{Binding IsFirst}" />
-                                <Label Text="Last"
+                                <Label Text="{x:Static strings:LangResources.LastText}"
                                        BackgroundColor="#6A1B9A"
                                        TextColor="White"
                                        FontSize="12"
@@ -156,27 +157,27 @@
                                     </DataTrigger>
                                 </VerticalStackLayout.Triggers>
                                     <HorizontalStackLayout Spacing="8">
-                                     <Label Text="{Binding Order, StringFormat='Stop #{0}'}" FontAttributes="Bold" />
-                                     <Label Text="First"
+                                     <Label Text="{Binding Order, StringFormat={x:Static strings:LangResources.StopNumberFormatText}}" FontAttributes="Bold" />
+                                     <Label Text="{x:Static strings:LangResources.FirstText}"
                                          BackgroundColor="#1E88E5"
                                          TextColor="White"
                                          FontSize="12"
                                          Padding="6,2"
                                          IsVisible="{Binding IsFirst}" />
-                                     <Label Text="Last"
+                                     <Label Text="{x:Static strings:LangResources.LastText}"
                                          BackgroundColor="#6A1B9A"
                                          TextColor="White"
                                          FontSize="12"
                                          Padding="6,2"
                                          IsVisible="{Binding IsLast}" />
                                     </HorizontalStackLayout>
-                                <Entry Placeholder="Name" Text="{Binding Name}" />
-                                <Entry Placeholder="Street name" Text="{Binding StreetName}" />
-                                <Entry Placeholder="Street number" Text="{Binding StreetNumber}" />
-                                <Entry Placeholder="Postal code" Text="{Binding PostalCode}" />
-                                <Entry Placeholder="City" Text="{Binding City}" />
-                                <Entry Placeholder="Country" Text="{Binding Country}" />
-                                <Button Text="Delete stop"
+                                <Entry Placeholder="{x:Static strings:LangResources.NamePlaceholderText}" Text="{Binding Name}" />
+                                <Entry Placeholder="{x:Static strings:LangResources.StreetNamePlaceholderText}" Text="{Binding StreetName}" />
+                                <Entry Placeholder="{x:Static strings:LangResources.StreetNumberPlaceholderText}" Text="{Binding StreetNumber}" />
+                                <Entry Placeholder="{x:Static strings:LangResources.PostalCodePlaceholderText}" Text="{Binding PostalCode}" />
+                                <Entry Placeholder="{x:Static strings:LangResources.CityPlaceholderText}" Text="{Binding City}" />
+                                <Entry Placeholder="{x:Static strings:LangResources.CountryPlaceholderText}" Text="{Binding Country}" />
+                                <Button Text="{x:Static strings:LangResources.DeleteStopText}"
                                         CommandParameter="{Binding .}"
                                         Clicked="OnDeleteRouteStopClicked" />
                             </VerticalStackLayout>
@@ -190,19 +191,19 @@
                Margin="0,12,0,0"
                Padding="12">
             <VerticalStackLayout Spacing="8">
-                <Label Text="New stop (manual)" FontAttributes="Bold" />
-                <Entry x:Name="ManualNameEntry" Placeholder="Name" />
-                <Entry x:Name="ManualStreetNameEntry" Placeholder="Street name" />
-                <Entry x:Name="ManualStreetNumberEntry" Placeholder="Street number" />
-                <Entry x:Name="ManualPostalCodeEntry" Placeholder="Postal code" />
-                <Entry x:Name="ManualCityEntry" Placeholder="City" />
-                <Entry x:Name="ManualCountryEntry" Placeholder="Country" />
+                <Label Text="{x:Static strings:LangResources.NewStopManualText}" FontAttributes="Bold" />
+                <Entry x:Name="ManualNameEntry" Placeholder="{x:Static strings:LangResources.NamePlaceholderText}" />
+                <Entry x:Name="ManualStreetNameEntry" Placeholder="{x:Static strings:LangResources.StreetNamePlaceholderText}" />
+                <Entry x:Name="ManualStreetNumberEntry" Placeholder="{x:Static strings:LangResources.StreetNumberPlaceholderText}" />
+                <Entry x:Name="ManualPostalCodeEntry" Placeholder="{x:Static strings:LangResources.PostalCodePlaceholderText}" />
+                <Entry x:Name="ManualCityEntry" Placeholder="{x:Static strings:LangResources.CityPlaceholderText}" />
+                <Entry x:Name="ManualCountryEntry" Placeholder="{x:Static strings:LangResources.CountryPlaceholderText}" />
             </VerticalStackLayout>
         </Frame>
 
         <Button Grid.Row="5"
                 Margin="0,12,0,0"
-                Text="Add route stop"
+                Text="{x:Static strings:LangResources.AddRouteStopText}"
                 Clicked="OnAddRouteStopClicked" />
     </Grid>
     </ScrollView>

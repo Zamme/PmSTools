@@ -89,4 +89,448 @@
     <data name="NoSavedCodesText" xml:space="preserve">
         <value>Sin Códigos Guardados</value>
     </data>
+    <data name="AppTitleText" xml:space="preserve">
+        <value>PmSTools</value>
+    </data>
+    <data name="ShellMainTitleText" xml:space="preserve">
+        <value>PmS Tools</value>
+    </data>
+    <data name="LoadingText" xml:space="preserve">
+        <value>Loading...</value>
+    </data>
+    <data name="CodeToBarcodeHintText" xml:space="preserve">
+        <value>Create barcodes</value>
+    </data>
+    <data name="FindPlaceHintText" xml:space="preserve">
+        <value>Find place</value>
+    </data>
+    <data name="CreateRoutesHintText" xml:space="preserve">
+        <value>Create routes</value>
+    </data>
+    <data name="TakeCodeFromCameraHintText" xml:space="preserve">
+        <value>Take code from camera</value>
+    </data>
+    <data name="TakeCodeFromFileHintText" xml:space="preserve">
+        <value>Take code from file</value>
+    </data>
+    <data name="FindPlaceTitleText" xml:space="preserve">
+        <value>Find a Place</value>
+    </data>
+    <data name="LastSearchPlacesText" xml:space="preserve">
+        <value>Last search places</value>
+    </data>
+    <data name="ClearText" xml:space="preserve">
+        <value>Clear</value>
+    </data>
+    <data name="TakeText" xml:space="preserve">
+        <value>Take</value>
+    </data>
+    <data name="SelectText" xml:space="preserve">
+        <value>Select</value>
+    </data>
+    <data name="TakeAddressFromCameraHintText" xml:space="preserve">
+        <value>Take address from camera</value>
+    </data>
+    <data name="TakeAddressFromFileHintText" xml:space="preserve">
+        <value>Take address from file</value>
+    </data>
+    <data name="CreateNewRouteText" xml:space="preserve">
+        <value>Create new route</value>
+    </data>
+    <data name="NoRoutesYetText" xml:space="preserve">
+        <value>No routes yet</value>
+    </data>
+    <data name="RenameRouteDescriptionText" xml:space="preserve">
+        <value>Rename route</value>
+    </data>
+    <data name="DeleteRouteDescriptionText" xml:space="preserve">
+        <value>Delete route</value>
+    </data>
+    <data name="MoveRouteUpDescriptionText" xml:space="preserve">
+        <value>Move route up</value>
+    </data>
+    <data name="MoveRouteDownDescriptionText" xml:space="preserve">
+        <value>Move route down</value>
+    </data>
+    <data name="DeleteAllRoutesText" xml:space="preserve">
+        <value>Delete all routes</value>
+    </data>
+    <data name="RenameRouteTitleText" xml:space="preserve">
+        <value>Rename route</value>
+    </data>
+    <data name="RenameRoutePromptText" xml:space="preserve">
+        <value>Enter a name for this route.</value>
+    </data>
+    <data name="DeleteRouteTitleText" xml:space="preserve">
+        <value>Delete route</value>
+    </data>
+    <data name="DeleteRouteMessageFormatText" xml:space="preserve">
+        <value>Delete {0} and all of its stops?</value>
+    </data>
+    <data name="DeleteAllRoutesTitleText" xml:space="preserve">
+        <value>Delete all routes</value>
+    </data>
+    <data name="DeleteAllRoutesMessageText" xml:space="preserve">
+        <value>Delete all routes and their stops?</value>
+    </data>
+    <data name="DeleteAllText" xml:space="preserve">
+        <value>Delete all</value>
+    </data>
+    <data name="CancelText" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="RouteDisplayNameFormatText" xml:space="preserve">
+        <value>Route {0}</value>
+    </data>
+    <data name="RouteDisplayNameWithNameFormatText" xml:space="preserve">
+        <value>Route {0} - {1}</value>
+    </data>
+    <data name="RouteEditorTitleText" xml:space="preserve">
+        <value>Route editor</value>
+    </data>
+    <data name="StartNearMeText" xml:space="preserve">
+        <value>Start near me</value>
+    </data>
+    <data name="OptimizeText" xml:space="preserve">
+        <value>Optimize</value>
+    </data>
+    <data name="FullMapText" xml:space="preserve">
+        <value>Full map</value>
+    </data>
+    <data name="NoStopsYetText" xml:space="preserve">
+        <value>No stops yet</value>
+    </data>
+    <data name="RouteMapText" xml:space="preserve">
+        <value>Route map</value>
+    </data>
+    <data name="RefreshText" xml:space="preserve">
+        <value>Refresh</value>
+    </data>
+    <data name="GeocodingText" xml:space="preserve">
+        <value>Geocoding...</value>
+    </data>
+    <data name="OpenMapFullScreenHintText" xml:space="preserve">
+        <value>Open map full screen</value>
+    </data>
+    <data name="FirstText" xml:space="preserve">
+        <value>First</value>
+    </data>
+    <data name="LastText" xml:space="preserve">
+        <value>Last</value>
+    </data>
+    <data name="StopNumberFormatText" xml:space="preserve">
+        <value>Stop #{0}</value>
+    </data>
+    <data name="StopOrderShortFormatText" xml:space="preserve">
+        <value>#{0}</value>
+    </data>
+    <data name="NamePlaceholderText" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="StreetNamePlaceholderText" xml:space="preserve">
+        <value>Street name</value>
+    </data>
+    <data name="StreetNumberPlaceholderText" xml:space="preserve">
+        <value>Street number</value>
+    </data>
+    <data name="PostalCodePlaceholderText" xml:space="preserve">
+        <value>Postal code</value>
+    </data>
+    <data name="CityPlaceholderText" xml:space="preserve">
+        <value>City</value>
+    </data>
+    <data name="CountryPlaceholderText" xml:space="preserve">
+        <value>Country</value>
+    </data>
+    <data name="DeleteStopText" xml:space="preserve">
+        <value>Delete stop</value>
+    </data>
+    <data name="NewStopManualText" xml:space="preserve">
+        <value>New stop (manual)</value>
+    </data>
+    <data name="AddRouteStopText" xml:space="preserve">
+        <value>Add route stop</value>
+    </data>
+    <data name="RouteTitleFormatText" xml:space="preserve">
+        <value>Route {0}</value>
+    </data>
+    <data name="RouteTitleWithNameFormatText" xml:space="preserve">
+        <value>Route {0} - {1}</value>
+    </data>
+    <data name="RouteTitleWithStopFormatText" xml:space="preserve">
+        <value>{0} - Stop {1}</value>
+    </data>
+    <data name="StopLabelPrefixText" xml:space="preserve">
+        <value>Stop #</value>
+    </data>
+    <data name="MapSelectedLocationText" xml:space="preserve">
+        <value>Selected location</value>
+    </data>
+    <data name="PlaceScanResultTitleText" xml:space="preserve">
+        <value>Place Scan Result</value>
+    </data>
+    <data name="PlaceDetailsText" xml:space="preserve">
+        <value>Place Details</value>
+    </data>
+    <data name="PlaceInformationText" xml:space="preserve">
+        <value>Place Information</value>
+    </data>
+    <data name="EditFieldsText" xml:space="preserve">
+        <value>Edit fields</value>
+    </data>
+    <data name="RepeatPhotoText" xml:space="preserve">
+        <value>Repeat photo</value>
+    </data>
+    <data name="ManualCorrectionText" xml:space="preserve">
+        <value>Manual correction</value>
+    </data>
+    <data name="ApplyCorrectionsText" xml:space="preserve">
+        <value>Apply corrections</value>
+    </data>
+    <data name="LocationCandidatesText" xml:space="preserve">
+        <value>Location candidates</value>
+    </data>
+    <data name="LocationMapText" xml:space="preserve">
+        <value>Location Map</value>
+    </data>
+    <data name="LatitudeLabelText" xml:space="preserve">
+        <value>Latitude:</value>
+    </data>
+    <data name="LongitudeLabelText" xml:space="preserve">
+        <value>Longitude:</value>
+    </data>
+    <data name="HideEditorText" xml:space="preserve">
+        <value>Hide editor</value>
+    </data>
+    <data name="UnknownNameText" xml:space="preserve">
+        <value>Unknown Name</value>
+    </data>
+    <data name="UnknownStreetNameText" xml:space="preserve">
+        <value>Unknown Street Name</value>
+    </data>
+    <data name="UnknownStreetNumberText" xml:space="preserve">
+        <value>Unknown Street Number</value>
+    </data>
+    <data name="UnknownPostalCodeText" xml:space="preserve">
+        <value>Unknown Postal Code</value>
+    </data>
+    <data name="UnknownCityText" xml:space="preserve">
+        <value>Unknown City</value>
+    </data>
+    <data name="UnknownCountryText" xml:space="preserve">
+        <value>Unknown Country</value>
+    </data>
+    <data name="UnknownAddressText" xml:space="preserve">
+        <value>Unknown address</value>
+    </data>
+    <data name="NoLastPlaceInfoText" xml:space="preserve">
+        <value>No last place info</value>
+    </data>
+    <data name="NoLastPlaceInfoAvailableText" xml:space="preserve">
+        <value>No last place info available</value>
+    </data>
+    <data name="NoDataTitleText" xml:space="preserve">
+        <value>No data</value>
+    </data>
+    <data name="ClearHistoryTitleText" xml:space="preserve">
+        <value>Clear history</value>
+    </data>
+    <data name="DeleteSavedAddressHistoryText" xml:space="preserve">
+        <value>Delete saved address history?</value>
+    </data>
+    <data name="YesText" xml:space="preserve">
+        <value>Yes</value>
+    </data>
+    <data name="NoText" xml:space="preserve">
+        <value>No</value>
+    </data>
+    <data name="OpenText" xml:space="preserve">
+        <value>Open</value>
+    </data>
+    <data name="OkText" xml:space="preserve">
+        <value>OK</value>
+    </data>
+    <data name="OopsTitleText" xml:space="preserve">
+        <value>Oops!</value>
+    </data>
+    <data name="ErrorTitleText" xml:space="preserve">
+        <value>Error</value>
+    </data>
+    <data name="NoSuccessTitleText" xml:space="preserve">
+        <value>No success</value>
+    </data>
+    <data name="NoOcrPossibleText" xml:space="preserve">
+        <value>No OCR possible</value>
+    </data>
+    <data name="ResultErrorTitleText" xml:space="preserve">
+        <value>Result error</value>
+    </data>
+    <data name="ResultIsNullText" xml:space="preserve">
+        <value>Result is null</value>
+    </data>
+    <data name="MapCoordinatesAlertTitleText" xml:space="preserve">
+        <value>Location selected</value>
+    </data>
+    <data name="MapCoordinatesAlertMessageFormatText" xml:space="preserve">
+        <value>{0}\nLat: {1:F6}, Lon: {2:F6}</value>
+    </data>
+    <data name="NavigationTitleText" xml:space="preserve">
+        <value>Navigation</value>
+    </data>
+    <data name="ReturnToPhotoCaptureErrorText" xml:space="preserve">
+        <value>Could not return to photo capture page.</value>
+    </data>
+    <data name="ManualCorrectionsAppliedText" xml:space="preserve">
+        <value>Manual corrections applied.</value>
+    </data>
+    <data name="ManualCorrectionsApplyErrorText" xml:space="preserve">
+        <value>Could not apply manual corrections.</value>
+    </data>
+    <data name="SavedTitleText" xml:space="preserve">
+        <value>Saved</value>
+    </data>
+    <data name="GeocodeDebugTitleText" xml:space="preserve">
+        <value>Geocode debug (no results)</value>
+    </data>
+    <data name="GeocodeDebugNoCandidatesText" xml:space="preserve">
+        <value>No candidates returned from geocoder.</value>
+    </data>
+    <data name="GeocodeDebugModeEnabledText" xml:space="preserve">
+        <value>Debug mode enabled.</value>
+    </data>
+    <data name="GeocodeDebugParsedOcrText" xml:space="preserve">
+        <value>Parsed OCR:</value>
+    </data>
+    <data name="GeocodeDebugNameLabelText" xml:space="preserve">
+        <value>Name:</value>
+    </data>
+    <data name="GeocodeDebugStreetLabelText" xml:space="preserve">
+        <value>Street:</value>
+    </data>
+    <data name="GeocodeDebugStreetNameLabelText" xml:space="preserve">
+        <value>StreetName:</value>
+    </data>
+    <data name="GeocodeDebugStreetNumberLabelText" xml:space="preserve">
+        <value>StreetNumber:</value>
+    </data>
+    <data name="GeocodeDebugParsedStreetNumberLabelText" xml:space="preserve">
+        <value>ParsedStreetNumber:</value>
+    </data>
+    <data name="GeocodeDebugDesiredHouseNumberLabelText" xml:space="preserve">
+        <value>DesiredHouseNumber:</value>
+    </data>
+    <data name="GeocodeDebugPostalCodeLabelText" xml:space="preserve">
+        <value>PostalCode:</value>
+    </data>
+    <data name="GeocodeDebugCityLabelText" xml:space="preserve">
+        <value>City:</value>
+    </data>
+    <data name="GeocodeDebugCountryLabelText" xml:space="preserve">
+        <value>Country:</value>
+    </data>
+    <data name="GeocodeDebugCandidatesLabelText" xml:space="preserve">
+        <value>Candidates:</value>
+    </data>
+    <data name="GeocodeDebugReasonLabelText" xml:space="preserve">
+        <value>Reason:</value>
+    </data>
+    <data name="GeocodeDebugTopSpainQueriesText" xml:space="preserve">
+        <value>Top Spain queries:</value>
+    </data>
+    <data name="GeocodeDebugTopGlobalQueriesText" xml:space="preserve">
+        <value>Top Global queries:</value>
+    </data>
+    <data name="GeocodeDebugTopCandidatesText" xml:space="preserve">
+        <value>Top candidates:</value>
+    </data>
+    <data name="GeocodeDebugHouseNumberLabelText" xml:space="preserve">
+        <value>hn=</value>
+    </data>
+    <data name="GeocodeDebugTypeLabelText" xml:space="preserve">
+        <value>type=</value>
+    </data>
+    <data name="GeocodeDebugMatchLabelText" xml:space="preserve">
+        <value>match=</value>
+    </data>
+    <data name="GeocodeDebugNoneText" xml:space="preserve">
+        <value>(none)</value>
+    </data>
+    <data name="GeocodeDebugEmptyText" xml:space="preserve">
+        <value>(empty)</value>
+    </data>
+    <data name="MapMarkerDefaultLabelText" xml:space="preserve">
+        <value>Place</value>
+    </data>
+    <data name="ExactNumberMatchBadgeText" xml:space="preserve">
+        <value>✓ exact number match</value>
+    </data>
+    <data name="DefaultCountryText" xml:space="preserve">
+        <value>Spain</value>
+    </data>
+    <data name="BarcodePopupTitleText" xml:space="preserve">
+        <value>Barcode</value>
+    </data>
+    <data name="AboutTitleText" xml:space="preserve">
+        <value>About</value>
+    </data>
+    <data name="AboutMadeByText" xml:space="preserve">
+        <value>Made by Jaume Castells Carles</value>
+    </data>
+    <data name="AboutForStudioText" xml:space="preserve">
+        <value>For Vilo Games Studio</value>
+    </data>
+    <data name="AboutCopyrightText" xml:space="preserve">
+        <value>@ 2026</value>
+    </data>
+    <data name="RemoveSymbolText" xml:space="preserve">
+        <value>X</value>
+    </data>
+    <data name="PrefixPlaceholderText" xml:space="preserve">
+        <value>Prefix...</value>
+    </data>
+    <data name="FullScreenMapTitleText" xml:space="preserve">
+        <value>Map (full screen)</value>
+    </data>
+    <data name="CloseText" xml:space="preserve">
+        <value>Close</value>
+    </data>
+    <data name="MapNotAvailableText" xml:space="preserve">
+        <value>Map not available</value>
+    </data>
+    <data name="NoPrefixFoundText" xml:space="preserve">
+        <value>No prefix found</value>
+    </data>
+    <data name="PrefixesCountEmptyText" xml:space="preserve">
+        <value>Prefixes count is empty</value>
+    </data>
+    <data name="PrefixesLabelFormatText" xml:space="preserve">
+        <value>Prefixes: {0}</value>
+    </data>
+    <data name="OptimizeRouteTitleText" xml:space="preserve">
+        <value>Optimize route</value>
+    </data>
+    <data name="OptimizeNeedTwoStopsText" xml:space="preserve">
+        <value>Add at least two stops to optimize.</value>
+    </data>
+    <data name="OptimizeNotEnoughStopsWithCoordsText" xml:space="preserve">
+        <value>Not enough stops with coordinates to optimize.</value>
+    </data>
+    <data name="SomeStopsCouldNotBeGeocodedText" xml:space="preserve">
+        <value>Some stops could not be geocoded and were placed at the end.</value>
+    </data>
+    <data name="OptimizeNoLocationText" xml:space="preserve">
+        <value>Could not access your location. Optimized without a start point.</value>
+    </data>
+    <data name="StartNearMeNeedTwoStopsText" xml:space="preserve">
+        <value>Add at least two stops to reorder.</value>
+    </data>
+    <data name="StartNearMeNoLocationText" xml:space="preserve">
+        <value>Unable to access your location.</value>
+    </data>
+    <data name="StartNearMeNoStopsWithCoordsText" xml:space="preserve">
+        <value>No stops with coordinates found.</value>
+    </data>
+    <data name="StartNearMeNearestStopErrorText" xml:space="preserve">
+        <value>Unable to pick the nearest stop.</value>
+    </data>
 </root>

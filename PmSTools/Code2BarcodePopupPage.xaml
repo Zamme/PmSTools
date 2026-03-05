@@ -4,8 +4,9 @@
                          xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI"
                          xmlns:controls="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
                          xmlns:models="clr-namespace:PmSTools.Models"
+                         xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
                          x:Class="PmSTools.Code2BarcodePopupPage"
-                         Title="Codi de Barres"
+                         Title="{x:Static strings:LangResources.BarcodePopupTitleText}"
                          BackgroundColor="White">
     
     <Grid

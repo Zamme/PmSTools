@@ -21,6 +21,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<GenerateResxDesignerFiles>true</GenerateResxDesignerFiles>
 
 		<!-- Display name -->
 		<ApplicationTitle>PmSTools</ApplicationTitle>
@@ -94,7 +95,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui.Camera" Version="1.0.2" />
+		<PackageReference Include="CommunityToolkit.Maui.Camera" Version="1.0.2" ExcludeAssets="analyzers" />
 		<PackageReference Include="Mapsui.Maui" Version="5.0.2" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />

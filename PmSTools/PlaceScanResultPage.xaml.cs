@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Globalization;
 using System.Collections.ObjectModel;
 using PmSTools.Models;
+using PmSTools.Resources.Languages;
 
 namespace PmSTools;
 
@@ -116,12 +117,12 @@ public partial class PlaceScanResultPage : ContentPage
 
     private void UpdateResultLabels(PlaceInfoItem placeInfo)
     {
-        NameResultText.Text = placeInfo.Name ?? "Unknown Name";
-        StreetNameResultText.Text = placeInfo.StreetName ?? "Unknown Street Name";
-        StreetNumberResultText.Text = placeInfo.StreetNumber ?? "Unknown Street Number";
-        PostalCodeResultText.Text = placeInfo.PostalCode ?? "Unknown Postal Code";
-        CityResultText.Text = placeInfo.City ?? "Unknown City";
-        CountryResultText.Text = placeInfo.Country ?? "Unknown Country";
+        NameResultText.Text = placeInfo.Name ?? LangResources.UnknownNameText;
+        StreetNameResultText.Text = placeInfo.StreetName ?? LangResources.UnknownStreetNameText;
+        StreetNumberResultText.Text = placeInfo.StreetNumber ?? LangResources.UnknownStreetNumberText;
+        PostalCodeResultText.Text = placeInfo.PostalCode ?? LangResources.UnknownPostalCodeText;
+        CityResultText.Text = placeInfo.City ?? LangResources.UnknownCityText;
+        CountryResultText.Text = placeInfo.Country ?? LangResources.UnknownCountryText;
     }
 
     private void PopulateEditFields(PlaceInfoItem placeInfo)
@@ -138,7 +139,7 @@ public partial class PlaceScanResultPage : ContentPage
     {
         _isEditMode = enabled;
         EditableFieldsPanel.IsVisible = enabled;
-        EditFieldsButton.Text = enabled ? "Hide editor" : "Edit fields";
+        EditFieldsButton.Text = enabled ? LangResources.HideEditorText : LangResources.EditFieldsText;
     }
 
     private async void FillPageWithMap(string ocrResult)
@@ -277,7 +278,9 @@ public partial class PlaceScanResultPage : ContentPage
 
         // Escape address for JavaScript
         string escapedAddress = address.Replace("\\", "\\\\").Replace("\"", "\\\"");
-        string escapedLabel = (placeInfo.Name ?? "Place").Replace("\\", "\\\\").Replace("\"", "\\\"");
+        string escapedLabel = (placeInfo.Name ?? LangResources.MapMarkerDefaultLabelText)
+            .Replace("\\", "\\\\")
+            .Replace("\"", "\\\"");
 
         string html = "<!DOCTYPE html>\n" +
             "<html>\n" +
@@ -937,7 +940,7 @@ public partial class PlaceScanResultPage : ContentPage
         var streetVariants = BuildStreetVariants(street);
         var city = (placeInfo.City ?? string.Empty).Trim();
         var postal = (placeInfo.PostalCode ?? string.Empty).Trim();
-        var country = string.IsNullOrWhiteSpace(placeInfo.Country) ? "Spain" : placeInfo.Country.Trim();
+        var country = string.IsNullOrWhiteSpace(placeInfo.Country) ? LangResources.DefaultCountryText : placeInfo.Country.Trim();
 
         var cityNoAcc = RemoveDiacritics(city);
 
@@ -1508,7 +1511,7 @@ public partial class PlaceScanResultPage : ContentPage
         {
             var nextLine = NormalizeCityForGeocoding(lines[postalLineIndex + 1]);
             if (IsLikelyProvinceLine(nextLine) && string.IsNullOrWhiteSpace(placeInfo.Country))
-                placeInfo.Country = "Spain";
+                placeInfo.Country = LangResources.DefaultCountryText;
         }
 
         // Backward compatibility: if line-by-line parsing did not find a postal code, try multiline OCR text.
@@ -1809,7 +1812,7 @@ public partial class PlaceScanResultPage : ContentPage
 
         // Set default country to Spain if not found
         if (string.IsNullOrEmpty(placeInfo.Country))
-            placeInfo.Country = "Spain";
+            placeInfo.Country = LangResources.DefaultCountryText;
 
         EnsureStreetParts(placeInfo);
 
@@ -1859,7 +1862,13 @@ public partial class PlaceScanResultPage : ContentPage
             LatitudeText.Text = lat != 0 ? lat.ToString("F6", CultureInfo.InvariantCulture) : "—";
             LongitudeText.Text = lon != 0 ? lon.ToString("F6", CultureInfo.InvariantCulture) : "—";
 
-            await DisplayAlertAsync("Location selected", $"{label}\nLat: {lat:F6}, Lon: {lon:F6}", "OK");
+            var message = string.Format(
+                CultureInfo.CurrentCulture,
+                LangResources.MapCoordinatesAlertMessageFormatText,
+                label,
+                lat,
+                lon);
+            await DisplayAlertAsync(LangResources.MapCoordinatesAlertTitleText, message, LangResources.OkText);
         }
         catch (Exception)
         {
@@ -2140,41 +2149,41 @@ public partial class PlaceScanResultPage : ContentPage
         {
             var (_, parsedStreetNumber) = SplitStreetParts(placeInfo.Street);
             var sb = new StringBuilder();
-            sb.AppendLine("Parsed OCR:");
-            sb.AppendLine($"Name: {placeInfo.Name ?? "(empty)"}");
-            sb.AppendLine($"Street: {placeInfo.Street ?? "(empty)"}");
-            sb.AppendLine($"StreetName: {placeInfo.StreetName ?? "(empty)"}");
-            sb.AppendLine($"StreetNumber: {placeInfo.StreetNumber ?? "(empty)"}");
-            sb.AppendLine($"ParsedStreetNumber: {parsedStreetNumber}");
-            sb.AppendLine($"DesiredHouseNumber: {(string.IsNullOrWhiteSpace(desiredHouseNumber) ? "(empty)" : desiredHouseNumber)}");
-            sb.AppendLine($"PostalCode: {placeInfo.PostalCode ?? "(empty)"}");
-            sb.AppendLine($"City: {placeInfo.City ?? "(empty)"}");
-            sb.AppendLine($"Country: {placeInfo.Country ?? "(empty)"}");
-            sb.AppendLine($"Candidates: {candidateCount}");
+            sb.AppendLine(LangResources.GeocodeDebugParsedOcrText);
+            sb.AppendLine($"{LangResources.GeocodeDebugNameLabelText} {placeInfo.Name ?? LangResources.GeocodeDebugEmptyText}");
+            sb.AppendLine($"{LangResources.GeocodeDebugStreetLabelText} {placeInfo.Street ?? LangResources.GeocodeDebugEmptyText}");
+            sb.AppendLine($"{LangResources.GeocodeDebugStreetNameLabelText} {placeInfo.StreetName ?? LangResources.GeocodeDebugEmptyText}");
+            sb.AppendLine($"{LangResources.GeocodeDebugStreetNumberLabelText} {placeInfo.StreetNumber ?? LangResources.GeocodeDebugEmptyText}");
+            sb.AppendLine($"{LangResources.GeocodeDebugParsedStreetNumberLabelText} {parsedStreetNumber}");
+            sb.AppendLine($"{LangResources.GeocodeDebugDesiredHouseNumberLabelText} {(string.IsNullOrWhiteSpace(desiredHouseNumber) ? LangResources.GeocodeDebugEmptyText : desiredHouseNumber)}");
+            sb.AppendLine($"{LangResources.GeocodeDebugPostalCodeLabelText} {placeInfo.PostalCode ?? LangResources.GeocodeDebugEmptyText}");
+            sb.AppendLine($"{LangResources.GeocodeDebugCityLabelText} {placeInfo.City ?? LangResources.GeocodeDebugEmptyText}");
+            sb.AppendLine($"{LangResources.GeocodeDebugCountryLabelText} {placeInfo.Country ?? LangResources.GeocodeDebugEmptyText}");
+            sb.AppendLine($"{LangResources.GeocodeDebugCandidatesLabelText} {candidateCount}");
 
             if (!string.IsNullOrWhiteSpace(reason))
             {
                 sb.AppendLine();
-                sb.AppendLine("Reason:");
+                sb.AppendLine(LangResources.GeocodeDebugReasonLabelText);
                 sb.AppendLine(reason);
             }
 
             sb.AppendLine();
-            sb.AppendLine("Top Spain queries:");
+            sb.AppendLine(LangResources.GeocodeDebugTopSpainQueriesText);
             foreach (var item in spainUrls.Take(5).Select((url, idx) => $"{idx + 1}. {BuildDebugQueryPreview(url)}"))
                 sb.AppendLine(item);
 
             sb.AppendLine();
-            sb.AppendLine("Top Global queries:");
+            sb.AppendLine(LangResources.GeocodeDebugTopGlobalQueriesText);
             foreach (var item in globalUrls.Take(5).Select((url, idx) => $"{idx + 1}. {BuildDebugQueryPreview(url)}"))
                 sb.AppendLine(item);
 
             if (candidates != null && candidates.Count > 0)
             {
                 sb.AppendLine();
-                sb.AppendLine("Top candidates:");
+                sb.AppendLine(LangResources.GeocodeDebugTopCandidatesText);
                 foreach (var item in candidates.Take(5).Select((c, idx) =>
-                    $"{idx + 1}. hn={(!string.IsNullOrWhiteSpace(c.HouseNumber) ? c.HouseNumber : "(none)")}, type={c.Type}, match={CandidateMatchesHouseNumber(c, desiredHouseNumber)}, {c.DisplayName}"))
+                    $"{idx + 1}. {LangResources.GeocodeDebugHouseNumberLabelText}{(!string.IsNullOrWhiteSpace(c.HouseNumber) ? c.HouseNumber : LangResources.GeocodeDebugNoneText)}, {LangResources.GeocodeDebugTypeLabelText}{c.Type}, {LangResources.GeocodeDebugMatchLabelText}{CandidateMatchesHouseNumber(c, desiredHouseNumber)}, {c.DisplayName}"))
                 {
                     sb.AppendLine(item);
                 }
@@ -2182,7 +2191,7 @@ public partial class PlaceScanResultPage : ContentPage
 
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await DisplayAlertAsync("Geocode debug (no results)", sb.ToString(), "OK");
+                await DisplayAlertAsync(LangResources.GeocodeDebugTitleText, sb.ToString(), LangResources.OkText);
             });
         }
         catch
@@ -2211,6 +2220,7 @@ public partial class PlaceScanResultPage : ContentPage
             var web = (WebView)this.FindByName("OsmMap");
             if (web != null)
             {
+                var selectedLocationText = LangResources.MapSelectedLocationText.Replace("'", "\\'");
                 string js = $@"(function(){{
                     var lat = {cand.Lat.ToString(CultureInfo.InvariantCulture)};
                     var lon = {cand.Lon.ToString(CultureInfo.InvariantCulture)};
@@ -2222,7 +2232,7 @@ public partial class PlaceScanResultPage : ContentPage
                                 if(Math.abs(p.lat - lat) < 0.00001 && Math.abs(p.lng - lon) < 0.00001){{ map.setView([lat,lon],18); m.marker.openPopup(); return true; }}
                             }}
                         }}
-                        var mk = L.marker([lat, lon]).addTo(map).bindPopup('Selected location').openPopup();
+                        var mk = L.marker([lat, lon]).addTo(map).bindPopup('{selectedLocationText}').openPopup();
                         map.setView([lat, lon], 18);
                         return true;
                     }}catch(e){{return false;}}
@@ -2235,7 +2245,13 @@ public partial class PlaceScanResultPage : ContentPage
 
         if (showAlert)
         {
-            await DisplayAlertAsync("Location selected", $"{cand.DisplayName}\nLat: {cand.Lat:F6}, Lon: {cand.Lon:F6}", "OK");
+            var message = string.Format(
+                CultureInfo.CurrentCulture,
+                LangResources.MapCoordinatesAlertMessageFormatText,
+                cand.DisplayName,
+                cand.Lat,
+                cand.Lon);
+            await DisplayAlertAsync(LangResources.MapCoordinatesAlertTitleText, message, LangResources.OkText);
         }
     }
 
@@ -2314,7 +2330,7 @@ public partial class PlaceScanResultPage : ContentPage
         }
         catch
         {
-            await DisplayAlertAsync("Navigation", "Could not return to photo capture page.", "OK");
+            await DisplayAlertAsync(LangResources.NavigationTitleText, LangResources.ReturnToPhotoCaptureErrorText, LangResources.OkText);
         }
     }
 
@@ -2332,7 +2348,7 @@ public partial class PlaceScanResultPage : ContentPage
             _currentPlace.Country = (EditCountryEntry.Text ?? string.Empty).Trim();
 
             if (string.IsNullOrWhiteSpace(_currentPlace.Country))
-                _currentPlace.Country = "Spain";
+                _currentPlace.Country = LangResources.DefaultCountryText;
 
             SyncStreetFromParts(_currentPlace);
             EnsureStreetParts(_currentPlace);
@@ -2353,7 +2369,7 @@ public partial class PlaceScanResultPage : ContentPage
         }
         catch
         {
-            await DisplayAlertAsync("Error", "Could not apply manual corrections.", "OK");
+            await DisplayAlertAsync(LangResources.ErrorTitleText, LangResources.ManualCorrectionsApplyErrorText, LangResources.OkText);
         }
     }
 

@@ -7,14 +7,14 @@
              Title="{x:Static strings:LangResources.RouteCreationPageTitleText}">
     <Grid RowDefinitions="Auto,*,Auto" Padding="16">
         <VerticalStackLayout Grid.Row="0" Spacing="8">
-            <Button Text="Create new route"
+            <Button Text="{x:Static strings:LangResources.CreateNewRouteText}"
                     Clicked="OnCreateNewRouteClicked" />
         </VerticalStackLayout>
 
         <ScrollView Grid.Row="1" Margin="0,12,0,0">
             <VerticalStackLayout Spacing="12">
                 <Label x:Name="EmptyStateLabel"
-                       Text="No routes yet"
+                       Text="{x:Static strings:LangResources.NoRoutesYetText}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center" />
 
@@ -48,7 +48,7 @@
                                                  Padding="8"
                                                  BackgroundColor="{StaticResource Secondary}"
                                                  CornerRadius="8"
-                                                 SemanticProperties.Description="Rename route"
+                                                 SemanticProperties.Description="{x:Static strings:LangResources.RenameRouteDescriptionText}"
                                                  CommandParameter="{Binding .}"
                                                  Clicked="OnRenameRouteClicked" />
                                     <ImageButton Grid.Column="2"
@@ -58,7 +58,7 @@
                                                  Padding="8"
                                                  BackgroundColor="IndianRed"
                                                  CornerRadius="8"
-                                                 SemanticProperties.Description="Delete route"
+                                                 SemanticProperties.Description="{x:Static strings:LangResources.DeleteRouteDescriptionText}"
                                                  CommandParameter="{Binding .}"
                                                  Clicked="OnDeleteRouteClicked" />
                                     <ImageButton Grid.Column="3"
@@ -69,7 +69,7 @@
                                                  BackgroundColor="#FFF3B0"
                                                  CornerRadius="8"
                                                  IsEnabled="{Binding CanMoveUp}"
-                                                 SemanticProperties.Description="Move route up"
+                                                 SemanticProperties.Description="{x:Static strings:LangResources.MoveRouteUpDescriptionText}"
                                                  CommandParameter="{Binding .}"
                                                  Clicked="OnMoveRouteUpClicked" />
                                     <ImageButton Grid.Column="4"
@@ -80,7 +80,7 @@
                                                  BackgroundColor="#FFF3B0"
                                                  CornerRadius="8"
                                                  IsEnabled="{Binding CanMoveDown}"
-                                                 SemanticProperties.Description="Move route down"
+                                                 SemanticProperties.Description="{x:Static strings:LangResources.MoveRouteDownDescriptionText}"
                                                  CommandParameter="{Binding .}"
                                                  Clicked="OnMoveRouteDownClicked" />
                                 </Grid>
@@ -92,7 +92,7 @@
         </ScrollView>
 
         <Button Grid.Row="2"
-                Text="Delete all routes"
+                Text="{x:Static strings:LangResources.DeleteAllRoutesText}"
                 BackgroundColor="IndianRed"
                 TextColor="White"
                 IsEnabled="{Binding HasRoutes}"

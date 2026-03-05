@@ -2,18 +2,19 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              x:Class="PmSTools.FindPlacePage"
-             Title="Find a Place">
+             Title="{x:Static strings:LangResources.FindPlaceTitleText}">
     <ContentPage.Content>
         <Grid RowDefinitions="Auto, *, Auto">
              <Grid Grid.Column="0" Grid.Row="0" ColumnDefinitions="*,Auto" Padding="8,4">
               <Label Grid.Column="0"
-                  Text="Last search places"
+                  Text="{x:Static strings:LangResources.LastSearchPlacesText}"
                   HorizontalOptions="Center"
                   VerticalOptions="Center" />
               <Button Grid.Column="1"
                 x:Name="ClearHistoryButton"
-                   Text="Clear"
+                   Text="{x:Static strings:LangResources.ClearText}"
                    Clicked="OnClearLastSearchPlacesClicked"
                    HorizontalOptions="End"
                    VerticalOptions="Center" />
@@ -39,7 +40,7 @@
                     <Button
                         Grid.Column="0"
                         x:Name="TakeAdressFromCameraButton"
-                        Text="Take" 
+                        Text="{x:Static strings:LangResources.TakeText}" 
                         ImageSource="camera_icon_01.png"
                         FontSize="18"
                         BackgroundColor="Blue"
@@ -47,7 +48,7 @@
                         BorderWidth="2"
                         TextColor="WhiteSmoke"
                         FontAttributes="Bold"
-                        SemanticProperties.Hint="Take Address From Camera"
+                        SemanticProperties.Hint="{x:Static strings:LangResources.TakeAddressFromCameraHintText}"
                         Clicked="OnTakeAdressPhotoButtonClicked"
                         HorizontalOptions="Fill"
                         HeightRequest="80"
@@ -56,14 +57,14 @@
                         Grid.Column="1"
                         x:Name="TakeAdressFromFileButton"
                         ImageSource="folder_icon_01.png"
-                        Text="Select" 
+                        Text="{x:Static strings:LangResources.SelectText}" 
                         FontSize="18"
                         BackgroundColor="Blue"
                         BorderColor="BlueViolet"
                         BorderWidth="2"
                         TextColor="WhiteSmoke"
                         FontAttributes="Bold"
-                        SemanticProperties.Hint="Take Address From File"
+                        SemanticProperties.Hint="{x:Static strings:LangResources.TakeAddressFromFileHintText}"
                         Clicked="OnOpenAdressPictureButtonClicked"
                         HorizontalOptions="Fill"
                         HeightRequest="80"

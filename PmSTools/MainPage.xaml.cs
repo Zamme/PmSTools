@@ -25,7 +25,7 @@ namespace PmSTools
 
         protected async void ShowNotAvailable()
         {
-            await DisplayAlertAsync("Ups!", LangResources.NotAvailableYet, "OK");
+            await DisplayAlertAsync(LangResources.OopsTitleText, LangResources.NotAvailableYet, LangResources.OkText);
         }
 
         private void OnFindPlaceButtonClicked(object? sender, EventArgs e)

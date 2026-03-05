@@ -4,6 +4,7 @@ using ZXing.Net.Maui;
 using ZXing.Net.Maui.Controls;
 using PmSTools.Models;
 using Xamarin.Google.MLKit.Vision.Text;
+using PmSTools.Resources.Languages;
 
 namespace PmSTools;
  
@@ -11,7 +12,6 @@ public partial class Code2BarcodePopupPage : ContentPage
 {
     // TODO : Refer tot el tema de validació de codis a un servei separat, per tenir el codi més net i poder-lo reutilitzar en altres parts de l'app si cal
     // TODO : Hi ha codis que no agafa. Mira-ho amb arxiu que tens de proves.
-    const string NoPrefixFound = "No prefix found";
     ObservableCollection<BarcodeItem> barcodeItems = new ObservableCollection<BarcodeItem>();
     public ObservableCollection<BarcodeItem> BarcodeItems { get { return barcodeItems; } }
     private string lastCodesToSave = "";
@@ -73,7 +73,7 @@ public partial class Code2BarcodePopupPage : ContentPage
 
         if (barcodeItems.Count < 1)
         {
-            Label newLabel = new Label { Text = NoPrefixFound,
+            Label newLabel = new Label { Text = LangResources.NoPrefixFoundText,
                 VerticalOptions=LayoutOptions.Center, 
                 HorizontalOptions=LayoutOptions.Center,
                 BackgroundColor=Colors.White,
@@ -89,7 +89,6 @@ public partial class Code2BarcodePopupPage : ContentPage
     public void ConstructPage(string _text, List<string> newPrefixes)
     {
         const int ShortValidLength = 13;
-        const int LongDataLengthWithoutControl = 22;
         const int LongValidLength = 23;
         char[] charSeparators = new char[] { ' ', '\n' };
         string[] textParts = _text.Split(charSeparators, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
@@ -175,7 +174,7 @@ public partial class Code2BarcodePopupPage : ContentPage
 
         if (barcodeItems.Count < 1)
         {
-            Label newLabel = new Label { Text = NoPrefixFound,
+            Label newLabel = new Label { Text = LangResources.NoPrefixFoundText,
                 VerticalOptions=LayoutOptions.Center, 
                 HorizontalOptions=LayoutOptions.Center,
                 BackgroundColor=Colors.White,
