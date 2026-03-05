@@ -96,388 +96,388 @@
         <value>PmS Tools</value>
     </data>
     <data name="LoadingText" xml:space="preserve">
-        <value>Loading...</value>
+        <value>Cargando...</value>
     </data>
     <data name="CodeToBarcodeHintText" xml:space="preserve">
-        <value>Create barcodes</value>
+        <value>Crear codigos de barras</value>
     </data>
     <data name="FindPlaceHintText" xml:space="preserve">
-        <value>Find place</value>
+        <value>Buscar lugar</value>
     </data>
     <data name="CreateRoutesHintText" xml:space="preserve">
-        <value>Create routes</value>
+        <value>Crear rutas</value>
     </data>
     <data name="TakeCodeFromCameraHintText" xml:space="preserve">
-        <value>Take code from camera</value>
+        <value>Tomar codigo desde la camara</value>
     </data>
     <data name="TakeCodeFromFileHintText" xml:space="preserve">
-        <value>Take code from file</value>
+        <value>Tomar codigo del archivo</value>
     </data>
     <data name="FindPlaceTitleText" xml:space="preserve">
-        <value>Find a Place</value>
+        <value>Buscar un lugar</value>
     </data>
     <data name="LastSearchPlacesText" xml:space="preserve">
-        <value>Last search places</value>
+        <value>Ultimos lugares buscados</value>
     </data>
     <data name="ClearText" xml:space="preserve">
-        <value>Clear</value>
+        <value>Limpiar</value>
     </data>
     <data name="TakeText" xml:space="preserve">
-        <value>Take</value>
+        <value>Tomar</value>
     </data>
     <data name="SelectText" xml:space="preserve">
-        <value>Select</value>
+        <value>Seleccionar</value>
     </data>
     <data name="TakeAddressFromCameraHintText" xml:space="preserve">
-        <value>Take address from camera</value>
+        <value>Tomar direccion desde la camara</value>
     </data>
     <data name="TakeAddressFromFileHintText" xml:space="preserve">
-        <value>Take address from file</value>
+        <value>Tomar direccion desde el archivo</value>
     </data>
     <data name="CreateNewRouteText" xml:space="preserve">
-        <value>Create new route</value>
+        <value>Crear nueva ruta</value>
     </data>
     <data name="NoRoutesYetText" xml:space="preserve">
-        <value>No routes yet</value>
+        <value>Sin rutas aun</value>
     </data>
     <data name="RenameRouteDescriptionText" xml:space="preserve">
-        <value>Rename route</value>
+        <value>Renombrar ruta</value>
     </data>
     <data name="DeleteRouteDescriptionText" xml:space="preserve">
-        <value>Delete route</value>
+        <value>Eliminar ruta</value>
     </data>
     <data name="MoveRouteUpDescriptionText" xml:space="preserve">
-        <value>Move route up</value>
+        <value>Mover ruta hacia arriba</value>
     </data>
     <data name="MoveRouteDownDescriptionText" xml:space="preserve">
-        <value>Move route down</value>
+        <value>Mover ruta hacia abajo</value>
     </data>
     <data name="DeleteAllRoutesText" xml:space="preserve">
-        <value>Delete all routes</value>
+        <value>Eliminar todas las rutas</value>
     </data>
     <data name="RenameRouteTitleText" xml:space="preserve">
-        <value>Rename route</value>
+        <value>Renombrar ruta</value>
     </data>
     <data name="RenameRoutePromptText" xml:space="preserve">
-        <value>Enter a name for this route.</value>
+        <value>Introduce un nombre para esta ruta.</value>
     </data>
     <data name="DeleteRouteTitleText" xml:space="preserve">
-        <value>Delete route</value>
+        <value>Eliminar ruta</value>
     </data>
     <data name="DeleteRouteMessageFormatText" xml:space="preserve">
-        <value>Delete {0} and all of its stops?</value>
+        <value>¿Eliminar {0} y todas sus paradas?</value>
     </data>
     <data name="DeleteAllRoutesTitleText" xml:space="preserve">
-        <value>Delete all routes</value>
+        <value>Eliminar todas las rutas</value>
     </data>
     <data name="DeleteAllRoutesMessageText" xml:space="preserve">
-        <value>Delete all routes and their stops?</value>
+        <value>¿Eliminar todas las rutas y sus paradas?</value>
     </data>
     <data name="DeleteAllText" xml:space="preserve">
-        <value>Delete all</value>
+        <value>Eliminar todo</value>
     </data>
     <data name="CancelText" xml:space="preserve">
-        <value>Cancel</value>
+        <value>Cancelar</value>
     </data>
     <data name="RouteDisplayNameFormatText" xml:space="preserve">
-        <value>Route {0}</value>
+        <value>Ruta {0}</value>
     </data>
     <data name="RouteDisplayNameWithNameFormatText" xml:space="preserve">
-        <value>Route {0} - {1}</value>
+        <value>Ruta {0} - {1}</value>
     </data>
     <data name="RouteEditorTitleText" xml:space="preserve">
-        <value>Route editor</value>
+        <value>Editor de ruta</value>
     </data>
     <data name="StartNearMeText" xml:space="preserve">
-        <value>Start near me</value>
+        <value>Empezar cerca de mi</value>
     </data>
     <data name="OptimizeText" xml:space="preserve">
-        <value>Optimize</value>
+        <value>Optimizar</value>
     </data>
     <data name="FullMapText" xml:space="preserve">
-        <value>Full map</value>
+        <value>Mapa completo</value>
     </data>
     <data name="NoStopsYetText" xml:space="preserve">
-        <value>No stops yet</value>
+        <value>Sin paradas aun</value>
     </data>
     <data name="RouteMapText" xml:space="preserve">
-        <value>Route map</value>
+        <value>Mapa de ruta</value>
     </data>
     <data name="RefreshText" xml:space="preserve">
-        <value>Refresh</value>
+        <value>Actualizar</value>
     </data>
     <data name="GeocodingText" xml:space="preserve">
-        <value>Geocoding...</value>
+        <value>Geocodificando...</value>
     </data>
     <data name="OpenMapFullScreenHintText" xml:space="preserve">
-        <value>Open map full screen</value>
+        <value>Abrir mapa a pantalla completa</value>
     </data>
     <data name="FirstText" xml:space="preserve">
-        <value>First</value>
+        <value>Primero</value>
     </data>
     <data name="LastText" xml:space="preserve">
-        <value>Last</value>
+        <value>Ultimo</value>
     </data>
     <data name="StopNumberFormatText" xml:space="preserve">
-        <value>Stop #{0}</value>
+        <value>Parada #{0}</value>
     </data>
     <data name="StopOrderShortFormatText" xml:space="preserve">
         <value>#{0}</value>
     </data>
     <data name="NamePlaceholderText" xml:space="preserve">
-        <value>Name</value>
+        <value>Nombre</value>
     </data>
     <data name="StreetNamePlaceholderText" xml:space="preserve">
-        <value>Street name</value>
+        <value>Nombre de la calle</value>
     </data>
     <data name="StreetNumberPlaceholderText" xml:space="preserve">
-        <value>Street number</value>
+        <value>Numero de la calle</value>
     </data>
     <data name="PostalCodePlaceholderText" xml:space="preserve">
-        <value>Postal code</value>
+        <value>Codigo postal</value>
     </data>
     <data name="CityPlaceholderText" xml:space="preserve">
-        <value>City</value>
+        <value>Ciudad</value>
     </data>
     <data name="CountryPlaceholderText" xml:space="preserve">
-        <value>Country</value>
+        <value>Pais</value>
     </data>
     <data name="DeleteStopText" xml:space="preserve">
-        <value>Delete stop</value>
+        <value>Eliminar parada</value>
     </data>
     <data name="NewStopManualText" xml:space="preserve">
-        <value>New stop (manual)</value>
+        <value>Nueva parada (manual)</value>
     </data>
     <data name="AddRouteStopText" xml:space="preserve">
-        <value>Add route stop</value>
+        <value>Agregar parada a la ruta</value>
     </data>
     <data name="RouteTitleFormatText" xml:space="preserve">
-        <value>Route {0}</value>
+        <value>Ruta {0}</value>
     </data>
     <data name="RouteTitleWithNameFormatText" xml:space="preserve">
-        <value>Route {0} - {1}</value>
+        <value>Ruta {0} - {1}</value>
     </data>
     <data name="RouteTitleWithStopFormatText" xml:space="preserve">
-        <value>{0} - Stop {1}</value>
+        <value>{0} - Parada {1}</value>
     </data>
     <data name="StopLabelPrefixText" xml:space="preserve">
-        <value>Stop #</value>
+        <value>Parada #</value>
     </data>
     <data name="MapSelectedLocationText" xml:space="preserve">
-        <value>Selected location</value>
+        <value>Ubicacion seleccionada</value>
     </data>
     <data name="PlaceScanResultTitleText" xml:space="preserve">
-        <value>Place Scan Result</value>
+        <value>Resultado del escaneo de lugar</value>
     </data>
     <data name="PlaceDetailsText" xml:space="preserve">
-        <value>Place Details</value>
+        <value>Detalles del lugar</value>
     </data>
     <data name="PlaceInformationText" xml:space="preserve">
-        <value>Place Information</value>
+        <value>Informacion del lugar</value>
     </data>
     <data name="EditFieldsText" xml:space="preserve">
-        <value>Edit fields</value>
+        <value>Editar campos</value>
     </data>
     <data name="RepeatPhotoText" xml:space="preserve">
-        <value>Repeat photo</value>
+        <value>Repetir foto</value>
     </data>
     <data name="ManualCorrectionText" xml:space="preserve">
-        <value>Manual correction</value>
+        <value>Correccion manual</value>
     </data>
     <data name="ApplyCorrectionsText" xml:space="preserve">
-        <value>Apply corrections</value>
+        <value>Aplicar correcciones</value>
     </data>
     <data name="LocationCandidatesText" xml:space="preserve">
-        <value>Location candidates</value>
+        <value>Candidatos de ubicacion</value>
     </data>
     <data name="LocationMapText" xml:space="preserve">
-        <value>Location Map</value>
+        <value>Mapa de ubicacion</value>
     </data>
     <data name="LatitudeLabelText" xml:space="preserve">
-        <value>Latitude:</value>
+        <value>Latitud:</value>
     </data>
     <data name="LongitudeLabelText" xml:space="preserve">
-        <value>Longitude:</value>
+        <value>Longitud:</value>
     </data>
     <data name="HideEditorText" xml:space="preserve">
-        <value>Hide editor</value>
+        <value>Ocultar editor</value>
     </data>
     <data name="UnknownNameText" xml:space="preserve">
-        <value>Unknown Name</value>
+        <value>Nombre desconocido</value>
     </data>
     <data name="UnknownStreetNameText" xml:space="preserve">
-        <value>Unknown Street Name</value>
+        <value>Nombre de calle desconocido</value>
     </data>
     <data name="UnknownStreetNumberText" xml:space="preserve">
-        <value>Unknown Street Number</value>
+        <value>Numero de calle desconocido</value>
     </data>
     <data name="UnknownPostalCodeText" xml:space="preserve">
-        <value>Unknown Postal Code</value>
+        <value>Codigo postal desconocido</value>
     </data>
     <data name="UnknownCityText" xml:space="preserve">
-        <value>Unknown City</value>
+        <value>Ciudad desconocida</value>
     </data>
     <data name="UnknownCountryText" xml:space="preserve">
-        <value>Unknown Country</value>
+        <value>Pais desconocido</value>
     </data>
     <data name="UnknownAddressText" xml:space="preserve">
-        <value>Unknown address</value>
+        <value>Direccion desconocida</value>
     </data>
     <data name="NoLastPlaceInfoText" xml:space="preserve">
-        <value>No last place info</value>
+        <value>Sin informacion del ultimo lugar</value>
     </data>
     <data name="NoLastPlaceInfoAvailableText" xml:space="preserve">
-        <value>No last place info available</value>
+        <value>No hay informacion disponible del ultimo lugar</value>
     </data>
     <data name="NoDataTitleText" xml:space="preserve">
-        <value>No data</value>
+        <value>Sin datos</value>
     </data>
     <data name="ClearHistoryTitleText" xml:space="preserve">
-        <value>Clear history</value>
+        <value>Limpiar historial</value>
     </data>
     <data name="DeleteSavedAddressHistoryText" xml:space="preserve">
-        <value>Delete saved address history?</value>
+        <value>¿Eliminar el historial de direcciones guardadas?</value>
     </data>
     <data name="YesText" xml:space="preserve">
-        <value>Yes</value>
+        <value>Si</value>
     </data>
     <data name="NoText" xml:space="preserve">
         <value>No</value>
     </data>
     <data name="OpenText" xml:space="preserve">
-        <value>Open</value>
+        <value>Abrir</value>
     </data>
     <data name="OkText" xml:space="preserve">
         <value>OK</value>
     </data>
     <data name="OopsTitleText" xml:space="preserve">
-        <value>Oops!</value>
+        <value>¡Ups!</value>
     </data>
     <data name="ErrorTitleText" xml:space="preserve">
         <value>Error</value>
     </data>
     <data name="NoSuccessTitleText" xml:space="preserve">
-        <value>No success</value>
+        <value>Sin exito</value>
     </data>
     <data name="NoOcrPossibleText" xml:space="preserve">
-        <value>No OCR possible</value>
+        <value>OCR no posible</value>
     </data>
     <data name="ResultErrorTitleText" xml:space="preserve">
-        <value>Result error</value>
+        <value>Error de resultado</value>
     </data>
     <data name="ResultIsNullText" xml:space="preserve">
-        <value>Result is null</value>
+        <value>El resultado es nulo</value>
     </data>
     <data name="MapCoordinatesAlertTitleText" xml:space="preserve">
-        <value>Location selected</value>
+        <value>Ubicacion seleccionada</value>
     </data>
     <data name="MapCoordinatesAlertMessageFormatText" xml:space="preserve">
         <value>{0}\nLat: {1:F6}, Lon: {2:F6}</value>
     </data>
     <data name="NavigationTitleText" xml:space="preserve">
-        <value>Navigation</value>
+        <value>Navegacion</value>
     </data>
     <data name="ReturnToPhotoCaptureErrorText" xml:space="preserve">
-        <value>Could not return to photo capture page.</value>
+        <value>No se pudo volver a la pagina de captura de fotos.</value>
     </data>
     <data name="ManualCorrectionsAppliedText" xml:space="preserve">
-        <value>Manual corrections applied.</value>
+        <value>Correcciones manuales aplicadas.</value>
     </data>
     <data name="ManualCorrectionsApplyErrorText" xml:space="preserve">
-        <value>Could not apply manual corrections.</value>
+        <value>No se pudieron aplicar las correcciones manuales.</value>
     </data>
     <data name="SavedTitleText" xml:space="preserve">
-        <value>Saved</value>
+        <value>Guardado</value>
     </data>
     <data name="GeocodeDebugTitleText" xml:space="preserve">
-        <value>Geocode debug (no results)</value>
+        <value>Depuracion de geocodificacion (sin resultados)</value>
     </data>
     <data name="GeocodeDebugNoCandidatesText" xml:space="preserve">
-        <value>No candidates returned from geocoder.</value>
+        <value>El geocodificador no devolvio candidatos.</value>
     </data>
     <data name="GeocodeDebugModeEnabledText" xml:space="preserve">
-        <value>Debug mode enabled.</value>
+        <value>Modo de depuracion activado.</value>
     </data>
     <data name="GeocodeDebugParsedOcrText" xml:space="preserve">
-        <value>Parsed OCR:</value>
+        <value>OCR analizado:</value>
     </data>
     <data name="GeocodeDebugNameLabelText" xml:space="preserve">
-        <value>Name:</value>
+        <value>Nombre:</value>
     </data>
     <data name="GeocodeDebugStreetLabelText" xml:space="preserve">
-        <value>Street:</value>
+        <value>Calle:</value>
     </data>
     <data name="GeocodeDebugStreetNameLabelText" xml:space="preserve">
-        <value>StreetName:</value>
+        <value>NombreCalle:</value>
     </data>
     <data name="GeocodeDebugStreetNumberLabelText" xml:space="preserve">
-        <value>StreetNumber:</value>
+        <value>NumeroCalle:</value>
     </data>
     <data name="GeocodeDebugParsedStreetNumberLabelText" xml:space="preserve">
-        <value>ParsedStreetNumber:</value>
+        <value>NumeroCalleAnalizado:</value>
     </data>
     <data name="GeocodeDebugDesiredHouseNumberLabelText" xml:space="preserve">
-        <value>DesiredHouseNumber:</value>
+        <value>NumeroCasaDeseado:</value>
     </data>
     <data name="GeocodeDebugPostalCodeLabelText" xml:space="preserve">
-        <value>PostalCode:</value>
+        <value>CodigoPostal:</value>
     </data>
     <data name="GeocodeDebugCityLabelText" xml:space="preserve">
-        <value>City:</value>
+        <value>Ciudad:</value>
     </data>
     <data name="GeocodeDebugCountryLabelText" xml:space="preserve">
-        <value>Country:</value>
+        <value>Pais:</value>
     </data>
     <data name="GeocodeDebugCandidatesLabelText" xml:space="preserve">
-        <value>Candidates:</value>
+        <value>Candidatos:</value>
     </data>
     <data name="GeocodeDebugReasonLabelText" xml:space="preserve">
-        <value>Reason:</value>
+        <value>Motivo:</value>
     </data>
     <data name="GeocodeDebugTopSpainQueriesText" xml:space="preserve">
-        <value>Top Spain queries:</value>
+        <value>Principales consultas de Espana:</value>
     </data>
     <data name="GeocodeDebugTopGlobalQueriesText" xml:space="preserve">
-        <value>Top Global queries:</value>
+        <value>Principales consultas globales:</value>
     </data>
     <data name="GeocodeDebugTopCandidatesText" xml:space="preserve">
-        <value>Top candidates:</value>
+        <value>Principales candidatos:</value>
     </data>
     <data name="GeocodeDebugHouseNumberLabelText" xml:space="preserve">
-        <value>hn=</value>
+        <value>nc=</value>
     </data>
     <data name="GeocodeDebugTypeLabelText" xml:space="preserve">
-        <value>type=</value>
+        <value>tipo=</value>
     </data>
     <data name="GeocodeDebugMatchLabelText" xml:space="preserve">
-        <value>match=</value>
+        <value>coinc=</value>
     </data>
     <data name="GeocodeDebugNoneText" xml:space="preserve">
-        <value>(none)</value>
+        <value>(ninguno)</value>
     </data>
     <data name="GeocodeDebugEmptyText" xml:space="preserve">
-        <value>(empty)</value>
+        <value>(vacio)</value>
     </data>
     <data name="MapMarkerDefaultLabelText" xml:space="preserve">
-        <value>Place</value>
+        <value>Lugar</value>
     </data>
     <data name="ExactNumberMatchBadgeText" xml:space="preserve">
-        <value>✓ exact number match</value>
+        <value>✓ coincidencia exacta de numero</value>
     </data>
     <data name="DefaultCountryText" xml:space="preserve">
-        <value>Spain</value>
+        <value>Espana</value>
     </data>
     <data name="BarcodePopupTitleText" xml:space="preserve">
-        <value>Barcode</value>
+        <value>Codigo de barras</value>
     </data>
     <data name="AboutTitleText" xml:space="preserve">
-        <value>About</value>
+        <value>Acerca de</value>
     </data>
     <data name="AboutMadeByText" xml:space="preserve">
-        <value>Made by Jaume Castells Carles</value>
+        <value>Hecho por Jaume Castells Carles</value>
     </data>
     <data name="AboutForStudioText" xml:space="preserve">
-        <value>For Vilo Games Studio</value>
+        <value>Para Vilo Games Studio</value>
     </data>
     <data name="AboutCopyrightText" xml:space="preserve">
         <value>@ 2026</value>
@@ -486,51 +486,51 @@
         <value>X</value>
     </data>
     <data name="PrefixPlaceholderText" xml:space="preserve">
-        <value>Prefix...</value>
+        <value>Prefijo...</value>
     </data>
     <data name="FullScreenMapTitleText" xml:space="preserve">
-        <value>Map (full screen)</value>
+        <value>Mapa (pantalla completa)</value>
     </data>
     <data name="CloseText" xml:space="preserve">
-        <value>Close</value>
+        <value>Cerrar</value>
     </data>
     <data name="MapNotAvailableText" xml:space="preserve">
-        <value>Map not available</value>
+        <value>Mapa no disponible</value>
     </data>
     <data name="NoPrefixFoundText" xml:space="preserve">
-        <value>No prefix found</value>
+        <value>No se encontro prefijo</value>
     </data>
     <data name="PrefixesCountEmptyText" xml:space="preserve">
-        <value>Prefixes count is empty</value>
+        <value>El recuento de prefijos esta vacio</value>
     </data>
     <data name="PrefixesLabelFormatText" xml:space="preserve">
-        <value>Prefixes: {0}</value>
+        <value>Prefijos: {0}</value>
     </data>
     <data name="OptimizeRouteTitleText" xml:space="preserve">
-        <value>Optimize route</value>
+        <value>Optimizar ruta</value>
     </data>
     <data name="OptimizeNeedTwoStopsText" xml:space="preserve">
-        <value>Add at least two stops to optimize.</value>
+        <value>Agrega al menos dos paradas para optimizar.</value>
     </data>
     <data name="OptimizeNotEnoughStopsWithCoordsText" xml:space="preserve">
-        <value>Not enough stops with coordinates to optimize.</value>
+        <value>No hay suficientes paradas con coordenadas para optimizar.</value>
     </data>
     <data name="SomeStopsCouldNotBeGeocodedText" xml:space="preserve">
-        <value>Some stops could not be geocoded and were placed at the end.</value>
+        <value>Algunas paradas no se pudieron geocodificar y se colocaron al final.</value>
     </data>
     <data name="OptimizeNoLocationText" xml:space="preserve">
-        <value>Could not access your location. Optimized without a start point.</value>
+        <value>No se pudo acceder a tu ubicacion. Se optimizo sin punto de inicio.</value>
     </data>
     <data name="StartNearMeNeedTwoStopsText" xml:space="preserve">
-        <value>Add at least two stops to reorder.</value>
+        <value>Agrega al menos dos paradas para reordenar.</value>
     </data>
     <data name="StartNearMeNoLocationText" xml:space="preserve">
-        <value>Unable to access your location.</value>
+        <value>No se pudo acceder a tu ubicacion.</value>
     </data>
     <data name="StartNearMeNoStopsWithCoordsText" xml:space="preserve">
-        <value>No stops with coordinates found.</value>
+        <value>No se encontraron paradas con coordenadas.</value>
     </data>
     <data name="StartNearMeNearestStopErrorText" xml:space="preserve">
-        <value>Unable to pick the nearest stop.</value>
+        <value>No se pudo seleccionar la parada mas cercana.</value>
     </data>
 </root>
