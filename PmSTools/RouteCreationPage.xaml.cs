@@ -54,10 +54,6 @@ public partial class RouteCreationPage : ContentPage
     private void OnCreateNewRouteClicked(object? sender, EventArgs e)
     {
         var newRoute = new DeliveryRoute();
-        if (SaveLoadData.TryGetLastPlaceInfo(out var lastPlaceInfo) && lastPlaceInfo != null)
-        {
-            newRoute.AddStop(lastPlaceInfo);
-        }
 
         _routes.Add(newRoute);
         SaveLoadData.SaveDeliveryRoutes(_routes);

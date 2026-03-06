@@ -31,6 +31,7 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
     private const int PopupGeocodeMaxQueryAttempts = 2;
     private PlaceInfoItem? _currentPlace;
     private bool _isEditMode;
+    private bool _hasSavedSelection;
     private readonly ObservableCollection<GeocodeCandidate> _candidates = new();
 
     private class GeocodeCandidate
@@ -73,7 +74,6 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
             UpdateResultLabels(filteredLines);
             PopulateEditFields(filteredLines);
 
-            SaveLoadData.SaveLastPlaceInfo(filteredLines);
             _ = PopulateCandidatesAsync(filteredLines);
         }
         catch (Exception)
@@ -107,6 +107,23 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
         _isEditMode = enabled;
         EditableFieldsPanel.IsVisible = enabled;
         EditFieldsButton.Text = enabled ? LangResources.HideEditorText : LangResources.EditFieldsText;
+    }
+
+    private void SaveSelectedPlace()
+    {
+        if (_currentPlace == null)
+        {
+            return;
+        }
+
+        if (_hasSavedSelection)
+        {
+            SaveLoadData.UpdateMostRecentPlaceInfo(_currentPlace);
+            return;
+        }
+
+        SaveLoadData.SaveLastPlaceInfo(_currentPlace);
+        _hasSavedSelection = true;
     }
 
     private void EnsureStreetParts(PlaceInfoItem? placeInfo)
@@ -163,6 +180,19 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
         SetEditMode(false);
     }
 
+    private void CandidatesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var sel = CandidatesList.SelectedItem as GeocodeCandidate;
+        if (sel == null || _currentPlace == null)
+        {
+            return;
+        }
+
+        _currentPlace.Latitude = sel.Lat;
+        _currentPlace.Longitude = sel.Lon;
+        SaveSelectedPlace();
+    }
+
     private async void ApplyEditsButton_Clicked(object sender, EventArgs e)
     {
         try
@@ -182,7 +212,10 @@ public partial class PlaceScanResultPopupPage : BasePopupPage
             EnsureStreetParts(_currentPlace);
             UpdateResultLabels(_currentPlace);
             PopulateEditFields(_currentPlace);
-            SaveLoadData.SaveLastPlaceInfo(_currentPlace);
+            if (_hasSavedSelection)
+            {
+                SaveLoadData.UpdateMostRecentPlaceInfo(_currentPlace);
+            }
 
             CandidatesList.SelectedItem = null;
             _candidates.Clear();

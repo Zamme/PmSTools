@@ -45,6 +45,7 @@ public partial class PlaceScanResultPage : ContentPage
     private string _lastMapHtml = string.Empty;
 
     private bool _isEditMode;
+    private bool _hasSavedSelection;
 
     public PlaceScanResultPage()
     {
@@ -150,7 +151,6 @@ public partial class PlaceScanResultPage : ContentPage
             if (filteredLines == null)
                 return;
             EnsureStreetParts(filteredLines);
-            SaveLoadData.SaveLastPlaceInfo(filteredLines);
             // keep a reference so JS->C# can populate chosen coordinates
             _currentPlace = filteredLines; 
             
@@ -196,7 +196,6 @@ public partial class PlaceScanResultPage : ContentPage
             }
 
             EnsureStreetParts(placeInfo);
-            SaveLoadData.SaveLastPlaceInfo(placeInfo);
             _currentPlace = placeInfo;
 
             try
@@ -221,6 +220,23 @@ public partial class PlaceScanResultPage : ContentPage
         catch (Exception)
         {
         }
+    }
+
+    private void SaveSelectedPlace()
+    {
+        if (_currentPlace == null)
+        {
+            return;
+        }
+
+        if (_hasSavedSelection)
+        {
+            SaveLoadData.UpdateMostRecentPlaceInfo(_currentPlace);
+            return;
+        }
+
+        SaveLoadData.SaveLastPlaceInfo(_currentPlace);
+        _hasSavedSelection = true;
     }
 
     private async Task RequestLocationPermission()
@@ -1857,6 +1873,7 @@ public partial class PlaceScanResultPage : ContentPage
             {
                 _currentPlace.Latitude = lat;
                 _currentPlace.Longitude = lon;
+                SaveSelectedPlace();
             }
 
             LatitudeText.Text = lat != 0 ? lat.ToString("F6", CultureInfo.InvariantCulture) : "—";
@@ -2209,6 +2226,7 @@ public partial class PlaceScanResultPage : ContentPage
         {
             _currentPlace.Latitude = cand.Lat;
             _currentPlace.Longitude = cand.Lon;
+            SaveSelectedPlace();
         }
 
         LatitudeText.Text = cand.Lat.ToString("F6", CultureInfo.InvariantCulture);
@@ -2352,7 +2370,10 @@ public partial class PlaceScanResultPage : ContentPage
 
             SyncStreetFromParts(_currentPlace);
             EnsureStreetParts(_currentPlace);
-            SaveLoadData.SaveLastPlaceInfo(_currentPlace);
+            if (_hasSavedSelection)
+            {
+                SaveLoadData.UpdateMostRecentPlaceInfo(_currentPlace);
+            }
             UpdateResultLabels(_currentPlace);
 
             _currentPlace.Latitude = null;

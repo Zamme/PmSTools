@@ -23,6 +23,7 @@ public partial class RouteEditorPage : ContentPage
     private bool _isMapDirty;
     private int _mapLoadingCount;
     private bool _mapUpdatePending;
+    private bool _isManualStopVisible;
 
     private static readonly HashSet<string> AddressProperties = new(StringComparer.Ordinal)
     {
@@ -47,6 +48,19 @@ public partial class RouteEditorPage : ContentPage
                 return;
 
             _isMapDirty = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsManualStopVisible
+    {
+        get => _isManualStopVisible;
+        private set
+        {
+            if (_isManualStopVisible == value)
+                return;
+
+            _isManualStopVisible = value;
             OnPropertyChanged();
         }
     }
@@ -189,6 +203,18 @@ public partial class RouteEditorPage : ContentPage
 
     private void OnAddRouteStopClicked(object? sender, EventArgs e)
     {
+        if (!IsManualStopVisible)
+        {
+            IsManualStopVisible = true;
+            return;
+        }
+
+        if (!HasManualInput())
+        {
+            IsManualStopVisible = false;
+            return;
+        }
+
         var stop = new DeliveryRouteStop
         {
             Name = ToNullIfWhiteSpace(ManualNameEntry.Text),
@@ -201,6 +227,7 @@ public partial class RouteEditorPage : ContentPage
 
         Route.AddStop(stop);
         ClearManualEntryFields();
+        IsManualStopVisible = false;
     }
 
     private void OnStopCardTapped(object? sender, TappedEventArgs e)
@@ -513,10 +540,10 @@ public partial class RouteEditorPage : ContentPage
     private async Task<List<RouteMapStop>> BuildRouteMapStopsAsync()
     {
         var routeStops = Route.Stops
-            .Select(stop => new RouteMapStop
+            .Select((stop, index) => new RouteMapStop
             {
                 SourceStop = stop,
-                Order = stop.Order,
+                Order = index + 1,
                 Address = BuildStopAddress(stop),
                 Lat = stop.Latitude,
                 Lon = stop.Longitude
@@ -837,6 +864,7 @@ public partial class RouteEditorPage : ContentPage
              "        }).addTo(map);\n" +
              "        var stops = " + stopsJson + ";\n" +
              "        var points = [];\n" +
+             "        var segmentColors = ['#1e88e5', '#43a047', '#f4511e', '#8e24aa', '#6d4c41', '#00897b'];\n" +
              "\n" +
              "        function buildPopup(stop) {\n" +
              "            const title = '" + stopLabelPrefix + "' + stop.order;\n" +
@@ -858,8 +886,49 @@ public partial class RouteEditorPage : ContentPage
              "\n" +
              "        function drawFallbackPolyline() {\n" +
              "            if (points.length > 1) {\n" +
-             "                L.polyline(points, { color: 'blue', weight: 4 }).addTo(map);\n" +
+             "                for (let i = 0; i < points.length - 1; i++) {\n" +
+             "                    const segment = [points[i], points[i + 1]];\n" +
+             "                    L.polyline(segment, { color: segmentColors[i % segmentColors.length], weight: 4 }).addTo(map);\n" +
+             "                }\n" +
              "            }\n" +
+             "        }\n" +
+             "\n" +
+             "        function findNearestRouteIndex(routePoints, stopPoint, startIndex) {\n" +
+             "            let bestIndex = -1;\n" +
+             "            let bestDist = Number.POSITIVE_INFINITY;\n" +
+             "            for (let i = startIndex; i < routePoints.length; i++) {\n" +
+             "                const rp = routePoints[i];\n" +
+             "                const dx = rp[0] - stopPoint[0];\n" +
+             "                const dy = rp[1] - stopPoint[1];\n" +
+             "                const dist = dx * dx + dy * dy;\n" +
+             "                if (dist < bestDist) {\n" +
+             "                    bestDist = dist;\n" +
+             "                    bestIndex = i;\n" +
+             "                }\n" +
+             "            }\n" +
+             "            return bestIndex;\n" +
+             "        }\n" +
+             "\n" +
+             "        function drawSegmentedRoute(routePoints, stopPoints) {\n" +
+             "            if (routePoints.length < 2 || stopPoints.length < 2) return false;\n" +
+             "            const indices = [];\n" +
+             "            let lastIndex = 0;\n" +
+             "            for (let i = 0; i < stopPoints.length; i++) {\n" +
+             "                const nearest = findNearestRouteIndex(routePoints, stopPoints[i], lastIndex);\n" +
+             "                if (nearest === -1) return false;\n" +
+             "                indices.push(nearest);\n" +
+             "                lastIndex = nearest;\n" +
+             "            }\n" +
+             "            for (let i = 0; i < indices.length - 1; i++) {\n" +
+             "                const start = indices[i];\n" +
+             "                const end = indices[i + 1];\n" +
+             "                if (end <= start) return false;\n" +
+             "                const segment = routePoints.slice(start, end + 1);\n" +
+             "                if (segment.length > 1) {\n" +
+             "                    L.polyline(segment, { color: segmentColors[i % segmentColors.length], weight: 4 }).addTo(map);\n" +
+             "                }\n" +
+             "            }\n" +
+             "            return true;\n" +
              "        }\n" +
              "\n" +
              "        function fitMap() {\n" +
@@ -902,7 +971,9 @@ public partial class RouteEditorPage : ContentPage
              "                    }\n" +
              "                    const coords = data.routes[0].geometry.coordinates;\n" +
              "                    const routePoints = coords.map(c => [c[1], c[0]]);\n" +
-             "                    L.polyline(routePoints, { color: '#1e88e5', weight: 4 }).addTo(map);\n" +
+             "                    if (!drawSegmentedRoute(routePoints, points)) {\n" +
+             "                        drawFallbackPolyline();\n" +
+             "                    }\n" +
              "                    map.fitBounds(L.latLngBounds(routePoints), { padding: [20, 20] });\n" +
              "                })\n" +
              "                .catch(() => {\n" +
@@ -1343,6 +1414,16 @@ public partial class RouteEditorPage : ContentPage
         ManualPostalCodeEntry.Text = string.Empty;
         ManualCityEntry.Text = string.Empty;
         ManualCountryEntry.Text = string.Empty;
+    }
+
+    private bool HasManualInput()
+    {
+        return !string.IsNullOrWhiteSpace(ManualNameEntry.Text)
+            || !string.IsNullOrWhiteSpace(ManualStreetNameEntry.Text)
+            || !string.IsNullOrWhiteSpace(ManualStreetNumberEntry.Text)
+            || !string.IsNullOrWhiteSpace(ManualPostalCodeEntry.Text)
+            || !string.IsNullOrWhiteSpace(ManualCityEntry.Text)
+            || !string.IsNullOrWhiteSpace(ManualCountryEntry.Text);
     }
 
     private static string BuildRouteTitle(int routeNumber, string? routeName, int? stopNumber = null)

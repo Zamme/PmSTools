@@ -189,7 +189,8 @@
 
         <Frame Grid.Row="4"
                Margin="0,12,0,0"
-               Padding="12">
+             Padding="12"
+             IsVisible="{Binding IsManualStopVisible}">
             <VerticalStackLayout Spacing="8">
                 <Label Text="{x:Static strings:LangResources.NewStopManualText}" FontAttributes="Bold" />
                 <Entry x:Name="ManualNameEntry" Placeholder="{x:Static strings:LangResources.NamePlaceholderText}" />

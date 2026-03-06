@@ -179,6 +179,33 @@ public static class SaveLoadData
         Preferences.Set(LastPlaceInfoPrefKey, lastPlaceJson);
     }
 
+    public static void UpdateMostRecentPlaceInfo(PlaceInfoItem placeInfo)
+    {
+        if (placeInfo == null)
+        {
+            return;
+        }
+
+        List<PlaceInfoItem> places = GetLastPlaceInfos();
+        if (places.Count == 0)
+        {
+            AddLastPlaceInfo(placeInfo);
+            return;
+        }
+
+        places[0] = placeInfo;
+        if (places.Count > LastPlacesMaxCount)
+        {
+            places = places.Take(LastPlacesMaxCount).ToList();
+        }
+
+        string placesJson = JsonSerializer.Serialize(places);
+        Preferences.Set(LastPlacesInfoPrefKey, placesJson);
+
+        string lastPlaceJson = JsonSerializer.Serialize(places[0]);
+        Preferences.Set(LastPlaceInfoPrefKey, lastPlaceJson);
+    }
+
     public static List<PlaceInfoItem> GetLastPlaceInfos()
     {
         if (Preferences.ContainsKey(LastPlacesInfoPrefKey))
