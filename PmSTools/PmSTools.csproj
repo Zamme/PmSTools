@@ -71,11 +71,11 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" />
+		<MauiIcon Include="Resources\AppIcon\appicon.png" />
 
 		<!-- Splash Screen -->
 		<!--<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#FFFFFF" BaseSize="128,128" />-->
-		<MauiSplashScreen Include="Resources\AppIcon\appicon.svg" Color="#00AEFF" BaseSize="1440,1440" />
+		<MauiSplashScreen Include="Resources\AppIcon\appicon.png" Color="#000000" BaseSize="1440,1440" />
 
         <!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
