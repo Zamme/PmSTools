@@ -2,7 +2,9 @@
 ## Description
 Tools for post services workers. (Spain firstly. Waiting for other countries post servicies info.)
 
-![image](https://github.com/Zamme/PmSTools/blob/main/PmSTools/Resources/AppIcon/appicon.png)
+<p align="center">
+<img src="https://github.com/Zamme/PmSTools/blob/main/PmSTools/Resources/AppIcon/appicon.png" width="320" />
+</p>
 
 ## Platforms
 Android (ready) and iOS (comming soon).
