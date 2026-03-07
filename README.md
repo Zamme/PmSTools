@@ -34,9 +34,7 @@ MIT License
 Jaume Castells Carles zammecas@gmail.com
 
 ## Roadmap
-- 1.0 : Code to Barcode.
-- 1.1 : Location Autosearch.
-- 1.2 : Autoroute.
+- 1.0 : Code to Barcode, Adress Autosearch, Autoroute.
 
 ## Miscelanea
 Made with .NET MAUI 
