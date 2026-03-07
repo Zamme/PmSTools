@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Diagnostics;
 using ZXing.Net.Maui;
 using ZXing.Net.Maui.Controls;
@@ -13,6 +14,107 @@ public partial class Code2BarcodePage : ContentPage
     ObservableCollection<BarcodeItem> barcodeItems = new ObservableCollection<BarcodeItem>();
     public ObservableCollection<BarcodeItem> BarcodeItems { get { return barcodeItems; } }
     private string lastCodesToSave = "";
+    private const string EditButtonText = "Edit";
+    private const string SaveButtonText = "Save";
+    private const string CancelButtonText = "Cancel";
+
+    private void UpdateSavedCodesPreference()
+    {
+        lastCodesToSave = string.Join(",", barcodeItems.Select(item => item.Code)) + (barcodeItems.Count > 0 ? "," : "");
+        Preferences.Set(SaveLoadData.LastCodesPrefKey, lastCodesToSave);
+    }
+
+    private void AddBarcodeItem(BarcodeItem newBarcodeItem)
+    {
+        barcodeItems.Add(newBarcodeItem);
+        CodesStack.Add(BuildBarcodeCard(newBarcodeItem));
+    }
+
+    private View BuildBarcodeCard(BarcodeItem barcodeItem)
+    {
+        var codeLabel = new Label
+        {
+            Text = barcodeItem.Code,
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.Center,
+            BackgroundColor = Colors.White,
+            TextColor = Colors.Black
+        };
+
+        var codeEntry = new Entry
+        {
+            Text = barcodeItem.Code,
+            IsVisible = false,
+            BackgroundColor = Colors.White,
+            TextColor = Colors.Black,
+            HorizontalOptions = LayoutOptions.FillAndExpand
+        };
+
+        var editButton = new Button { Text = EditButtonText };
+        var saveButton = new Button { Text = SaveButtonText, IsVisible = false };
+        var cancelButton = new Button { Text = CancelButtonText, IsVisible = false };
+
+        editButton.Clicked += (_, __) =>
+        {
+            codeEntry.Text = barcodeItem.Code;
+            codeEntry.IsVisible = true;
+            saveButton.IsVisible = true;
+            cancelButton.IsVisible = true;
+            codeLabel.IsVisible = false;
+            editButton.IsVisible = false;
+        };
+
+        saveButton.Clicked += (_, __) =>
+        {
+            var newCode = (codeEntry.Text ?? string.Empty).ToUpperInvariant();
+            barcodeItem.Code = newCode;
+            barcodeItem.BarcodeView.Value = newCode;
+            codeLabel.Text = newCode;
+            codeEntry.Text = newCode;
+            UpdateSavedCodesPreference();
+
+            codeEntry.IsVisible = false;
+            saveButton.IsVisible = false;
+            cancelButton.IsVisible = false;
+            codeLabel.IsVisible = true;
+            editButton.IsVisible = true;
+        };
+
+        cancelButton.Clicked += (_, __) =>
+        {
+            codeEntry.Text = barcodeItem.Code;
+            codeEntry.IsVisible = false;
+            saveButton.IsVisible = false;
+            cancelButton.IsVisible = false;
+            codeLabel.IsVisible = true;
+            editButton.IsVisible = true;
+        };
+
+        var actionRow = new HorizontalStackLayout
+        {
+            Spacing = 8,
+            HorizontalOptions = LayoutOptions.Center,
+            Children = { editButton, saveButton, cancelButton }
+        };
+
+        var contentLayout = new VerticalStackLayout
+        {
+            Spacing = 5,
+            BackgroundColor = Colors.White,
+            Padding = 5
+        };
+        contentLayout.Add(barcodeItem.BarcodeView);
+        contentLayout.Add(codeLabel);
+        contentLayout.Add(codeEntry);
+        contentLayout.Add(actionRow);
+
+        return new Border
+        {
+            Padding = 2,
+            BackgroundColor = Colors.White,
+            Content = contentLayout
+        };
+    }
     public void ConstructPageOld(string _text, List<string> newPrefixes)
     {
         char[] charSeparators = new char[] { ' ', '\n' };
@@ -40,33 +142,11 @@ public partial class Code2BarcodePage : ContentPage
                                 Value = modTextPart
                             }
                         };
-                        barcodeItems.Add(newBarcodeItem);
-
-                        Label newLabel = new Label { Text = newBarcodeItem.Code,
-                            VerticalOptions=LayoutOptions.Center, 
-                            HorizontalOptions=LayoutOptions.Center,
-                            BackgroundColor=Colors.White,
-                            TextColor=Colors.Black };
-                        VerticalStackLayout newVSL = new VerticalStackLayout
-                        {
-                            Spacing = 5,
-                            BackgroundColor = Colors.White,
-                            Padding = 5
-                        };
-                        newVSL.Add(newBarcodeItem.BarcodeView);
-                        newVSL.Add(newLabel);
-                        Border newBorder = new Border
-                        {
-                            Padding = 2,
-                            BackgroundColor = Colors.White,
-                            Content = newVSL
-                        };
-                        CodesStack.Add(newBorder);
-                        lastCodesToSave += modTextPart + ",";
+                        AddBarcodeItem(newBarcodeItem);
                     }
                 }
             }
-            Preferences.Set(SaveLoadData.LastCodesPrefKey, lastCodesToSave);
+            UpdateSavedCodesPreference();
         }
 
         if (barcodeItems.Count < 1)
@@ -136,29 +216,7 @@ public partial class Code2BarcodePage : ContentPage
                             Value = modTextPart
                         }
                     };
-                    barcodeItems.Add(newBarcodeItem);
-
-                    Label newLabel = new Label { Text = newBarcodeItem.Code,
-                        VerticalOptions=LayoutOptions.Center, 
-                        HorizontalOptions=LayoutOptions.Center,
-                        BackgroundColor=Colors.White,
-                        TextColor=Colors.Black };
-                    VerticalStackLayout newVSL = new VerticalStackLayout
-                    {
-                        Spacing = 5,
-                        BackgroundColor = Colors.White,
-                        Padding = 5
-                    };
-                    newVSL.Add(newBarcodeItem.BarcodeView);
-                    newVSL.Add(newLabel);
-                    Border newBorder = new Border
-                    {
-                        Padding = 2,
-                        BackgroundColor = Colors.White,
-                        Content = newVSL
-                    };
-                    CodesStack.Add(newBorder);
-                    lastCodesToSave += modTextPart + ",";
+                    AddBarcodeItem(newBarcodeItem);
                 }
             }
 
@@ -167,7 +225,7 @@ public partial class Code2BarcodePage : ContentPage
                 LogRejectedTextPart(modTextPart, "no matching prefix");
             }
 
-            Preferences.Set(SaveLoadData.LastCodesPrefKey, lastCodesToSave);
+            UpdateSavedCodesPreference();
         }
 
         if (barcodeItems.Count < 1)

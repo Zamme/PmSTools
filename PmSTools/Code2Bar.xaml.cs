@@ -9,6 +9,7 @@ using ZXing.Net.Maui.Controls;
 using System.Collections.ObjectModel;
 using PmSTools.Resources.Languages;
 using System.Diagnostics;
+using System.Linq;
 
 namespace PmSTools;
 
@@ -19,6 +20,9 @@ public partial class Code2Bar : ContentPage
     List<bool> notiActivePrefixes = new List<bool>();
     private string[] defaultNotiPrefixes = ["NV", "NT", "NE", "NA", "C1", "CD", "PK", "PQ", "PS", "90", "CX", "PH"];
     private bool[] defaultNotiActivePrefixes = [true, true, true, true, true, true, true, true, true, true, true, true];
+    private const string EditButtonText = "Edit";
+    private const string SaveButtonText = "Save";
+    private const string CancelButtonText = "Cancel";
 
     ObservableCollection<BarcodeItem> barcodeItems = new ObservableCollection<BarcodeItem>();
     public ObservableCollection<BarcodeItem> BarcodeItems { get { return barcodeItems; } }
@@ -104,10 +108,10 @@ public partial class Code2Bar : ContentPage
             {
                 string _text = lastCodesString;
                 char[] charSeparators = new char[] { ',' };
-                string[] textParts = _text.Split(charSeparators, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-                foreach (var textPart in textParts)
+                List<string> textParts = _text.Split(charSeparators, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList();
+                for (int index = 0; index < textParts.Count; index++)
                 {
-                    string modTextPart = new string(textPart.ToUpper());
+                    string modTextPart = textParts[index].ToUpperInvariant();
                     if (modTextPart.Length == 22 && TryAppendDniLikeControl(modTextPart, out string codeWithControl))
                     {
                         Debug.WriteLine($"[UpdateLastCodesScroll] Appended DNI-like control: '{modTextPart}' -> '{codeWithControl}'");
@@ -141,6 +145,122 @@ public partial class Code2Bar : ContentPage
                                     HorizontalOptions=LayoutOptions.Center,
                                     BackgroundColor=Colors.White,
                                     TextColor=Colors.Black };
+                                Entry editEntry = new Entry
+                                {
+                                    Text = newBarcodeItem.Code,
+                                    IsVisible = false,
+                                    BackgroundColor = Colors.White,
+                                    TextColor = Colors.Black,
+                                    HorizontalOptions = LayoutOptions.Fill
+                                };
+                                ImageButton editButton = new ImageButton
+                                {
+                                    Source = "edit_icon.svg",
+                                    BackgroundColor = Colors.Transparent,
+                                    HeightRequest = 36,
+                                    WidthRequest = 36
+                                };
+                                ImageButton saveEditButton = new ImageButton
+                                {
+                                    Source = "save_icon.svg",
+                                    BackgroundColor = Colors.Transparent,
+                                    HeightRequest = 36,
+                                    WidthRequest = 36,
+                                    IsVisible = false
+                                };
+                                ImageButton cancelEditButton = new ImageButton
+                                {
+                                    Source = "cancel_icon.svg",
+                                    BackgroundColor = Colors.Transparent,
+                                    HeightRequest = 36,
+                                    WidthRequest = 36,
+                                    IsVisible = false
+                                };
+                                string codeKey = modTextPart;
+
+                                Label savedLabel = new Label
+                                {
+                                    Text = LangResources.SavedText,
+                                    HorizontalOptions = LayoutOptions.Center,
+                                    BackgroundColor = Colors.White,
+                                    TextColor = Colors.Green,
+                                    FontAttributes = FontAttributes.Bold,
+                                    FontSize = 18,
+                                    IsVisible = SaveLoadData.IsCodeSaved(newBarcodeItem.Code)
+                                };
+                                Button saveCodeButton = new Button
+                                {
+                                    Text = LangResources.SaveText,
+                                    HorizontalOptions = LayoutOptions.Fill,
+                                    IsVisible = !savedLabel.IsVisible
+                                };
+                                saveCodeButton.Clicked += (sender, args) => OnSaveCodeButtonClick(sender, args, newBarcodeItem.Code);
+
+                                void SetEditMode(bool isEditing)
+                                {
+                                    editEntry.IsVisible = isEditing;
+                                    saveEditButton.IsVisible = isEditing;
+                                    cancelEditButton.IsVisible = isEditing;
+                                    newLabel.IsVisible = !isEditing;
+                                    editButton.IsVisible = !isEditing;
+                                }
+
+                                void UpdateSavedStatus()
+                                {
+                                    bool isSaved = SaveLoadData.IsCodeSaved(newBarcodeItem.Code);
+                                    savedLabel.IsVisible = isSaved;
+                                    saveCodeButton.IsVisible = !isSaved;
+                                }
+
+                                editButton.Clicked += (_, __) =>
+                                {
+                                    editEntry.Text = newBarcodeItem.Code;
+                                    SetEditMode(true);
+                                };
+
+                                saveEditButton.Clicked += (_, __) =>
+                                {
+                                    string updatedCode = (editEntry.Text ?? string.Empty).ToUpperInvariant();
+                                    editEntry.Text = updatedCode;
+                                    newBarcodeItem.Code = updatedCode;
+                                    newBarcodeItem.BarcodeView.Value = updatedCode;
+                                    newLabel.Text = updatedCode;
+                                    int codeIndex = textParts.FindIndex(code => string.Equals(code, codeKey, StringComparison.OrdinalIgnoreCase));
+                                    if (codeIndex >= 0)
+                                    {
+                                        textParts[codeIndex] = updatedCode;
+                                        codeKey = updatedCode;
+                                        UpdateLastCodesPreference(textParts);
+                                    }
+                                    UpdateSavedStatus();
+                                    SetEditMode(false);
+                                };
+
+                                cancelEditButton.Clicked += (_, __) =>
+                                {
+                                    editEntry.Text = newBarcodeItem.Code;
+                                    SetEditMode(false);
+                                };
+
+                                VerticalStackLayout editActions = new VerticalStackLayout
+                                {
+                                    Spacing = 8,
+                                    VerticalOptions = LayoutOptions.Center,
+                                    HorizontalOptions = LayoutOptions.End,
+                                    Children = { editButton, saveEditButton, cancelEditButton }
+                                };
+                                Grid barcodeRow = new Grid
+                                {
+                                    ColumnDefinitions =
+                                    {
+                                        new ColumnDefinition(GridLength.Star),
+                                        new ColumnDefinition(GridLength.Auto)
+                                    },
+                                    ColumnSpacing = 8,
+                                    HorizontalOptions = LayoutOptions.Fill
+                                };
+                                barcodeRow.Add(newBarcodeItem.BarcodeView, 0, 0);
+                                barcodeRow.Add(editActions, 1, 0);
                                 Grid newHSL = new Grid()
                                 {
                                     RowDefinitions =
@@ -164,32 +284,11 @@ public partial class Code2Bar : ContentPage
                                     HorizontalOptions = LayoutOptions.Fill,
                                     Padding = 5
                                 };
-                                newVSL.Add(newBarcodeItem.BarcodeView);
+                                newVSL.Add(barcodeRow);
                                 newVSL.Add(newLabel);
-                                if (!SaveLoadData.IsCodeSaved(newBarcodeItem.Code))
-                                {
-                                    Button newSaveCodeButton = new Button
-                                    {
-                                        Text = LangResources.SaveText,
-                                        HorizontalOptions = LayoutOptions.Fill
-                                    };
-                                    newSaveCodeButton.Clicked += async (sender, args) =>
-                                        OnSaveCodeButtonClick(sender, args, modTextPart);
-                                    newVSL.Add(newSaveCodeButton);
-                                }
-                                else
-                                {
-                                    Label newCodeSavedLabel = new Label
-                                    {
-                                        Text = LangResources.SavedText,
-                                        HorizontalOptions = LayoutOptions.Center,
-                                        BackgroundColor = Colors.White,
-                                        TextColor = Colors.Green,
-                                        FontAttributes = FontAttributes.Bold,
-                                        FontSize = 18
-                                    };
-                                    newVSL.Add(newCodeSavedLabel);
-                                }
+                                newVSL.Add(editEntry);
+                                newVSL.Add(saveCodeButton);
+                                newVSL.Add(savedLabel);
 
                                 newHSL.Add(newVSL, 0, 0);
                                 
@@ -234,6 +333,16 @@ public partial class Code2Bar : ContentPage
     {
         SaveLoadData.SaveCode(_text.ToString());
         UpdateLastCodesScroll();
+    }
+
+    private void UpdateLastCodesPreference(List<string> codes)
+    {
+        string updated = string.Join(SaveLoadData.SeparatorChar, codes);
+        if (updated.Length > 0)
+        {
+            updated += SaveLoadData.SeparatorChar;
+        }
+        Preferences.Set(SaveLoadData.LastCodesPrefKey, updated);
     }
 
     private void UpdatePrefixesPrefs()

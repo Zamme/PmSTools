@@ -7,6 +7,32 @@
 			"command": "adb -s RF8R21KHRDB shell pm list packages | grep -q 'com.vilogamesstudio.pmstools' && adb -s RF8R21KHRDB uninstall com.vilogamesstudio.pmstools || true && dotnet clean /mnt/e6bd685b-f931-4b61-8806-5cb11171222b/Github/PmSTools/PmSTools/PmSTools.csproj -c Release -f net10.0-android && dotnet build -t:Run -p:Configuration=Release -f net10.0-android -p:AdbTarget=-s%20RF8R21KHRDB -p:CustomAfterMicrosoftCSharpTargets=/home/zamme/.vscode/extensions/ms-dotnettools.dotnet-maui-1.13.20-linux-x64/dist/resources/Custom.After.Microsoft.CSharp.targets -p:MauiVSCodeBuildOutputFile=/tmp/dotnet-maui/maui-vsc-e384c21a-f824-4977-980b-b5699a26366b.json -p:AndroidSdkDirectory=/home/zamme/Android/Sdk -p:JavaSdkDirectory=/usr/lib/jvm/java-21-openjdk-amd64 -p:EnableDiagnostics=True -p:EnableMauiXamlDiagnostics=True /mnt/e6bd685b-f931-4b61-8806-5cb11171222b/Github/PmSTools/PmSTools/PmSTools.csproj",
 			"isBackground": false,
 			"group": "build"
+		},
+		{
+			"label": "Android Debug Run",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"-t:Run",
+				"-p:Configuration=Debug",
+				"-f",
+				"net10.0-android",
+				"-p:AdbTarget=-s%20RF8R21KHRDB",
+				"-p:AndroidAttachDebugger=true",
+				"-p:AndroidSdbTargetPort=37451",
+				"-p:AndroidSdbHostPort=37451",
+				"-p:CustomAfterMicrosoftCSharpTargets=/home/zamme/.vscode/extensions/ms-dotnettools.dotnet-maui-1.13.20-linux-x64/dist/resources/Custom.After.Microsoft.CSharp.targets",
+				"-p:MauiVSCodeBuildOutputFile=/tmp/dotnet-maui/maui-vsc-564fac9c-1568-4ee2-9231-e08e077a191c.json",
+				"-p:AndroidSdkDirectory=/home/zamme/Android/Sdk",
+				"-p:JavaSdkDirectory=/usr/lib/jvm/java-21-openjdk-amd64",
+				"-p:XamlTools=/home/zamme/.vscode/extensions/ms-dotnettools.csharp-2.120.3-linux-x64/.xamlTools",
+				"-p:EnableDiagnostics=True",
+				"-p:EnableMauiXamlDiagnostics=True",
+				"/mnt/e6bd685b-f931-4b61-8806-5cb11171222b/Github/PmSTools/PmSTools/PmSTools.csproj"
+			],
+			"isBackground": false,
+			"group": "build"
 		}
 	]
 }

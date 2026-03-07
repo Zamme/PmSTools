@@ -38,12 +38,25 @@
             </ScrollView>
         </Border>
         <Grid Grid.Row="2"
-            HorizontalOptions="Fill">
-            <Button Text="{x:Static strings:LangResources.ClearAllText}"
+              HorizontalOptions="Fill"
+              ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Text="{x:Static strings:LangResources.ClearAllText}"
                     FontSize="18"
                     FontAttributes="Bold"
                     HorizontalOptions="Fill"
                     Clicked="OnClearAllSavedCodesClicked">
+            </Button>
+            <Button Grid.Column="1"
+                    Text="{x:Static strings:LangResources.CloseText}"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Fill"
+                    Clicked="OnClosePopupClicked">
             </Button>
         </Grid>
     </Grid>

@@ -120,4 +120,9 @@ public partial class SavedBarcodesPopupPage : BasePopupPage
         SaveLoadData.ClearAllSavedCodes();
         UpdateSavedBarcodesList();
     }
+
+    private void OnClosePopupClicked(object? sender, EventArgs e)
+    {
+        MauiPopup.PopupAction.ClosePopup();
+    }
 }
