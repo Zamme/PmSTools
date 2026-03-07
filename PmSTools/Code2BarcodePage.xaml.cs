@@ -8,10 +8,8 @@ using PmSTools.Resources.Languages;
 
 namespace PmSTools;
  
-public partial class Code2BarcodePopupPage : ContentPage
+public partial class Code2BarcodePage : ContentPage
 {
-    // TODO : Refer tot el tema de validació de codis a un servei separat, per tenir el codi més net i poder-lo reutilitzar en altres parts de l'app si cal
-    // TODO : Hi ha codis que no agafa. Mira-ho amb arxiu que tens de proves.
     ObservableCollection<BarcodeItem> barcodeItems = new ObservableCollection<BarcodeItem>();
     public ObservableCollection<BarcodeItem> BarcodeItems { get { return barcodeItems; } }
     private string lastCodesToSave = "";
@@ -268,12 +266,12 @@ public partial class Code2BarcodePopupPage : ContentPage
     }
 
 
-    public Code2BarcodePopupPage()
+    public Code2BarcodePage()
     {
         InitializeComponent();
     }
     
-    public Code2BarcodePopupPage(string _text, List<string> newPrefixes)
+    public Code2BarcodePage(string _text, List<string> newPrefixes)
     {
         InitializeComponent();
         ConstructPage(_text, newPrefixes);
