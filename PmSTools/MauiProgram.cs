@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using Plugin.Maui.Audio;
 using Plugin.Maui.OCR;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using ZXing.Net.Maui.Controls;
@@ -23,6 +24,7 @@ namespace PmSTools
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddSingleton<IAudioManager>(AudioManager.Current);
             builder.Services.AddTransient<MainPage>();
 
 #if DEBUG

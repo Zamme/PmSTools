@@ -102,6 +102,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="10.0.30" />
 		<PackageReference Include="Microsoft.NET.Runtime.MonoAOTCompiler.Task" Version="10.0.1" />
+		<PackageReference Include="Plugin.Maui.Audio" Version="3.0.0" />
 		<PackageReference Include="Plugin.Maui.OCR" Version="1.1.1" />
 		<PackageReference Include="Plugin.Maui.Popup" Version="1.0.6" />
 		<PackageReference Include="ZXing.Net.Maui" Version="0.7.2" />

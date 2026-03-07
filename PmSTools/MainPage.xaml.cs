@@ -1,14 +1,21 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using CommunityToolkit.Maui.Core;
+using Plugin.Maui.Audio;
 using PmSTools.Resources.Languages;
 
 namespace PmSTools
 {
     public partial class MainPage : ContentPage
     {
+        private const string MenuClickSoundFileName = "menu_click.wav";
+        private readonly IAudioManager _audioManager;
+        private IAudioPlayer? _menuClickPlayer;
+        private Stream? _menuClickStream;
 
-        public MainPage(ICameraProvider cameraProvider)
+        public MainPage(ICameraProvider cameraProvider, IAudioManager audioManager)
         {
+            _audioManager = audioManager;
             InitializeComponent();
         }
 
@@ -18,8 +25,9 @@ namespace PmSTools
 
         }
 
-        private void OnCode2BarcodeButtonClicked(object? sender, EventArgs e)
+        private async void OnCode2BarcodeButtonClicked(object? sender, EventArgs e)
         {
+            await PlayMenuClickAsync();
             Navigation.PushAsync(new Code2Bar());
         }
 
@@ -28,8 +36,9 @@ namespace PmSTools
             await DisplayAlertAsync(LangResources.OopsTitleText, LangResources.NotAvailableYet, LangResources.OkText);
         }
 
-        private void OnFindPlaceButtonClicked(object? sender, EventArgs e)
+        private async void OnFindPlaceButtonClicked(object? sender, EventArgs e)
         {
+            await PlayMenuClickAsync();
             Navigation.PushAsync(new FindPlacePage());      
         }
 
@@ -37,6 +46,7 @@ namespace PmSTools
         {
             try
             {
+                await PlayMenuClickAsync();
                 RouteCreationButton.IsEnabled = false;
                 BusyOverlay.IsVisible = true;
                 BusyIndicator.IsRunning = true;
@@ -70,6 +80,22 @@ namespace PmSTools
         private void AboutMenuItem_OnClicked(object? sender, EventArgs e)
         {
             MauiPopup.PopupAction.DisplayPopup(new AboutPopupPage());
+        }
+
+        private async Task PlayMenuClickAsync()
+        {
+            if (_menuClickPlayer == null)
+            {
+                _menuClickStream = await FileSystem.OpenAppPackageFileAsync(MenuClickSoundFileName);
+                _menuClickPlayer = _audioManager.CreatePlayer(_menuClickStream);
+            }
+
+            if (_menuClickPlayer.IsPlaying)
+            {
+                _menuClickPlayer.Stop();
+            }
+
+            _menuClickPlayer.Play();
         }
     
     }
