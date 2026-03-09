@@ -43,15 +43,16 @@
 		<FileVersion>1.0</FileVersion>
 		<NeutralLanguage>en-GB</NeutralLanguage>
 		<Title>Postman Side Tools</Title>
-	</PropertyGroup>
+	  <UserSecretsId>63b9b253-6d1d-488d-a13d-3c0f0899a75b</UserSecretsId>
+  </PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidKeyStore>true</AndroidKeyStore>
 	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-debug-key.keystore</AndroidSigningKeyStore>
-	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
+	  <AndroidSigningStorePass>$(AS_VGS_DEBUG_STORE_PASS)</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>$(AS_VGS_DEBUG_KEY_ALIAS)</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>$(AS_VGS_DEBUG_KEY_PASS)</AndroidSigningKeyPass>
 	  <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
 	  <!-- Enable fast deploy / shared runtime for faster debug deploys -->
 	  <AndroidEnableFastDeployment>true</AndroidEnableFastDeployment>
@@ -63,9 +64,9 @@
 	  <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 	  <AndroidKeyStore>true</AndroidKeyStore>
 	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-release-key.keystore</AndroidSigningKeyStore>
-	  <AndroidSigningStorePass>zamme0512</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>alias_name</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>zamme0512</AndroidSigningKeyPass>
+	  <AndroidSigningStorePass>$(AS_VGS_RELEASE_STORE_PASS)</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>$(AS_VGS_RELEASE_KEY_ALIAS)</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>$(AS_VGS_RELEASE_KEY_PASS)</AndroidSigningKeyPass>
 	  <Optimize>false</Optimize>
 	</PropertyGroup>
 
