@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<Configurations>Debug;Release;ReleaseAab</Configurations>
 		<TargetFrameworks>net10.0-android</TargetFrameworks>
 		<RunAOTCompilation>false</RunAOTCompilation>
 		<AndroidLinkMode>None</AndroidLinkMode>
@@ -71,6 +72,34 @@
 	  <AndroidSigningKeyPass>$(PMSTOOLS_ZAMME_RELEASE_KEY_PASS)</AndroidSigningKeyPass>
 	  <Optimize>false</Optimize>
 	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'ReleaseAab' ">
+	  <AndroidPackageFormat>aab</AndroidPackageFormat>
+	  <Debuggable>false</Debuggable>
+	  <DebugSymbols>false</DebugSymbols>
+	  <DebugType>none</DebugType>
+	  <AndroidDebuggable>false</AndroidDebuggable>
+	  <AndroidIncludeDebugSymbols>false</AndroidIncludeDebugSymbols>
+	  <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+	  <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+	  <AndroidEnableFastDeployment>false</AndroidEnableFastDeployment>
+	  <AndroidKeyStore>true</AndroidKeyStore>
+	  <AndroidSigningKeyStore>/home/zamme/Documents/pmstools_keys/pmstools_release.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningStorePass>$(PMSTOOLS_ZAMME_RELEASE_STORE_PASS)</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>$(PMSTOOLS_ZAMME_RELEASE_KEY_ALIAS)</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>$(PMSTOOLS_ZAMME_RELEASE_KEY_PASS)</AndroidSigningKeyPass>
+	  <Optimize>false</Optimize>
+	</PropertyGroup>
+
+	<Target Name="ForceReleaseAabNonDebuggable" BeforeTargets="_GenerateAndroidManifest" Condition=" '$(Configuration)' == 'ReleaseAab' ">
+	  <PropertyGroup>
+	    <Debuggable>false</Debuggable>
+	    <DebugSymbols>false</DebugSymbols>
+	    <DebugType>none</DebugType>
+	    <AndroidDebuggable>false</AndroidDebuggable>
+	    <AndroidIncludeDebugSymbols>false</AndroidIncludeDebugSymbols>
+	  </PropertyGroup>
+	</Target>
 
 	<ItemGroup>
 		<!-- App Icon -->
