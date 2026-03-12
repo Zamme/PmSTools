@@ -27,7 +27,7 @@
 		<ApplicationTitle>PmSTools</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.vilogamesstudio.pmstools</ApplicationId>
+		<ApplicationId>com.jaumecastellscarles.pmstools</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -49,10 +49,10 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidKeyStore>true</AndroidKeyStore>
-	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-debug-key.keystore</AndroidSigningKeyStore>
-	  <AndroidSigningStorePass>$(AS_VGS_DEBUG_STORE_PASS)</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>$(AS_VGS_DEBUG_KEY_ALIAS)</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>$(AS_VGS_DEBUG_KEY_PASS)</AndroidSigningKeyPass>
+	  <AndroidSigningKeyStore>/home/zamme/Documents/pmstools_keys/pmstools_debug.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningStorePass>$(PMSTOOLS_ZAMME_DEBUG_STORE_PASS)</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>$(PMSTOOLS_ZAMME_DEBUG_KEY_ALIAS)</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>$(PMSTOOLS_ZAMME_DEBUG_KEY_PASS)</AndroidSigningKeyPass>
 	  <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
 	  <!-- Enable fast deploy / shared runtime for faster debug deploys -->
 	  <AndroidEnableFastDeployment>true</AndroidEnableFastDeployment>
@@ -62,11 +62,13 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+	  <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+	  <AndroidEnableFastDeployment>false</AndroidEnableFastDeployment>
 	  <AndroidKeyStore>true</AndroidKeyStore>
-	  <AndroidSigningKeyStore>/mnt/1704BF56620B1DF2/Google_Drive/Vilo_Studio/my-release-key.keystore</AndroidSigningKeyStore>
-	  <AndroidSigningStorePass>$(AS_VGS_RELEASE_STORE_PASS)</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>$(AS_VGS_RELEASE_KEY_ALIAS)</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>$(AS_VGS_RELEASE_KEY_PASS)</AndroidSigningKeyPass>
+	  <AndroidSigningKeyStore>/home/zamme/Documents/pmstools_keys/pmstools_release.keystore</AndroidSigningKeyStore>
+	  <AndroidSigningStorePass>$(PMSTOOLS_ZAMME_RELEASE_STORE_PASS)</AndroidSigningStorePass>
+	  <AndroidSigningKeyAlias>$(PMSTOOLS_ZAMME_RELEASE_KEY_ALIAS)</AndroidSigningKeyAlias>
+	  <AndroidSigningKeyPass>$(PMSTOOLS_ZAMME_RELEASE_KEY_PASS)</AndroidSigningKeyPass>
 	  <Optimize>false</Optimize>
 	</PropertyGroup>
 
