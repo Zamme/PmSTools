@@ -8,6 +8,10 @@
                          x:Class="PmSTools.Code2BarcodePage"
                          Title="{x:Static strings:LangResources.BarcodePopupTitleText}"
                          BackgroundColor="White">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{x:Static strings:LangResources.BackText}" Order="Primary" Priority="0" Clicked="OnBackFromCode2BarcodeClicked" />
+    </ContentPage.ToolbarItems>
     
     <Grid
         Padding="5"

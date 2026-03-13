@@ -118,6 +118,14 @@ public partial class Code2Bar : ContentPage
                         modTextPart = codeWithControl;
                     }
 
+                    bool isShortCode = modTextPart.Length == 13;
+                    bool isLongCode = modTextPart.Length == 23;
+                    bool isLongNoControlCode = modTextPart.Length == 22;
+                    if (!isShortCode && !isLongCode && !isLongNoControlCode)
+                    {
+                        continue;
+                    }
+
                     foreach (var notiPrefix in notiPrefixes)
                     {
                         modTextPart = modTextPart.Replace("O", "0");

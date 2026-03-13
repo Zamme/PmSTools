@@ -6,6 +6,7 @@
              xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              Title="{x:Static strings:LangResources.Code2BarcodeText}">
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{x:Static strings:LangResources.BackText}" Order="Primary" Priority="0" Clicked="OnBackHomeFromCode2BarClicked" />
         <ToolbarItem Text="{x:Static strings:LangResources.PrefixsText}" Order="Secondary" Priority="0" Clicked="PrefixesMenuItem_OnClicked" />
         <ToolbarItem Text="{x:Static strings:LangResources.SavedsText}" Order="Secondary" Priority="1" Clicked="SavedMenuItem_OnClicked" />
     </ContentPage.ToolbarItems>

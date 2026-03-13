@@ -65,7 +65,7 @@ public partial class SavedBarcodesPopupPage : BasePopupPage
                     {
                         HorizontalOptions = LayoutOptions.Fill,
                         BackgroundColor = Colors.White,
-                        StrokeThickness = 5
+                        StrokeThickness = 1
                     };
                     /*HorizontalStackLayout newSavedCodeHStack = new HorizontalStackLayout
                     {

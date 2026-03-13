@@ -33,6 +33,9 @@
     <data name="AboutText" xml:space="preserve">
         <value>About</value>
     </data>
+    <data name="BackText" xml:space="preserve">
+        <value>Back</value>
+    </data>
     <data name="PrefixsText" xml:space="preserve">
         <value>Prefixs</value>
     </data>

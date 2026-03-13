@@ -74,6 +74,12 @@ namespace PmSTools.Resources.Languages {
             }
         }
 
+        internal static string BackText {
+            get {
+                return ResourceManager.GetString("BackText", resourceCulture);
+            }
+        }
+
         internal static string PrefixsText {
             get {
                 return ResourceManager.GetString("PrefixsText", resourceCulture);

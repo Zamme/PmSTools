@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using CommunityToolkit.Maui.Core;
 using Plugin.Maui.Audio;
@@ -27,8 +29,9 @@ namespace PmSTools
 
         private async void OnCode2BarcodeButtonClicked(object? sender, EventArgs e)
         {
-            await PlayMenuClickAsync();
-            Navigation.PushAsync(new Code2Bar());
+            await NavigateWithBusyOverlayAsync(
+                Code2BarcodeButton,
+                () => Navigation.PushAsync(new Code2Bar()));
         }
 
         protected async void ShowNotAvailable()
@@ -38,28 +41,16 @@ namespace PmSTools
 
         private async void OnFindPlaceButtonClicked(object? sender, EventArgs e)
         {
-            await PlayMenuClickAsync();
-            Navigation.PushAsync(new FindPlacePage());      
+            await NavigateWithBusyOverlayAsync(
+                FindPlaceButton,
+                () => Navigation.PushAsync(new FindPlacePage()));
         }
 
         private async void OnRouteCreationButtonClicked(object? sender, EventArgs e)
         {
-            try
-            {
-                await PlayMenuClickAsync();
-                RouteCreationButton.IsEnabled = false;
-                BusyOverlay.IsVisible = true;
-                BusyIndicator.IsRunning = true;
-                await Task.Yield();
-
-                await Navigation.PushAsync(new RouteCreationPage());
-            }
-            finally
-            {
-                BusyIndicator.IsRunning = false;
-                BusyOverlay.IsVisible = false;
-                RouteCreationButton.IsEnabled = true;
-            }
+            await NavigateWithBusyOverlayAsync(
+                RouteCreationButton,
+                () => Navigation.PushAsync(new RouteCreationPage()));
         }
 
         private void ConfigMenuItem_OnClicked(object? sender, EventArgs e)
@@ -96,6 +87,34 @@ namespace PmSTools
             }
 
             _menuClickPlayer.Play();
+        }
+
+        private async Task NavigateWithBusyOverlayAsync(Button button, Func<Task> navigateAction)
+        {
+            try
+            {
+                await PlayMenuClickAsync();
+                button.IsEnabled = false;
+                BusyOverlay.IsVisible = true;
+                BusyIndicator.IsRunning = true;
+                await Task.Yield();
+
+                await navigateAction();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                var message = string.IsNullOrWhiteSpace(ex.Message)
+                    ? "Unexpected error. Please try again."
+                    : ex.Message;
+                await DisplayAlertAsync(LangResources.ErrorTitleText, message, LangResources.OkText);
+            }
+            finally
+            {
+                BusyIndicator.IsRunning = false;
+                BusyOverlay.IsVisible = false;
+                button.IsEnabled = true;
+            }
         }
     
     }

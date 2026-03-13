@@ -18,6 +18,11 @@ public partial class Code2BarcodePage : ContentPage
     private const string SaveButtonText = "Save";
     private const string CancelButtonText = "Cancel";
 
+    private void OnBackFromCode2BarcodeClicked(object? sender, EventArgs e)
+    {
+        Navigation.PopAsync();
+    }
+
     private void UpdateSavedCodesPreference()
     {
         lastCodesToSave = string.Join(",", barcodeItems.Select(item => item.Code)) + (barcodeItems.Count > 0 ? "," : "");
@@ -168,15 +173,24 @@ public partial class Code2BarcodePage : ContentPage
     {
         const int ShortValidLength = 13;
         const int LongValidLength = 23;
+        const int LongNoControlLength = 22;
         char[] charSeparators = new char[] { ' ', '\n' };
         string[] textParts = _text.Split(charSeparators, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         foreach (var textPart in textParts)
         {
             string upperTextPart = textPart.ToUpper();
             string modTextPart = upperTextPart.Replace("O", "0");
+            if (modTextPart.Length == 22 && TryAppendDniLikeControl(modTextPart, out string withControl))
+            {
+                LogDniControlAppended(modTextPart, withControl);
+                modTextPart = withControl;
+                upperTextPart = withControl;
+            }
+
             bool isShortCode = modTextPart.Length == ShortValidLength;
             bool isLongCode = modTextPart.Length == LongValidLength;
-            bool hasValidLength = isShortCode || isLongCode;
+            bool isLongNoControlCode = modTextPart.Length == LongNoControlLength;
+            bool hasValidLength = isShortCode || isLongCode || isLongNoControlCode;
             if (!hasValidLength)
             {
                 LogRejectedTextPart(modTextPart, $"invalid length ({modTextPart.Length})");
@@ -191,9 +205,9 @@ public partial class Code2BarcodePage : ContentPage
                 continue;
             }
 
-            if (isLongCode && !startsWithTwoLetters && !startsWith90)
+            if ((isLongCode || isLongNoControlCode) && !startsWithTwoLetters && !startsWith90)
             {
-                LogRejectedTextPart(modTextPart, "23-char code does not start with two letters or 90");
+                LogRejectedTextPart(modTextPart, "long code does not start with two letters or 90");
                 continue;
             }
 
