@@ -65,6 +65,7 @@
 	  <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 	  <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
 	  <AndroidEnableFastDeployment>false</AndroidEnableFastDeployment>
+	  <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 	  <AndroidKeyStore>true</AndroidKeyStore>
 	  <AndroidSigningKeyStore>/home/zamme/Documents/pmstools_keys/pmstools_release.keystore</AndroidSigningKeyStore>
 	  <AndroidSigningStorePass>$(PMSTOOLS_ZAMME_RELEASE_STORE_PASS)</AndroidSigningStorePass>
@@ -85,6 +86,7 @@
 	  <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 	  <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
 	  <AndroidEnableFastDeployment>false</AndroidEnableFastDeployment>
+	  <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 	  <AndroidKeyStore>true</AndroidKeyStore>
 	  <AndroidSigningKeyStore>/home/zamme/Documents/pmstools_keys/pmstools_release.keystore</AndroidSigningKeyStore>
 	  <AndroidSigningStorePass>$(PMSTOOLS_ZAMME_RELEASE_STORE_PASS)</AndroidSigningStorePass>
