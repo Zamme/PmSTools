@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PmSTools"
+             xmlns:models="clr-namespace:PmSTools.Models"
              xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              x:Class="PmSTools.RouteEditorPage"
+             x:DataType="local:RouteEditorPage"
              Title="{x:Static strings:LangResources.RouteEditorTitleText}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{x:Static strings:LangResources.StartNearMeText}" Clicked="OnStartNearMeClicked" Priority="0" />
@@ -10,7 +13,7 @@
         <ToolbarItem Text="{x:Static strings:LangResources.FullMapText}" Clicked="FullRouteMap_ToolbarClicked" Priority="0" />
     </ContentPage.ToolbarItems>
     <ScrollView x:Name="RouteScrollView">
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Padding="16">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Padding="16" x:DataType="local:RouteEditorPage">
     <Grid Grid.Row="0"
               Margin="0,12,0,0"
               ColumnDefinitions="*,*"
@@ -60,6 +63,7 @@
                          Text="{x:Static strings:LangResources.RouteMapText}"
                          FontAttributes="Bold" />
                   <Button Grid.Column="1"
+                      x:DataType="local:RouteEditorPage"
                           Text="{x:Static strings:LangResources.RefreshText}"
                           FontSize="12"
                           Padding="8,4"
@@ -111,19 +115,20 @@
          </Frame>
 
          <CollectionView Grid.Row="3"
+                        x:DataType="local:RouteEditorPage"
                         Margin="0,12,0,0"
                         HeightRequest="260"
                         ItemsSource="{Binding Stops}">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame Margin="0,0,0,10" Padding="12">
+                <DataTemplate x:DataType="models:DeliveryRouteStop">
+                    <Frame Margin="0,0,0,10" Padding="12" x:DataType="models:DeliveryRouteStop">
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnStopCardTapped"
                                                   CommandParameter="{Binding .}" />
                         </Frame.GestureRecognizers>
 
-                        <Grid>
-                            <HorizontalStackLayout Spacing="8">
+                        <Grid x:DataType="models:DeliveryRouteStop">
+                            <HorizontalStackLayout Spacing="8" x:DataType="models:DeliveryRouteStop">
                                 <HorizontalStackLayout.Triggers>
                                     <DataTrigger TargetType="HorizontalStackLayout"
                                                  Binding="{Binding IsExpanded}"
@@ -131,24 +136,26 @@
                                         <Setter Property="IsVisible" Value="False" />
                                     </DataTrigger>
                                 </HorizontalStackLayout.Triggers>
-                                <Label Text="{Binding Order, StringFormat={x:Static strings:LangResources.StopOrderShortFormatText}}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Order, StringFormat={x:Static strings:LangResources.StopOrderShortFormatText}}" FontAttributes="Bold" x:DataType="models:DeliveryRouteStop" />
                                 <Label Text="{x:Static strings:LangResources.FirstText}"
                                        BackgroundColor="#1E88E5"
                                        TextColor="White"
                                        FontSize="12"
                                        Padding="6,2"
-                                       IsVisible="{Binding IsFirst}" />
+                                        IsVisible="{Binding IsFirst}"
+                                        x:DataType="models:DeliveryRouteStop" />
                                 <Label Text="{x:Static strings:LangResources.LastText}"
                                        BackgroundColor="#6A1B9A"
                                        TextColor="White"
                                        FontSize="12"
                                        Padding="6,2"
-                                       IsVisible="{Binding IsLast}" />
-                                <Label Text="{Binding StreetName}" FontAttributes="Bold" />
-                                <Label Text="{Binding StreetNumberDisplay}" FontAttributes="Bold" />
+                                        IsVisible="{Binding IsLast}"
+                                        x:DataType="models:DeliveryRouteStop" />
+                                    <Label Text="{Binding StreetName}" FontAttributes="Bold" x:DataType="models:DeliveryRouteStop" />
+                                    <Label Text="{Binding StreetNumberDisplay}" FontAttributes="Bold" x:DataType="models:DeliveryRouteStop" />
                             </HorizontalStackLayout>
 
-                            <VerticalStackLayout Spacing="8" IsVisible="False">
+                                <VerticalStackLayout Spacing="8" IsVisible="False" x:DataType="models:DeliveryRouteStop">
                                 <VerticalStackLayout.Triggers>
                                     <DataTrigger TargetType="VerticalStackLayout"
                                                  Binding="{Binding IsExpanded}"
@@ -156,36 +163,39 @@
                                         <Setter Property="IsVisible" Value="True" />
                                     </DataTrigger>
                                 </VerticalStackLayout.Triggers>
-                                    <HorizontalStackLayout Spacing="8">
-                                     <Label Text="{Binding Order, StringFormat={x:Static strings:LangResources.StopNumberFormatText}}" FontAttributes="Bold" />
+                                    <HorizontalStackLayout Spacing="8" x:DataType="models:DeliveryRouteStop">
+                                     <Label Text="{Binding Order, StringFormat={x:Static strings:LangResources.StopNumberFormatText}}" FontAttributes="Bold" x:DataType="models:DeliveryRouteStop" />
                                      <Label Text="{x:Static strings:LangResources.FirstText}"
                                          BackgroundColor="#1E88E5"
                                          TextColor="White"
                                          FontSize="12"
                                          Padding="6,2"
-                                         IsVisible="{Binding IsFirst}" />
+                                         IsVisible="{Binding IsFirst}"
+                                         x:DataType="models:DeliveryRouteStop" />
                                      <Label Text="{x:Static strings:LangResources.LastText}"
                                          BackgroundColor="#6A1B9A"
                                          TextColor="White"
                                          FontSize="12"
                                          Padding="6,2"
-                                         IsVisible="{Binding IsLast}" />
+                                         IsVisible="{Binding IsLast}"
+                                         x:DataType="models:DeliveryRouteStop" />
                                     </HorizontalStackLayout>
-                                <Entry Placeholder="{x:Static strings:LangResources.NamePlaceholderText}" Text="{Binding Name}" />
-                                <Entry Placeholder="{x:Static strings:LangResources.StreetNamePlaceholderText}" Text="{Binding StreetName}" />
-                                <Entry Placeholder="{x:Static strings:LangResources.StreetNumberPlaceholderText}" Text="{Binding StreetNumber}" />
+                                <Entry Placeholder="{x:Static strings:LangResources.NamePlaceholderText}" Text="{Binding Name}" x:DataType="models:DeliveryRouteStop" />
+                                <Entry Placeholder="{x:Static strings:LangResources.StreetNamePlaceholderText}" Text="{Binding StreetName}" x:DataType="models:DeliveryRouteStop" />
+                                <Entry Placeholder="{x:Static strings:LangResources.StreetNumberPlaceholderText}" Text="{Binding StreetNumber}" x:DataType="models:DeliveryRouteStop" />
                                 <Label Text="{Binding StreetExtraDetails, StringFormat='Extra: {0}'}"
+                                       x:DataType="models:DeliveryRouteStop"
                                        FontSize="12"
                                        TextColor="#6B6B6B">
                                     <Label.Triggers>
-                                        <DataTrigger TargetType="Label" Binding="{Binding StreetExtraDetails}" Value="">
+                                        <DataTrigger TargetType="Label" Binding="{Binding StreetExtraDetails}" Value="" x:DataType="models:DeliveryRouteStop">
                                             <Setter Property="IsVisible" Value="False" />
                                         </DataTrigger>
                                     </Label.Triggers>
                                 </Label>
-                                <Entry Placeholder="{x:Static strings:LangResources.PostalCodePlaceholderText}" Text="{Binding PostalCode}" />
-                                <Entry Placeholder="{x:Static strings:LangResources.CityPlaceholderText}" Text="{Binding City}" />
-                                <Entry Placeholder="{x:Static strings:LangResources.CountryPlaceholderText}" Text="{Binding Country}" />
+                                <Entry Placeholder="{x:Static strings:LangResources.PostalCodePlaceholderText}" Text="{Binding PostalCode}" x:DataType="models:DeliveryRouteStop" />
+                                <Entry Placeholder="{x:Static strings:LangResources.CityPlaceholderText}" Text="{Binding City}" x:DataType="models:DeliveryRouteStop" />
+                                <Entry Placeholder="{x:Static strings:LangResources.CountryPlaceholderText}" Text="{Binding Country}" x:DataType="models:DeliveryRouteStop" />
                                 <Button Text="{x:Static strings:LangResources.DeleteStopText}"
                                         CommandParameter="{Binding .}"
                                         Clicked="OnDeleteRouteStopClicked" />
@@ -196,10 +206,11 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Frame Grid.Row="4"
-               Margin="0,12,0,0"
-             Padding="12"
-             IsVisible="{Binding IsManualStopVisible}">
+                <Frame Grid.Row="4"
+                             Margin="0,12,0,0"
+                         Padding="12"
+                         x:DataType="local:RouteEditorPage"
+                         IsVisible="{Binding IsManualStopVisible}">
             <VerticalStackLayout Spacing="8">
                 <Label Text="{x:Static strings:LangResources.NewStopManualText}" FontAttributes="Bold" />
                 <Entry x:Name="ManualNameEntry" Placeholder="{x:Static strings:LangResources.NamePlaceholderText}" />

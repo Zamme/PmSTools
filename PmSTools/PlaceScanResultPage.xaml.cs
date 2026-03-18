@@ -103,19 +103,6 @@ public partial class PlaceScanResultPage : ContentPage
         CandidatesList.HeightRequest = Math.Clamp(calculatedHeight, minHeight, maxHeight);
     }
 
-    internal class GeocodeCandidate
-    {
-        public string DisplayName { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
-        public string MatchBadge { get; set; } = string.Empty;
-        public double Lat { get; set; }
-        public double Lon { get; set; }
-        public string HouseNumber { get; set; } = string.Empty;
-        public string City { get; set; } = string.Empty;
-        public string PostalCode { get; set; } = string.Empty;
-        public int SourceOrder { get; set; }
-    }
-
     private void UpdateResultLabels(PlaceInfoItem placeInfo)
     {
         NameResultText.Text = RemoveCommasForSearch(placeInfo.Name ?? LangResources.UnknownNameText);

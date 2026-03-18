@@ -2,10 +2,13 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PmSTools"
+             xmlns:models="clr-namespace:PmSTools.Models"
              xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              x:Class="PmSTools.RouteCreationPage"
+             x:DataType="local:RouteCreationPage"
              Title="{x:Static strings:LangResources.RouteCreationPageTitleText}">
-    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16" x:DataType="local:RouteCreationPage">
         <VerticalStackLayout Grid.Row="0" Spacing="8">
             <Button Text="{x:Static strings:LangResources.CreateNewRouteText}"
                     Clicked="OnCreateNewRouteClicked" />
@@ -19,19 +22,23 @@
                        VerticalOptions="Center" />
 
                 <VerticalStackLayout Spacing="12"
+                             x:DataType="local:RouteCreationPage"
                              BindableLayout.ItemsSource="{Binding RouteItems}">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:RouteListItem">
                             <Frame Padding="10"
                                    Margin="0,0,0,6"
+                                   x:DataType="models:RouteListItem"
                                    CornerRadius="12"
                                    BorderColor="{StaticResource Gray200}"
                                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
                                    HasShadow="False">
-                                <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto"
+                                  <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto"
                                       ColumnSpacing="8"
+                                      x:DataType="models:RouteListItem"
                                       IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.IsNotNavigating}">
-                                    <Button Grid.Column="0"
+                                        <Button Grid.Column="0"
+                                            x:DataType="models:RouteListItem"
                                             Text="{Binding DisplayName}"
                                             LineBreakMode="WordWrap"
                                             FontSize="18"
@@ -42,6 +49,7 @@
                                             CommandParameter="{Binding .}"
                                             Clicked="OnRouteSelectedClicked" />
                                     <ImageButton Grid.Column="1"
+                                             x:DataType="models:RouteListItem"
                                                  Source="rename_icon_midnightblue.svg"
                                                  WidthRequest="40"
                                                  HeightRequest="40"
@@ -52,6 +60,7 @@
                                                  CommandParameter="{Binding .}"
                                                  Clicked="OnRenameRouteClicked" />
                                     <ImageButton Grid.Column="2"
+                                             x:DataType="models:RouteListItem"
                                                  Source="trash_icon_white.svg"
                                                  WidthRequest="40"
                                                  HeightRequest="40"
@@ -62,6 +71,7 @@
                                                  CommandParameter="{Binding .}"
                                                  Clicked="OnDeleteRouteClicked" />
                                     <ImageButton Grid.Column="3"
+                                             x:DataType="models:RouteListItem"
                                                  Source="arrow_up_midnightblue.svg"
                                                  WidthRequest="40"
                                                  HeightRequest="40"
@@ -73,6 +83,7 @@
                                                  CommandParameter="{Binding .}"
                                                  Clicked="OnMoveRouteUpClicked" />
                                     <ImageButton Grid.Column="4"
+                                             x:DataType="models:RouteListItem"
                                                  Source="arrow_down_midnightblue.svg"
                                                  WidthRequest="40"
                                                  HeightRequest="40"
@@ -92,16 +103,19 @@
         </ScrollView>
 
         <Button Grid.Row="2"
+            x:DataType="local:RouteCreationPage"
                 Text="{x:Static strings:LangResources.DeleteAllRoutesText}"
                 BackgroundColor="IndianRed"
                 TextColor="White"
                 IsEnabled="{Binding HasRoutes}"
                 Clicked="OnDeleteAllRoutesClicked" />
 
-        <Grid Grid.RowSpan="3"
-              IsVisible="{Binding IsNavigating}"
-              BackgroundColor="#80000000">
-            <ActivityIndicator IsRunning="{Binding IsNavigating}"
+                <Grid Grid.RowSpan="3"
+                            x:DataType="local:RouteCreationPage"
+                            IsVisible="{Binding IsNavigating}"
+                            BackgroundColor="#80000000">
+                        <ActivityIndicator IsRunning="{Binding IsNavigating}"
+                                             x:DataType="local:RouteCreationPage"
                        HorizontalOptions="Center"
                        VerticalOptions="Center" />
         </Grid>

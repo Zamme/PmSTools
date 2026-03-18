@@ -52,7 +52,7 @@ public partial class Code2BarcodePage : ContentPage
             IsVisible = false,
             BackgroundColor = Colors.White,
             TextColor = Colors.Black,
-            HorizontalOptions = LayoutOptions.FillAndExpand
+            HorizontalOptions = LayoutOptions.Fill
         };
 
         var editButton = new Button { Text = EditButtonText };

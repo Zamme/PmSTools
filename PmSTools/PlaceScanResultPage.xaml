@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:PmSTools.Models"
              xmlns:strings="clr-namespace:PmSTools.Resources.Languages"
              x:Class="PmSTools.PlaceScanResultPage"
              Title="{x:Static strings:LangResources.PlaceScanResultTitleText}">
@@ -100,17 +101,20 @@
                                 ItemSizingStrategy="MeasureAllItems"
                                 SelectionChanged="CandidatesList_SelectionChanged">
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Padding="8" ColumnDefinitions="*" RowDefinitions="Auto">
-                                <StackLayout Grid.Column="0" Spacing="4">
+                        <DataTemplate x:DataType="models:GeocodeCandidate">
+                            <Grid Padding="8" ColumnDefinitions="*" RowDefinitions="Auto" x:DataType="models:GeocodeCandidate">
+                                <StackLayout Grid.Column="0" Spacing="4" x:DataType="models:GeocodeCandidate">
                                     <Label Text="{Binding DisplayName}"
+                                           x:DataType="models:GeocodeCandidate"
                                            FontAttributes="Bold"
                                            LineBreakMode="WordWrap"/>
                                      <Label Text="{Binding MatchBadge}"
+                                         x:DataType="models:GeocodeCandidate"
                                          FontSize="12"
                                          FontAttributes="Bold"
                                          LineBreakMode="WordWrap"/>
                                     <Label Text="{Binding Type}"
+                                           x:DataType="models:GeocodeCandidate"
                                            FontSize="12"
                                            LineBreakMode="WordWrap"/>
                                 </StackLayout>
