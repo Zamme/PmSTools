@@ -55,14 +55,16 @@
 	  <AndroidSigningKeyAlias>$(PMSTOOLS_ZAMME_DEBUG_KEY_ALIAS)</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>$(PMSTOOLS_ZAMME_DEBUG_KEY_PASS)</AndroidSigningKeyPass>
 	  <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
-	  <!-- Enable fast deploy / shared runtime for faster debug deploys -->
-	  <AndroidEnableFastDeployment>true</AndroidEnableFastDeployment>
-	  <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
+	  <!-- Disable fast deploy to avoid missing assemblies on device -->
+	  <AndroidEnableFastDeployment>false</AndroidEnableFastDeployment>
+	  <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+	  <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
-	  <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+	  <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+	  <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
 	  <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
 	  <AndroidEnableFastDeployment>false</AndroidEnableFastDeployment>
 	  <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
@@ -71,12 +73,13 @@
 	  <AndroidSigningStorePass>$(PMSTOOLS_ZAMME_RELEASE_STORE_PASS)</AndroidSigningStorePass>
 	  <AndroidSigningKeyAlias>$(PMSTOOLS_ZAMME_RELEASE_KEY_ALIAS)</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>$(PMSTOOLS_ZAMME_RELEASE_KEY_PASS)</AndroidSigningKeyPass>
-	  <Optimize>false</Optimize>
+	  <Optimize>true</Optimize>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'ReleaseAab' ">
 	  <AndroidManifest>Platforms\Android\AndroidManifest.ReleaseAab.xml</AndroidManifest>
 	  <AndroidPackageFormat>aab</AndroidPackageFormat>
+	  <AndroidLinkMode>SdkOnly</AndroidLinkMode>
 	  <Debuggable>false</Debuggable>
 	  <DebugSymbols>false</DebugSymbols>
 	  <DebugType>none</DebugType>
@@ -92,7 +95,7 @@
 	  <AndroidSigningStorePass>$(PMSTOOLS_ZAMME_RELEASE_STORE_PASS)</AndroidSigningStorePass>
 	  <AndroidSigningKeyAlias>$(PMSTOOLS_ZAMME_RELEASE_KEY_ALIAS)</AndroidSigningKeyAlias>
 	  <AndroidSigningKeyPass>$(PMSTOOLS_ZAMME_RELEASE_KEY_PASS)</AndroidSigningKeyPass>
-	  <Optimize>false</Optimize>
+	  <Optimize>true</Optimize>
 	</PropertyGroup>
 
 	<Target Name="ForceReleaseAabNonDebuggable" BeforeTargets="_GenerateAndroidManifest" Condition=" '$(Configuration)' == 'ReleaseAab' ">

@@ -103,7 +103,7 @@ public partial class PlaceScanResultPage : ContentPage
         CandidatesList.HeightRequest = Math.Clamp(calculatedHeight, minHeight, maxHeight);
     }
 
-    private class GeocodeCandidate
+    internal class GeocodeCandidate
     {
         public string DisplayName { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
