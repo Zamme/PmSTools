@@ -118,22 +118,22 @@ public partial class PlaceScanResultPage : ContentPage
 
     private void UpdateResultLabels(PlaceInfoItem placeInfo)
     {
-        NameResultText.Text = placeInfo.Name ?? LangResources.UnknownNameText;
-        StreetNameResultText.Text = placeInfo.StreetName ?? LangResources.UnknownStreetNameText;
-        StreetNumberResultText.Text = placeInfo.StreetNumber ?? LangResources.UnknownStreetNumberText;
-        PostalCodeResultText.Text = placeInfo.PostalCode ?? LangResources.UnknownPostalCodeText;
-        CityResultText.Text = placeInfo.City ?? LangResources.UnknownCityText;
-        CountryResultText.Text = placeInfo.Country ?? LangResources.UnknownCountryText;
+        NameResultText.Text = RemoveCommasForSearch(placeInfo.Name ?? LangResources.UnknownNameText);
+        StreetNameResultText.Text = RemoveCommasForSearch(placeInfo.StreetName ?? LangResources.UnknownStreetNameText);
+        StreetNumberResultText.Text = BuildStreetNumberDisplay(placeInfo);
+        PostalCodeResultText.Text = RemoveCommasForSearch(placeInfo.PostalCode ?? LangResources.UnknownPostalCodeText);
+        CityResultText.Text = RemoveCommasForSearch(placeInfo.City ?? LangResources.UnknownCityText);
+        CountryResultText.Text = RemoveCommasForSearch(placeInfo.Country ?? LangResources.UnknownCountryText);
     }
 
     private void PopulateEditFields(PlaceInfoItem placeInfo)
     {
-        EditNameEntry.Text = placeInfo.Name ?? string.Empty;
-        EditStreetNameEntry.Text = placeInfo.StreetName ?? string.Empty;
-        EditStreetNumberEntry.Text = placeInfo.StreetNumber ?? string.Empty;
-        EditPostalCodeEntry.Text = placeInfo.PostalCode ?? string.Empty;
-        EditCityEntry.Text = placeInfo.City ?? string.Empty;
-        EditCountryEntry.Text = placeInfo.Country ?? string.Empty;
+        EditNameEntry.Text = RemoveCommasForSearch(placeInfo.Name ?? string.Empty);
+        EditStreetNameEntry.Text = RemoveCommasForSearch(placeInfo.StreetName ?? string.Empty);
+        EditStreetNumberEntry.Text = RemoveCommasForSearch(placeInfo.StreetNumber ?? string.Empty);
+        EditPostalCodeEntry.Text = RemoveCommasForSearch(placeInfo.PostalCode ?? string.Empty);
+        EditCityEntry.Text = RemoveCommasForSearch(placeInfo.City ?? string.Empty);
+        EditCountryEntry.Text = RemoveCommasForSearch(placeInfo.Country ?? string.Empty);
     }
 
     private void SetEditMode(bool enabled)
@@ -150,6 +150,7 @@ public partial class PlaceScanResultPage : ContentPage
             PlaceInfoItem filteredLines = FilterScanResult(ocrResult);
             if (filteredLines == null)
                 return;
+            NormalizePlaceInfoCommas(filteredLines);
             EnsureStreetParts(filteredLines);
             // keep a reference so JS->C# can populate chosen coordinates
             _currentPlace = filteredLines; 
@@ -195,6 +196,7 @@ public partial class PlaceScanResultPage : ContentPage
                 return;
             }
 
+            NormalizePlaceInfoCommas(placeInfo);
             EnsureStreetParts(placeInfo);
             _currentPlace = placeInfo;
 
@@ -294,7 +296,7 @@ public partial class PlaceScanResultPage : ContentPage
 
         // Escape address for JavaScript
         string escapedAddress = address.Replace("\\", "\\\\").Replace("\"", "\\\"");
-        string escapedLabel = (placeInfo.Name ?? LangResources.MapMarkerDefaultLabelText)
+        string escapedLabel = RemoveCommasForSearch(placeInfo.Name ?? LangResources.MapMarkerDefaultLabelText)
             .Replace("\\", "\\\\")
             .Replace("\"", "\\\"");
 
@@ -334,6 +336,7 @@ public partial class PlaceScanResultPage : ContentPage
             "                var lon = parseFloat(first.lon);\n" +
             "                if (isNaN(lat) || isNaN(lon)) return;\n" +
             "                var title = first.display_name || (label + ' - ' + address);\n" +
+            "                title = title.replace(/,/g, ' ').replace(/\\s+/g, ' ').trim();\n" +
             "                var marker = L.marker([lat, lon]).addTo(map)\n" +
             "                    .bindPopup('<div style=\"font-size:14px;\"><strong>' + (first.type || label) + '</strong><br/>' + title + '</div>');\n" +
             "                markers.push({ marker: marker, item: first, index: 0 });\n" +
@@ -407,6 +410,18 @@ public partial class PlaceScanResultPage : ContentPage
             @"\b([\p{L}'\-]{2,})(\d{1,5}[A-Za-z]?)\b",
             "$1 $2",
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        var trailingDetailMatch = System.Text.RegularExpressions.Regex.Match(
+            normalized,
+            @"^(?<name>.+?)\s+(?<number>\d{1,5}[A-Za-z]?)(?:\s+\d{1,5}[A-Za-z]?){1,4}\s*$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        if (trailingDetailMatch.Success)
+        {
+            return (
+                trailingDetailMatch.Groups["name"].Value.Trim(),
+                trailingDetailMatch.Groups["number"].Value.Trim());
+        }
 
         // Strong signal: house number followed by floor/door token with '-' or '/'.
         // Example: "AV GENERALITAT 117 4-8" -> number "117".
@@ -712,8 +727,8 @@ public partial class PlaceScanResultPage : ContentPage
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         var postalCode = (placeInfo.PostalCode ?? string.Empty).Trim();
-        var city = (placeInfo.City ?? string.Empty).Trim();
-        var street = (placeInfo.Street ?? string.Empty).Trim();
+        var city = RemoveCommasForSearch((placeInfo.City ?? string.Empty).Trim());
+        var street = RemoveCommasForSearch((placeInfo.Street ?? string.Empty).Trim());
         street = System.Text.RegularExpressions.Regex.Replace(
             street,
             @"^\s*CL(?:\.|\b)\s*",
@@ -726,15 +741,16 @@ public partial class PlaceScanResultPage : ContentPage
             System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
         var streetMain = SimplifyStreetForGeocoding(street);
         var streetVariants = BuildStreetVariants(streetMain);
-        var country = (placeInfo.Country ?? string.Empty).Trim();
-        var name = (placeInfo.Name ?? string.Empty).Trim();
+        var country = RemoveCommasForSearch((placeInfo.Country ?? string.Empty).Trim());
+        var name = RemoveCommasForSearch((placeInfo.Name ?? string.Empty).Trim());
 
         var postalCity = string.Join(" ", new[] { postalCode, city }.Where(v => !string.IsNullOrWhiteSpace(v))).Trim();
+        postalCity = RemoveCommasForSearch(postalCity);
         var postalOnly = postalCode;
 
         void AddQuery(params string[] parts)
         {
-            var query = string.Join(", ", parts.Where(v => !string.IsNullOrWhiteSpace(v)).Select(v => v.Trim()));
+            var query = string.Join(" ", parts.Where(v => !string.IsNullOrWhiteSpace(v)).Select(v => v.Trim()));
             if (string.IsNullOrWhiteSpace(query))
                 return;
             if (seen.Add(query))
@@ -952,11 +968,13 @@ public partial class PlaceScanResultPage : ContentPage
         var urls = new List<string>();
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        var street = SimplifyStreetForGeocoding((placeInfo.Street ?? string.Empty).Trim());
+        var street = RemoveCommasForSearch((placeInfo.Street ?? string.Empty).Trim());
+        street = SimplifyStreetForGeocoding(street);
         var streetVariants = BuildStreetVariants(street);
-        var city = (placeInfo.City ?? string.Empty).Trim();
+        var city = RemoveCommasForSearch((placeInfo.City ?? string.Empty).Trim());
         var postal = (placeInfo.PostalCode ?? string.Empty).Trim();
         var country = string.IsNullOrWhiteSpace(placeInfo.Country) ? LangResources.DefaultCountryText : placeInfo.Country.Trim();
+        country = RemoveCommasForSearch(country);
 
         var cityNoAcc = RemoveDiacritics(city);
 
@@ -973,10 +991,10 @@ public partial class PlaceScanResultPage : ContentPage
         void AddStructured(string streetValue, string cityValue, string postalValue, string countryValue)
         {
             var parts = new List<string>();
-            if (!string.IsNullOrWhiteSpace(streetValue)) parts.Add("street=" + Uri.EscapeDataString(streetValue));
-            if (!string.IsNullOrWhiteSpace(cityValue)) parts.Add("city=" + Uri.EscapeDataString(cityValue));
+            if (!string.IsNullOrWhiteSpace(streetValue)) parts.Add("street=" + Uri.EscapeDataString(RemoveCommasForSearch(streetValue)));
+            if (!string.IsNullOrWhiteSpace(cityValue)) parts.Add("city=" + Uri.EscapeDataString(RemoveCommasForSearch(cityValue)));
             if (!string.IsNullOrWhiteSpace(postalValue)) parts.Add("postalcode=" + Uri.EscapeDataString(postalValue));
-            if (!string.IsNullOrWhiteSpace(countryValue)) parts.Add("country=" + Uri.EscapeDataString(countryValue));
+            if (!string.IsNullOrWhiteSpace(countryValue)) parts.Add("country=" + Uri.EscapeDataString(RemoveCommasForSearch(countryValue)));
             if (parts.Count > 0) AddUrl(baseUrl + "&" + string.Join("&", parts));
         }
 
@@ -1052,7 +1070,65 @@ public partial class PlaceScanResultPage : ContentPage
         normalized = System.Text.RegularExpressions.Regex.Replace(normalized, @"\s+", " ").Trim();
         normalized = RemoveTrailingProvinceSuffix(normalized);
 
+        return RemoveCommasForSearch(normalized);
+    }
+
+    private string RemoveCommasForSearch(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var normalized = value.Replace(',', ' ');
+        normalized = System.Text.RegularExpressions.Regex.Replace(normalized, @"\s+", " ").Trim();
         return normalized;
+    }
+
+    private string BuildStreetNumberDisplay(PlaceInfoItem placeInfo)
+    {
+        var number = RemoveCommasForSearch(placeInfo.StreetNumber ?? string.Empty);
+        var extras = ExtractStreetExtraDetails(placeInfo.Street);
+
+        if (string.IsNullOrWhiteSpace(number))
+            return RemoveCommasForSearch(placeInfo.StreetNumber ?? LangResources.UnknownStreetNumberText);
+
+        return string.IsNullOrWhiteSpace(extras) ? number : $"{number} {extras}".Trim();
+    }
+
+    private string ExtractStreetExtraDetails(string? street)
+    {
+        if (string.IsNullOrWhiteSpace(street))
+            return string.Empty;
+
+        var normalized = RemoveCommasForSearch(street);
+        var match = System.Text.RegularExpressions.Regex.Match(
+            normalized,
+            @"\b\d{1,5}[A-Za-z]?\b(?<rest>.*)$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        if (!match.Success)
+            return string.Empty;
+
+        var rest = match.Groups["rest"].Value;
+        if (string.IsNullOrWhiteSpace(rest) || !System.Text.RegularExpressions.Regex.IsMatch(rest, @"\d"))
+            return string.Empty;
+
+        rest = System.Text.RegularExpressions.Regex.Replace(rest, @"^[\s\-/,]+", " ");
+        rest = RemoveCommasForSearch(rest);
+        return rest;
+    }
+
+    private void NormalizePlaceInfoCommas(PlaceInfoItem placeInfo)
+    {
+        if (placeInfo == null)
+            return;
+
+        placeInfo.Name = RemoveCommasForSearch(placeInfo.Name ?? string.Empty);
+        placeInfo.StreetName = RemoveCommasForSearch(placeInfo.StreetName ?? string.Empty);
+        placeInfo.StreetNumber = RemoveCommasForSearch(placeInfo.StreetNumber ?? string.Empty);
+        placeInfo.Street = RemoveCommasForSearch(placeInfo.Street ?? string.Empty);
+        placeInfo.PostalCode = RemoveCommasForSearch(placeInfo.PostalCode ?? string.Empty);
+        placeInfo.City = RemoveCommasForSearch(placeInfo.City ?? string.Empty);
+        placeInfo.Country = RemoveCommasForSearch(placeInfo.Country ?? string.Empty);
     }
 
     private string NormalizeProvinceToken(string value)
@@ -1453,7 +1529,7 @@ public partial class PlaceScanResultPage : ContentPage
 
             if (!string.IsNullOrWhiteSpace(bestName))
             {
-                placeInfo.Name = bestName;
+                placeInfo.Name = RemoveCommasForSearch(bestName);
                 System.Diagnostics.Debug.WriteLine($"FilterScanResult - Name: {placeInfo.Name}");
             }
 
@@ -1469,7 +1545,7 @@ public partial class PlaceScanResultPage : ContentPage
                         !System.Text.RegularExpressions.Regex.IsMatch(line, @"^\d{4,5}") &&
                         !LooksLikeCodeLine(line))
                     {
-                        placeInfo.Name = line;
+                        placeInfo.Name = RemoveCommasForSearch(line);
                         break;
                     }
                 }
@@ -1492,7 +1568,7 @@ public partial class PlaceScanResultPage : ContentPage
             if (TryExtractPostalAndCity(line, out var postalCode, out var cityText))
             {
                 placeInfo.PostalCode = postalCode;
-                placeInfo.City = cityText;
+                placeInfo.City = RemoveCommasForSearch(cityText);
                 postalLineIndex = i;
                 break;
             }
@@ -1516,7 +1592,7 @@ public partial class PlaceScanResultPage : ContentPage
                 continue;
 
             placeInfo.PostalCode = normalized;
-            placeInfo.City = nextLine;
+            placeInfo.City = RemoveCommasForSearch(nextLine);
             postalLineIndex = i;
             break;
         }
@@ -1544,7 +1620,7 @@ public partial class PlaceScanResultPage : ContentPage
                 if (normalizedPostal.Length == 5)
                 {
                     placeInfo.PostalCode = normalizedPostal;
-                    placeInfo.City = NormalizeCityForGeocoding(postalCityMatch.Groups[2].Value);
+                    placeInfo.City = RemoveCommasForSearch(NormalizeCityForGeocoding(postalCityMatch.Groups[2].Value));
                 }
             }
         }
@@ -1553,14 +1629,14 @@ public partial class PlaceScanResultPage : ContentPage
         {
             var cityFromContext = FindNearbyCityCandidate(lines, postalLineIndex >= 0 ? postalLineIndex : lines.FindIndex(l => TryExtractPostalAndCity(l, out _, out _)));
             if (!string.IsNullOrWhiteSpace(cityFromContext))
-                placeInfo.City = cityFromContext;
+                placeInfo.City = RemoveCommasForSearch(cityFromContext);
         }
 
         // Extract street from OCR lines first (more stable than multiline regex and avoids truncation).
         int prefixStreetIndex = lines.FindIndex(IsStreetPrefixLine);
         if (prefixStreetIndex >= 0)
         {
-            var streetParts = new List<string> { lines[prefixStreetIndex] };
+            var streetParts = new List<string> { RemoveCommasForSearch(lines[prefixStreetIndex]) };
             bool needsNameContinuation = IsIncompleteStreetPrefixLine(lines[prefixStreetIndex]);
 
             // Add immediate continuation line if present (e.g., "PLANTA ...", "PUERTA ...")
@@ -1569,11 +1645,11 @@ public partial class PlaceScanResultPage : ContentPage
                 var nextLine = lines[prefixStreetIndex + 1];
                 if (IsStreetContinuationLine(nextLine))
                 {
-                    streetParts.Add(nextLine);
+                    streetParts.Add(RemoveCommasForSearch(nextLine));
                 }
                 else if (IsStreetNameContinuationLine(nextLine))
                 {
-                    streetParts.Add(nextLine);
+                    streetParts.Add(RemoveCommasForSearch(nextLine));
                     needsNameContinuation = false;
 
                     // Optional second continuation for patterns like:
@@ -1582,7 +1658,7 @@ public partial class PlaceScanResultPage : ContentPage
                     {
                         var thirdLine = lines[prefixStreetIndex + 2];
                         if (IsStreetNameContinuationLine(thirdLine) || IsStreetContinuationLine(thirdLine))
-                            streetParts.Add(thirdLine);
+                            streetParts.Add(RemoveCommasForSearch(thirdLine));
                     }
                 }
                 else if (needsNameContinuation)
@@ -1592,19 +1668,19 @@ public partial class PlaceScanResultPage : ContentPage
                         !TryExtractPostalAndCity(nextLine, out _, out _) &&
                         !IsStreetContinuationLine(nextLine))
                     {
-                        streetParts.Add(nextLine);
+                        streetParts.Add(RemoveCommasForSearch(nextLine));
 
                         if (prefixStreetIndex + 2 < lines.Count)
                         {
                             var thirdLine = lines[prefixStreetIndex + 2];
                             if (IsStreetNameContinuationLine(thirdLine) || IsStreetContinuationLine(thirdLine))
-                                streetParts.Add(thirdLine);
+                                streetParts.Add(RemoveCommasForSearch(thirdLine));
                         }
                     }
                 }
             }
 
-            placeInfo.Street = string.Join(" ", streetParts).Trim();
+            placeInfo.Street = RemoveCommasForSearch(string.Join(" ", streetParts).Trim());
         }
 
         // If OCR left us with an incomplete prefix-only street ("Calle de"), rebuild it
@@ -1650,7 +1726,7 @@ public partial class PlaceScanResultPage : ContentPage
 
                 if (IsStreetNameOnlyLine(candidate) || IsStreetNameContinuationLine(candidate) || IsLikelyStreetLine(candidate))
                 {
-                    rebuilt.Add(candidate);
+                    rebuilt.Add(RemoveCommasForSearch(candidate));
                     return true;
                 }
 
@@ -1676,11 +1752,11 @@ public partial class PlaceScanResultPage : ContentPage
             {
                 var numberLine = lines[numberLineIndex].Trim();
                 if (IsNumericAddressDetailLine(numberLine))
-                    rebuilt.Add(numberLine);
+                    rebuilt.Add(RemoveCommasForSearch(numberLine));
             }
 
             if (rebuilt.Count > 1)
-                placeInfo.Street = string.Join(" ", rebuilt).Trim();
+                placeInfo.Street = RemoveCommasForSearch(string.Join(" ", rebuilt).Trim());
         }
 
         // If we have a street name but no house number, try to append the main house number
@@ -1711,7 +1787,7 @@ public partial class PlaceScanResultPage : ContentPage
             }
 
             if (!string.IsNullOrWhiteSpace(detectedNumber))
-                placeInfo.Street = $"{placeInfo.Street} {detectedNumber}".Trim();
+                placeInfo.Street = RemoveCommasForSearch($"{placeInfo.Street} {detectedNumber}".Trim());
         }
 
         // OCR can merge the street type abbreviation with the name: "CTALLADELL" / "CTalladell".
@@ -1753,6 +1829,8 @@ public partial class PlaceScanResultPage : ContentPage
                 @"^\s*PTG(?:\.|\b)\s*",
                 "Passatge ",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
+
+            placeInfo.Street = RemoveCommasForSearch(placeInfo.Street);
         }
 
         // Fallback regex if no street line was found by prefixes
@@ -1764,7 +1842,7 @@ public partial class PlaceScanResultPage : ContentPage
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Multiline);
 
             if (streetMatch.Success)
-                placeInfo.Street = streetMatch.Groups[1].Value.Trim();
+                placeInfo.Street = RemoveCommasForSearch(streetMatch.Groups[1].Value.Trim());
         }
 
         if (string.IsNullOrEmpty(placeInfo.Street))
@@ -1807,7 +1885,7 @@ public partial class PlaceScanResultPage : ContentPage
                 }
 
                 if (streetParts.Count > 0)
-                    placeInfo.Street = string.Join(", ", streetParts);
+                    placeInfo.Street = RemoveCommasForSearch(string.Join(" ", streetParts));
             }
 
             // Fallback 2: look for the first plausible address line near the top
@@ -1819,7 +1897,7 @@ public partial class PlaceScanResultPage : ContentPage
                     if (IsLikelyStreetLine(line) &&
                         !string.Equals(line, placeInfo.City, StringComparison.OrdinalIgnoreCase))
                     {
-                        placeInfo.Street = line;
+                        placeInfo.Street = RemoveCommasForSearch(line);
                         break;
                     }
                 }
@@ -1976,11 +2054,11 @@ public partial class PlaceScanResultPage : ContentPage
                                 if (item.TryGetProperty("lon", out var lonProp)) double.TryParse(lonProp.GetString() ?? "0", NumberStyles.Any, CultureInfo.InvariantCulture, out lon);
 
                                 if (string.IsNullOrEmpty(display))
-                                    display = $"{placeInfo.Name ?? string.Empty} - {placeInfo.Street}, {placeInfo.City}".Trim();
+                                    display = $"{placeInfo.Name ?? string.Empty} - {placeInfo.Street} {placeInfo.City}".Trim();
 
                                 foundCandidates.Add(new GeocodeCandidate
                                 {
-                                    DisplayName = display,
+                                    DisplayName = RemoveCommasForSearch(display),
                                     Type = type,
                                     Lat = lat,
                                     Lon = lon,
@@ -2137,15 +2215,15 @@ public partial class PlaceScanResultPage : ContentPage
                     StringComparer.OrdinalIgnoreCase);
 
             if (qs.TryGetValue("q", out var freeText) && !string.IsNullOrWhiteSpace(freeText))
-                return "q=" + freeText;
+                return "q=" + RemoveCommasForSearch(freeText);
 
             var parts = new List<string>();
-            if (qs.TryGetValue("street", out var street) && !string.IsNullOrWhiteSpace(street)) parts.Add("street=" + street);
-            if (qs.TryGetValue("postalcode", out var postal) && !string.IsNullOrWhiteSpace(postal)) parts.Add("postal=" + postal);
-            if (qs.TryGetValue("city", out var city) && !string.IsNullOrWhiteSpace(city)) parts.Add("city=" + city);
-            if (qs.TryGetValue("country", out var country) && !string.IsNullOrWhiteSpace(country)) parts.Add("country=" + country);
+            if (qs.TryGetValue("street", out var street) && !string.IsNullOrWhiteSpace(street)) parts.Add("street=" + RemoveCommasForSearch(street));
+            if (qs.TryGetValue("postalcode", out var postal) && !string.IsNullOrWhiteSpace(postal)) parts.Add("postal=" + RemoveCommasForSearch(postal));
+            if (qs.TryGetValue("city", out var city) && !string.IsNullOrWhiteSpace(city)) parts.Add("city=" + RemoveCommasForSearch(city));
+            if (qs.TryGetValue("country", out var country) && !string.IsNullOrWhiteSpace(country)) parts.Add("country=" + RemoveCommasForSearch(country));
 
-            return parts.Count > 0 ? string.Join(", ", parts) : (uri.Query ?? string.Empty);
+            return parts.Count > 0 ? string.Join(" ", parts) : (uri.Query ?? string.Empty);
         }
         catch
         {
@@ -2358,12 +2436,12 @@ public partial class PlaceScanResultPage : ContentPage
         {
             _currentPlace ??= new PlaceInfoItem();
 
-            _currentPlace.Name = (EditNameEntry.Text ?? string.Empty).Trim();
-            _currentPlace.StreetName = (EditStreetNameEntry.Text ?? string.Empty).Trim();
-            _currentPlace.StreetNumber = (EditStreetNumberEntry.Text ?? string.Empty).Trim();
-            _currentPlace.PostalCode = (EditPostalCodeEntry.Text ?? string.Empty).Trim();
-            _currentPlace.City = (EditCityEntry.Text ?? string.Empty).Trim();
-            _currentPlace.Country = (EditCountryEntry.Text ?? string.Empty).Trim();
+            _currentPlace.Name = RemoveCommasForSearch(EditNameEntry.Text ?? string.Empty);
+            _currentPlace.StreetName = RemoveCommasForSearch(EditStreetNameEntry.Text ?? string.Empty);
+            _currentPlace.StreetNumber = RemoveCommasForSearch(EditStreetNumberEntry.Text ?? string.Empty);
+            _currentPlace.PostalCode = RemoveCommasForSearch(EditPostalCodeEntry.Text ?? string.Empty);
+            _currentPlace.City = RemoveCommasForSearch(EditCityEntry.Text ?? string.Empty);
+            _currentPlace.Country = RemoveCommasForSearch(EditCountryEntry.Text ?? string.Empty);
 
             if (string.IsNullOrWhiteSpace(_currentPlace.Country))
                 _currentPlace.Country = LangResources.DefaultCountryText;

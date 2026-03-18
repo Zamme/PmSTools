@@ -53,11 +53,45 @@ namespace PmSTools.Models
             get => _streetNumber;
             set
             {
-                if (_streetNumber == value)
+                var (number, extras) = SplitStreetNumberAndExtras(value);
+                if (_streetNumber == number && _streetExtraDetails == extras)
                     return;
 
-                _streetNumber = value;
+                _streetNumber = number;
+                _streetExtraDetails = extras;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(StreetExtraDetails));
+                OnPropertyChanged(nameof(StreetNumberDisplay));
+            }
+        }
+
+        private string? _streetExtraDetails;
+        public string? StreetExtraDetails
+        {
+            get => _streetExtraDetails;
+            set
+            {
+                var normalized = NormalizeCommaSpaces(value);
+                if (_streetExtraDetails == normalized)
+                    return;
+
+                _streetExtraDetails = normalized;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(StreetNumberDisplay));
+            }
+        }
+
+        public string StreetNumberDisplay
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_streetNumber))
+                    return string.Empty;
+
+                if (string.IsNullOrWhiteSpace(_streetExtraDetails))
+                    return _streetNumber;
+
+                return $"{_streetNumber} {_streetExtraDetails}".Trim();
             }
         }
 
@@ -178,6 +212,61 @@ namespace PmSTools.Models
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        internal static string ExtractStreetExtraDetails(string? street)
+        {
+            if (string.IsNullOrWhiteSpace(street))
+                return string.Empty;
+
+            var normalized = NormalizeCommaSpaces(street);
+            var match = System.Text.RegularExpressions.Regex.Match(
+                normalized,
+                @"\b\d{1,5}[A-Za-z]?\b(?<rest>.*)$",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            if (!match.Success)
+                return string.Empty;
+
+            var rest = match.Groups["rest"].Value;
+            if (string.IsNullOrWhiteSpace(rest) || !System.Text.RegularExpressions.Regex.IsMatch(rest, @"\d"))
+                return string.Empty;
+
+            rest = System.Text.RegularExpressions.Regex.Replace(rest, @"^[\s\-/,]+", " ");
+            return NormalizeCommaSpaces(rest);
+        }
+
+        private static (string Number, string Extras) SplitStreetNumberAndExtras(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return (string.Empty, string.Empty);
+
+            var normalized = NormalizeCommaSpaces(value);
+            var match = System.Text.RegularExpressions.Regex.Match(
+                normalized,
+                @"\b\d{1,5}[A-Za-z]?\b",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            if (!match.Success)
+                return (normalized, string.Empty);
+
+            var number = match.Value.Trim();
+            var rest = normalized.Substring(match.Index + match.Length);
+            if (string.IsNullOrWhiteSpace(rest) || !System.Text.RegularExpressions.Regex.IsMatch(rest, @"\d"))
+                return (number, string.Empty);
+
+            rest = System.Text.RegularExpressions.Regex.Replace(rest, @"^[\s\-/,]+", " ");
+            return (number, NormalizeCommaSpaces(rest));
+        }
+
+        private static string NormalizeCommaSpaces(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            var normalized = value.Replace(',', ' ');
+            normalized = System.Text.RegularExpressions.Regex.Replace(normalized, @"\s+", " ").Trim();
+            return normalized;
         }
     }
 }

@@ -47,6 +47,7 @@ namespace PmSTools.Models
                 Name = place.Name,
                 StreetName = place.StreetName,
                 StreetNumber = place.StreetNumber,
+                StreetExtraDetails = DeliveryRouteStop.ExtractStreetExtraDetails(place.Street),
                 PostalCode = place.PostalCode,
                 City = place.City,
                 Country = place.Country,

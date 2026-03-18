@@ -145,7 +145,7 @@
                                        Padding="6,2"
                                        IsVisible="{Binding IsLast}" />
                                 <Label Text="{Binding StreetName}" FontAttributes="Bold" />
-                                <Label Text="{Binding StreetNumber}" FontAttributes="Bold" />
+                                <Label Text="{Binding StreetNumberDisplay}" FontAttributes="Bold" />
                             </HorizontalStackLayout>
 
                             <VerticalStackLayout Spacing="8" IsVisible="False">
@@ -174,6 +174,15 @@
                                 <Entry Placeholder="{x:Static strings:LangResources.NamePlaceholderText}" Text="{Binding Name}" />
                                 <Entry Placeholder="{x:Static strings:LangResources.StreetNamePlaceholderText}" Text="{Binding StreetName}" />
                                 <Entry Placeholder="{x:Static strings:LangResources.StreetNumberPlaceholderText}" Text="{Binding StreetNumber}" />
+                                <Label Text="{Binding StreetExtraDetails, StringFormat='Extra: {0}'}"
+                                       FontSize="12"
+                                       TextColor="#6B6B6B">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding StreetExtraDetails}" Value="">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
                                 <Entry Placeholder="{x:Static strings:LangResources.PostalCodePlaceholderText}" Text="{Binding PostalCode}" />
                                 <Entry Placeholder="{x:Static strings:LangResources.CityPlaceholderText}" Text="{Binding City}" />
                                 <Entry Placeholder="{x:Static strings:LangResources.CountryPlaceholderText}" Text="{Binding Country}" />

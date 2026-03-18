@@ -1001,23 +1001,23 @@ public partial class RouteEditorPage : ContentPage
     {
         var parts = new List<string>();
 
-        var street = BuildStreet(stop);
+        var street = RemoveCommasForSearch(BuildStreet(stop));
         if (!string.IsNullOrWhiteSpace(street))
             parts.Add(street);
 
         if (string.IsNullOrWhiteSpace(street) && !string.IsNullOrWhiteSpace(stop.Name))
-            parts.Add(stop.Name);
+            parts.Add(RemoveCommasForSearch(stop.Name));
 
         if (!string.IsNullOrWhiteSpace(stop.PostalCode))
-            parts.Add(stop.PostalCode);
+            parts.Add(RemoveCommasForSearch(stop.PostalCode));
 
         if (!string.IsNullOrWhiteSpace(stop.City))
-            parts.Add(stop.City);
+            parts.Add(RemoveCommasForSearch(stop.City));
 
         if (!string.IsNullOrWhiteSpace(stop.Country))
-            parts.Add(stop.Country);
+            parts.Add(RemoveCommasForSearch(stop.Country));
 
-        return string.Join(", ", parts.Where(value => !string.IsNullOrWhiteSpace(value)));
+        return string.Join(" ", parts.Where(value => !string.IsNullOrWhiteSpace(value)));
     }
 
     private static List<string> BuildGeocodeQueriesForStop(DeliveryRouteStop? stop)
@@ -1029,10 +1029,10 @@ public partial class RouteEditorPage : ContentPage
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         var postalCode = (stop.PostalCode ?? string.Empty).Trim();
-        var city = (stop.City ?? string.Empty).Trim();
-        var country = (stop.Country ?? string.Empty).Trim();
-        var street = BuildStreet(stop).Trim();
-        var name = (stop.Name ?? string.Empty).Trim();
+        var city = RemoveCommasForSearch((stop.City ?? string.Empty).Trim());
+        var country = RemoveCommasForSearch((stop.Country ?? string.Empty).Trim());
+        var street = RemoveCommasForSearch(BuildStreet(stop).Trim());
+        var name = RemoveCommasForSearch((stop.Name ?? string.Empty).Trim());
 
         street = System.Text.RegularExpressions.Regex.Replace(
             street,
@@ -1049,11 +1049,12 @@ public partial class RouteEditorPage : ContentPage
         var streetVariants = BuildStreetVariants(streetMain);
 
         var postalCity = string.Join(" ", new[] { postalCode, city }.Where(v => !string.IsNullOrWhiteSpace(v))).Trim();
+        postalCity = RemoveCommasForSearch(postalCity);
         var postalOnly = postalCode;
 
         void AddQuery(params string[] parts)
         {
-            var query = string.Join(", ", parts.Where(v => !string.IsNullOrWhiteSpace(v)).Select(v => v.Trim()));
+            var query = string.Join(" ", parts.Where(v => !string.IsNullOrWhiteSpace(v)).Select(v => v.Trim()));
             if (string.IsNullOrWhiteSpace(query))
                 return;
             if (seen.Add(query))
@@ -1080,11 +1081,12 @@ public partial class RouteEditorPage : ContentPage
 
     private static string BuildStreet(DeliveryRouteStop stop)
     {
-        return string.Join(" ", new[]
+        var combined = string.Join(" ", new[]
         {
             stop.StreetName,
             stop.StreetNumber
         }.Where(value => !string.IsNullOrWhiteSpace(value)));
+        return RemoveCommasForSearch(combined);
     }
 
     private static string SimplifyStreetForGeocoding(string street)
@@ -1092,7 +1094,7 @@ public partial class RouteEditorPage : ContentPage
         if (string.IsNullOrWhiteSpace(street))
             return string.Empty;
 
-        var cleaned = street.Trim();
+        var cleaned = RemoveCommasForSearch(street.Trim());
 
         cleaned = System.Text.RegularExpressions.Regex.Replace(
             cleaned,
@@ -1204,8 +1206,19 @@ public partial class RouteEditorPage : ContentPage
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
         cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"\s+", " ").Trim();
+        cleaned = RemoveCommasForSearch(cleaned);
 
         return cleaned;
+    }
+
+    private static string RemoveCommasForSearch(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var normalized = value.Replace(',', ' ');
+        normalized = System.Text.RegularExpressions.Regex.Replace(normalized, @"\s+", " ").Trim();
+        return normalized;
     }
 
     private static (string StreetName, string StreetNumber) SplitStreetParts(string? street)
@@ -1219,6 +1232,18 @@ public partial class RouteEditorPage : ContentPage
             @"\b([\p{L}'\-]{2,})(\d{1,5}[A-Za-z]?)\b",
             "$1 $2",
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        var trailingDetailMatch = System.Text.RegularExpressions.Regex.Match(
+            normalized,
+            @"^(?<name>.+?)\s+(?<number>\d{1,5}[A-Za-z]?)(?:\s+\d{1,5}[A-Za-z]?){1,4}\s*$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        if (trailingDetailMatch.Success)
+        {
+            return (
+                trailingDetailMatch.Groups["name"].Value.Trim(),
+                trailingDetailMatch.Groups["number"].Value.Trim());
+        }
 
         var match = System.Text.RegularExpressions.Regex.Match(
             normalized,
